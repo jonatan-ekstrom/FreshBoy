@@ -1,11 +1,12 @@
 #include <cstdlib>
 #include <exception>
 #include <iostream>
+#include "instance.h"
 
 int main() {
     int exitCode{EXIT_FAILURE};
     try {
-        std::cout << "Hello World!" << std::endl;
+        sdl::Instance instance;
         exitCode = EXIT_SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
