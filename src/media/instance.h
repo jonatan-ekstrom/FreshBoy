@@ -1,13 +1,19 @@
 #pragma once
+#include <memory>
 
 namespace sdl {
 
-class Instance {
+class Inst;
+using Instance = std::shared_ptr<const Inst>;
+
+class Inst {
 public:
-    Instance();
-    ~Instance();
-    Instance(const Instance&) = delete;
-    Instance& operator=(const Instance&) = delete;
+    ~Inst();
+    Inst(const Inst&) = delete;
+    Inst& operator=(const Inst&) = delete;
+    static Instance Create();
+private:
+    Inst();
 };
 
 }
