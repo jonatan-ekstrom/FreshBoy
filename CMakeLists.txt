@@ -31,6 +31,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Add cmake directory to module search path.
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+# Look for the SDL2 libraries, abort if not found.
+find_package(SDL2 REQUIRED)
+
 # Make building tests optional.
 option(BUILD_TESTS "" ON)
 
