@@ -5,7 +5,7 @@
 
 namespace sdl {
 
-Renderer::Renderer(Instance instance, Window window)
+Renderer_::Renderer_(Instance instance, Window window)
     : instance{std::move(instance)}, window{std::move(window)} {
     const auto flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
     this->handle = SDL_CreateRenderer(window->Handle(), -1, flags);
@@ -16,16 +16,24 @@ Renderer::Renderer(Instance instance, Window window)
     SDL_SetRenderDrawColor(this->handle, rgba, rgba, rgba, rgba);
 }
 
-Renderer::~Renderer() {
-    SDL_DestroyRenderer(handle);
+Renderer_::~Renderer_() {
+    SDL_DestroyRenderer(this->handle);
 }
 
-void Renderer::Clear() {
-    SDL_RenderClear(handle);
+Renderer Renderer_::Create(Instance instance, Window window) {
+    return Renderer{new Renderer_{std::move(instance), std::move(window)}};
 }
 
-void Renderer::Present() {
-    SDL_RenderPresent(handle);
+void Renderer_::Clear() {
+    SDL_RenderClear(this->handle);
+}
+
+void Renderer_::Present() {
+    SDL_RenderPresent(this->handle);
+}
+
+SDL_Renderer* Renderer_::Handle() {
+    return this->handle;
 }
 
 }
