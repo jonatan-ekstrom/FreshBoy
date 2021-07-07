@@ -5,18 +5,18 @@
 
 namespace sdl {
 
-Inst::Inst() {
+Instance_::Instance_() {
    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
       throw std::runtime_error{SDL_GetError()};
    }
 }
 
-Inst::~Inst() {
+Instance_::~Instance_() {
    SDL_Quit();
 }
 
-Instance Inst::Create() {
-    return Instance{new Inst};
+Instance Instance_::Create() {
+    return Instance{new Instance_};
 }
 
 }

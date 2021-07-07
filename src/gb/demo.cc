@@ -10,8 +10,8 @@ namespace gb {
 
 Demo::Demo()
     : running{false},
-      instance{Inst::Create()},
-      window{Win::Create(this->instance, "Demo Window", 600, 400)},
+      instance{Instance_::Create()},
+      window{Window_::Create(this->instance, "Demo Window", 600, 400)},
       eventManager{this->instance} {
     eventManager.RegisterKeyHandler(KeyHandler);
     eventManager.RegisterQuitHandler([this] { this->QuitHandler(); });

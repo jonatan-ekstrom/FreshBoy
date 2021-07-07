@@ -3,17 +3,17 @@
 
 namespace sdl {
 
-class Inst;
-using Instance = std::shared_ptr<const Inst>;
+class Instance_;
+using Instance = std::shared_ptr<const Instance_>;
 
-class Inst {
+class Instance_ {
 public:
-    ~Inst();
-    Inst(const Inst&) = delete;
-    Inst& operator=(const Inst&) = delete;
+    ~Instance_();
+    Instance_(const Instance_&) = delete;
+    Instance_& operator=(const Instance_&) = delete;
     static Instance Create();
 private:
-    Inst();
+    Instance_();
 };
 
 }

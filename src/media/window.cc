@@ -6,8 +6,8 @@
 
 namespace sdl {
 
-Win::Win(sdl::Instance instance, const std::string& title,
-               const int width, const int height)
+Window_::Window_(sdl::Instance instance, const std::string& title,
+                 const int width, const int height)
     : instance{std::move(instance)}, handle{nullptr} {
     if (width <= 0 || height <= 0) {
         throw std::runtime_error{"Invalid window dimensions."};
@@ -20,17 +20,17 @@ Win::Win(sdl::Instance instance, const std::string& title,
     }
 }
 
-Win::~Win() {
+Window_::~Window_() {
     SDL_DestroyWindow(this->handle);
 }
 
-void Win::Show() {
+void Window_::Show() {
     SDL_ShowWindow(this->handle);
 }
 
-Window Win::Create(Instance instance, const std::string& title,
-                   const int width, const int height) {
-    return Window{new Win{std::move(instance), title, width, height}};
+Window Window_::Create(Instance instance, const std::string& title,
+                       const int width, const int height) {
+    return Window{new Window_{std::move(instance), title, width, height}};
 }
 
 }
