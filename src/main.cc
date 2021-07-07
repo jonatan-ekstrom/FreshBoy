@@ -1,12 +1,13 @@
 #include <cstdlib>
 #include <exception>
 #include <iostream>
-#include "instance.h"
+#include "demo.h"
 
 int main() {
     int exitCode{EXIT_FAILURE};
     try {
-        sdl::Instance instance;
+        gb::Demo demo;
+        demo.Run();
         exitCode = EXIT_SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
