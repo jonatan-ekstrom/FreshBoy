@@ -14,8 +14,8 @@ Window_::Window_(sdl::Instance instance, const std::string& title,
     }
     const auto pos{SDL_WINDOWPOS_CENTERED};
     const auto flags{SDL_WINDOW_HIDDEN};
-    handle = SDL_CreateWindow(title.c_str(), pos, pos, width, height, flags);
-    if (handle == nullptr) {
+    this->handle = SDL_CreateWindow(title.c_str(), pos, pos, width, height, flags);
+    if (this->handle == nullptr) {
         throw std::runtime_error{SDL_GetError()};
     }
 }
@@ -31,6 +31,10 @@ void Window_::Show() {
 Window Window_::Create(Instance instance, const std::string& title,
                        const int width, const int height) {
     return Window{new Window_{std::move(instance), title, width, height}};
+}
+
+SDL_Window* Window_::Handle() {
+    return this->handle;
 }
 
 }

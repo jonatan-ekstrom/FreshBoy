@@ -17,6 +17,7 @@ public:
     static Window Create(Instance instance, const std::string& title,
                          int width, int height);
     void Show();
+    SDL_Window* Handle();
 private:
     Window_(Instance instance, const std::string& title, int width, int height);
     Instance instance;
