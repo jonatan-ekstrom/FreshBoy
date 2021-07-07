@@ -6,14 +6,19 @@ class SDL_Window;
 
 namespace sdl {
 
-class Window {
+class Win;
+using Window = std::shared_ptr<Win>;
+
+class Win {
 public:
-    Window(Instance instance, const std::string& title, int width, int height);
-    ~Window();
-    Window(Window&) = delete;
-    Window& operator=(const Window&) = delete;
-    void Show() const;
+    ~Win();
+    Win(Win&) = delete;
+    Win& operator=(const Win&) = delete;
+    static Window Create(Instance instance, const std::string& title,
+                         int width, int height);
+    void Show();
 private:
+    Win(Instance instance, const std::string& title, int width, int height);
     Instance instance;
     SDL_Window* handle;
 };

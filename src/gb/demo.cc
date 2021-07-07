@@ -11,7 +11,7 @@ namespace gb {
 Demo::Demo()
     : running{false},
       instance{Inst::Create()},
-      window{this->instance, "Demo Window", 600, 400},
+      window{Win::Create(this->instance, "Demo Window", 600, 400)},
       eventManager{this->instance} {
     eventManager.RegisterKeyHandler(KeyHandler);
     eventManager.RegisterQuitHandler([this] { this->QuitHandler(); });
@@ -19,7 +19,7 @@ Demo::Demo()
 
 void Demo::Run() {
     this->running = true;
-    this->window.Show();
+    this->window->Show();
     while (this->running) {
         this->eventManager.WaitForEvent();
     }

@@ -6,7 +6,7 @@
 
 namespace sdl {
 
-Window::Window(sdl::Instance instance, const std::string& title,
+Win::Win(sdl::Instance instance, const std::string& title,
                const int width, const int height)
     : instance{std::move(instance)}, handle{nullptr} {
     if (width <= 0 || height <= 0) {
@@ -20,12 +20,17 @@ Window::Window(sdl::Instance instance, const std::string& title,
     }
 }
 
-Window::~Window() {
+Win::~Win() {
     SDL_DestroyWindow(this->handle);
 }
 
-void Window::Show() const {
+void Win::Show() {
     SDL_ShowWindow(this->handle);
+}
+
+Window Win::Create(Instance instance, const std::string& title,
+                   const int width, const int height) {
+    return Window{new Win{std::move(instance), title, width, height}};
 }
 
 }
