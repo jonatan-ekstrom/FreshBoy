@@ -41,6 +41,10 @@ void Demo::KeyHandler(const Key& key) {
         case Key::Code::Right:
             Draw(Texture::Pixel(0, 0, 255, 255));
             break;
+        case Key::Code::Z:
+        case Key::Code::X:
+        case Key::Code::Backspace:
+        case Key::Code::Return:
         case Key::Code::Unknown:
         default:
             break;

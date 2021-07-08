@@ -13,7 +13,11 @@ public:
         Up,
         Down,
         Left,
-        Right
+        Right,
+        Z,
+        X,
+        Backspace,
+        Return
     } Code;
 
     enum class Type {

@@ -19,6 +19,18 @@ Key::Key(const SDL_KeyboardEvent& event)
         case SDLK_RIGHT:
             Code = Code::Right;
             break;
+        case SDLK_z:
+            Code = Code::Z;
+            break;
+        case SDLK_x:
+            Code = Code::X;
+            break;
+        case SDLK_BACKSPACE:
+            Code = Code::Backspace;
+            break;
+        case SDLK_RETURN:
+            Code = Code::Return;
+            break;
         default:
             break;
     }
