@@ -7,7 +7,7 @@
 namespace sdl {
 
 EventManager::EventManager(sdl::Instance instance)
-    : instance{std::move(instance)} { }
+    : instance{std::move(instance)} {}
 
 void EventManager::RegisterKeyHandler(const KeyHandler& handler) {
     this->keyHandler = handler;

@@ -1,6 +1,6 @@
 # Creates the 'media' static library.
-set(mediaHeaders event_manager.h instance.h key.h renderer.h window.h)
-set(mediaSources event_manager.cc instance.cc key.cc renderer.cc window.cc)
+set(mediaHeaders event_manager.h instance.h key.h renderer.h texture.h window.h)
+set(mediaSources event_manager.cc instance.cc key.cc renderer.cc texture.cc window.cc)
 add_library(media STATIC ${mediaSources})
 target_include_directories(media INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(media SYSTEM PRIVATE ${SDL2_INCLUDE_DIRS})
