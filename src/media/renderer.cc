@@ -9,12 +9,13 @@ namespace sdl {
 Renderer_::Renderer_(Instance instance, Window window)
     : instance{std::move(instance)}, window{std::move(window)} {
     const auto flags{SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC};
-    this->handle = SDL_CreateRenderer(window->Handle(), -1, flags);
+    this->handle = SDL_CreateRenderer(this->window->Handle(), -1, flags);
     if (this->handle == nullptr) {
         throw std::runtime_error{"Failed to create SDL renderer."};
     }
-    const auto rgba{255};
-    SDL_SetRenderDrawColor(this->handle, rgba, rgba, rgba, rgba);
+    const auto rgb{0};
+    const auto alpha{255};
+    SDL_SetRenderDrawColor(this->handle, rgb, rgb, rgb, alpha);
 }
 
 Renderer_::~Renderer_() {
