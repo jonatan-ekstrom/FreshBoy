@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <utility>
 #include <SDL_render.h>
+#include "texture.h"
 
 namespace sdl {
 
@@ -26,6 +27,12 @@ Renderer Renderer_::Create(Instance instance, Window window) {
 
 void Renderer_::Clear() {
     SDL_RenderClear(this->handle);
+}
+
+void Renderer_::Copy(Texture& texture) {
+    if (SDL_RenderCopy(this->handle, texture.Handle(), nullptr, nullptr) != 0) {
+        throw std::runtime_error{SDL_GetError()};
+    }
 }
 
 void Renderer_::Present() {

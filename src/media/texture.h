@@ -18,6 +18,7 @@ public:
     std::uint32_t* Lock();
     int Width() const;
     int Height() const;
+    SDL_Texture* Handle();
 private:
     Instance instance;
     Renderer renderer;
@@ -25,8 +26,5 @@ private:
     int height;
     SDL_Texture* handle;
 };
-
-inline int Texture::Width() const { return this->width; }
-inline int Texture::Height() const { return this->height; }
 
 }

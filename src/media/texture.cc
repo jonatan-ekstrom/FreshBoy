@@ -48,4 +48,16 @@ std::uint32_t* Texture::Lock() {
     return static_cast<std::uint32_t*>(data);
 }
 
+int Texture::Width() const {
+    return this->width;
+}
+
+int Texture::Height() const {
+    return this->height;
+}
+
+SDL_Texture* Texture::Handle() {
+    return this->handle;
+}
+
 }
