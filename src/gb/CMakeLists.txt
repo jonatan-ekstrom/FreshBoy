@@ -1,6 +1,6 @@
 # Creates the 'gb' static library.
-set(gbHeaders demo.h)
-set(gbSources demo.cc)
+set(gbHeaders demo.h memory.h)
+set(gbSources demo.cc memory.cc)
 add_library(gb STATIC ${gbSources})
 target_include_directories(gb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gb PUBLIC media)
