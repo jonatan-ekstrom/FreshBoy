@@ -8,6 +8,11 @@ class SDL_Texture;
 
 namespace sdl {
 
+constexpr std::uint32_t Pixel(const std::uint8_t r, const std::uint8_t g,
+                              const std::uint8_t b, const std::uint8_t a) {
+    return static_cast<uint32_t>(r << 24 | g << 16 | b << 8 | a);
+}
+
 class Texture {
 public:
     Texture(Instance instance, Renderer renderer, int width, int height);
