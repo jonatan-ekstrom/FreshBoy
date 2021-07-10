@@ -1,6 +1,8 @@
 #include "demo.h"
 #include <algorithm>
+#include <iostream>
 #include "key.h"
+#include "header.h"
 
 using namespace sdl;
 
@@ -18,11 +20,14 @@ Demo::Demo()
 }
 
 void Demo::Run() {
-    this->running = true;
-    this->window->Show();
-    while (this->running) {
-        this->eventManager.WaitForEvent();
-    }
+    //this->running = true;
+    //this->window->Show();
+    //while (this->running) {
+    //    this->eventManager.WaitForEvent();
+    //}
+
+    const gb::Header header{"/home/jonatan/Desktop/zelda.gb"};
+    std::cout << header.PrettyPrint() << std::endl;
 }
 
 void Demo::KeyHandler(const Key& key) {
