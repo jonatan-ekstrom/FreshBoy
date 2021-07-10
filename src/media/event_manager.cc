@@ -7,7 +7,27 @@
 namespace sdl {
 
 EventManager::EventManager(sdl::Instance instance)
-    : instance{std::move(instance)} {}
+    : instance{std::move(instance)}, active{true} {
+    if (instanceExists) {
+        throw std::runtime_error{"Only one event manager may be active at a time."};
+    }
+    instanceExists = true;
+}
+
+EventManager::~EventManager() {
+    if (this->active) {
+        instanceExists = false;
+    }
+}
+
+EventManager::EventManager(EventManager&& other) noexcept : active{false}  {
+    Swap(*this, other);
+}
+
+EventManager& EventManager::operator=(EventManager&& other) noexcept {
+    Swap(*this, other);
+    return *this;
+}
 
 void EventManager::RegisterKeyHandler(const KeyHandler& handler) {
     this->keyHandler = handler;
@@ -48,6 +68,16 @@ void EventManager::HandleEvent(const SDL_Event& event) const {
         default:
             break;
     }
+}
+
+bool EventManager::instanceExists{false};
+
+void Swap(EventManager& lhs, EventManager& rhs) noexcept {
+    using std::swap;
+    swap(lhs.instance, rhs.instance);
+    swap(lhs.keyHandler, rhs.keyHandler);
+    swap(lhs.quitHandler, lhs.quitHandler);
+    swap(lhs.active, rhs.active);
 }
 
 }
