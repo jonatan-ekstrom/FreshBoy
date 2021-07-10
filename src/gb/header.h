@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstddef>
 #include <cstdint>
-#include <memory>
 #include <string>
+#include <vector>
 
 namespace gb {
 
@@ -58,9 +57,9 @@ public:
     std::uint16_t GlobalChecksum() const;
     std::string PrettyPrint() const;
 private:
-    std::string Stringify(std::size_t begin, std::size_t end) const;
-    std::string Hexdump(std::size_t begin, std::size_t end) const;
-    std::unique_ptr<std::uint8_t[]> data;
+    std::string Stringify(std::uint16_t begin, std::uint16_t end) const;
+    std::string Hexdump(std::uint16_t begin, std::uint16_t end) const;
+    std::vector<std::uint8_t> bytes;
 };
 
 }

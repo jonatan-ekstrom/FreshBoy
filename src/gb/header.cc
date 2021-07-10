@@ -1,12 +1,12 @@
 #include "header.h"
-#include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
 
 namespace {
 
-constexpr std::size_t HeaderOffset{0x100};
+constexpr std::ptrdiff_t HeaderOffset{0x100};
 constexpr std::size_t HeaderSize{80};
 
 std::string MemSizeToStr(const gb::MemSize sz) {
@@ -44,11 +44,9 @@ std::string MemSizeToStr(const gb::MemSize sz) {
 
 namespace gb {
 
-Header::Header(const std::string& fileName) {
-    using Byte = std::fstream::char_type;
-    constexpr auto flags{std::ios::in | std::ios::binary};
-
-    std::fstream file{fileName, flags};
+Header::Header(const std::string& fileName) : bytes(HeaderSize) {
+    using Byte = std::ifstream::char_type;
+    std::ifstream file{fileName, std::ios::binary};
     if (!file) {
         throw std::runtime_error{"Failed to open file: " + fileName};
     }
@@ -56,8 +54,8 @@ Header::Header(const std::string& fileName) {
     if (!file) {
         throw std::runtime_error{"Failed to seek to header offset."};
     }
-    this->data.reset(new std::uint8_t[HeaderSize]);
-    file.read(reinterpret_cast<Byte*>(this->data.get()), HeaderSize);
+
+    file.read(reinterpret_cast<Byte*>(this->bytes.data()), HeaderSize);
     if (file.gcount() != HeaderSize) {
         throw std::runtime_error{"Failed to read entire header."};
     }
@@ -92,7 +90,7 @@ std::string Header::SGBFlag() const {
 }
 
 CartridgeType Header::Type() const {
-    const auto byte{this->data[0x147 - HeaderOffset]};
+    const auto byte{this->bytes[0x147 - HeaderOffset]};
     switch (byte) {
         case 0x00:
         case 0x08:
@@ -161,7 +159,7 @@ std::string Header::TypeStr() const {
 }
 
 MemSize Header::RomSize() const {
-    const auto byte{this->data[0x148 - HeaderOffset]};
+    const auto byte{this->bytes[0x148 - HeaderOffset]};
     switch (byte) {
         case 0x00:
             return MemSize::KB32;
@@ -191,7 +189,7 @@ std::string Header::RomStr() const {
 }
 
 MemSize Header::RamSize() const {
-    const auto byte{this->data[0x149 - HeaderOffset]};
+    const auto byte{this->bytes[0x149 - HeaderOffset]};
     switch (byte) {
         case 0x00:
             return MemSize::Zero;
@@ -213,7 +211,7 @@ std::string Header::RamStr() const {
 }
 
 bool Header::Japanese() const {
-    return this->data[0x14A - HeaderOffset] == 0;
+    return this->bytes[0x14A - HeaderOffset] == 0;
 }
 
 std::string Header::Licensee() const {
@@ -221,17 +219,17 @@ std::string Header::Licensee() const {
 }
 
 std::uint8_t Header::VersionNumber() const {
-    return this->data[0x14C - HeaderOffset];
+    return this->bytes[0x14C - HeaderOffset];
 }
 
 std::uint8_t Header::Checksum() const {
-    return this->data[0x14D - HeaderOffset];
+    return this->bytes[0x14D - HeaderOffset];
 }
 
 std::uint8_t Header::ComputedChecksum() const {
     std::uint8_t checksum{0};
-    const auto begin{this->data.get() + 0x134 - HeaderOffset};
-    const auto end{this->data.get() + 0x14D - HeaderOffset};
+    const auto begin{this->bytes.cbegin() + 0x134 - HeaderOffset};
+    const auto end{this->bytes.cbegin() + 0x14C - HeaderOffset + 1};
     for (auto p{begin}; p != end; ++p) {
         checksum = static_cast<std::uint8_t>(checksum - *p - 1);
     }
@@ -239,24 +237,23 @@ std::uint8_t Header::ComputedChecksum() const {
 }
 
 std::uint16_t Header::GlobalChecksum() const {
-    const auto upper{this->data[0x14E - HeaderOffset]};
-    const auto lower{this->data[0x14F - HeaderOffset]};
+    const auto upper{this->bytes[0x14E - HeaderOffset]};
+    const auto lower{this->bytes[0x14F - HeaderOffset]};
     return static_cast<uint16_t>(upper << 8 | lower);
 }
 
-std::string Header::Stringify(const std::size_t begin, const std::size_t end) const {
-    const auto start{this->data.get() + begin - HeaderOffset};
-    const auto stop{this->data.get() + end - HeaderOffset + 1};
-    std::unique_ptr<char[]> characters{new char[end - begin + 2]};
-    characters[end - begin + 1] = '\0';
-    std::copy(start, stop, characters.get());
-    return std::string(characters.get());
+std::string Header::Stringify(const std::uint16_t begin, const std::uint16_t end) const {
+    const auto start{this->bytes.cbegin() + begin - HeaderOffset};
+    const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};
+    std::vector<char> characters{start, stop};
+    characters.push_back('\0');
+    return std::string(characters.data());
 }
 
-std::string Header::Hexdump(const std::size_t begin, const std::size_t end) const {
+std::string Header::Hexdump(const std::uint16_t begin, const std::uint16_t end) const {
     const char characters[]{"0123456789ABCDEF"};
-    const auto start{this->data.get() + begin - HeaderOffset};
-    const auto stop{this->data.get() + end - HeaderOffset + 1};
+    const auto start{this->bytes.cbegin() + begin - HeaderOffset};
+    const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};
     std::string result;
     int count{};
     for (auto p{start}; p != stop; ++p) {
