@@ -19,7 +19,9 @@ Renderer_::Renderer_(Instance instance, Window window)
 }
 
 Renderer_::~Renderer_() {
-    SDL_DestroyRenderer(this->handle);
+    if (this->handle != nullptr) {
+        SDL_DestroyRenderer(this->handle);
+    }
 }
 
 Renderer Renderer_::Create(Instance instance, Window window) {
@@ -42,6 +44,22 @@ void Renderer_::Present() {
 
 SDL_Renderer* Renderer_::Handle() {
     return this->handle;
+}
+
+Renderer_::Renderer_(Renderer_&& other) noexcept : handle{nullptr}  {
+    Swap(*this, other);
+}
+
+Renderer_& Renderer_::operator=(Renderer_&& other) noexcept {
+    Swap(*this, other);
+    return *this;
+}
+
+void Swap(Renderer_& lhs, Renderer_& rhs) noexcept {
+    using std::swap;
+    swap(lhs.instance, rhs.instance);
+    swap(lhs.window, rhs.window);
+    swap(lhs.handle, rhs.handle);
 }
 
 }
