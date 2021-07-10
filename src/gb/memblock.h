@@ -6,9 +6,9 @@
 
 namespace gb {
 
-class Memory {
+class MemBlock {
 public:
-    Memory(std::uint16_t offset, std::size_t size);
+    MemBlock(std::uint16_t offset, std::size_t size);
     std::uint8_t& operator[](std::uint16_t address);
     std::uint8_t operator[](std::uint16_t address) const;
     std::uint16_t Offset() const;
@@ -18,16 +18,16 @@ private:
     std::vector<std::uint8_t> bytes;
 };
 
-inline std::uint8_t& Memory::operator[](const std::uint16_t address) {
+inline std::uint8_t& MemBlock::operator[](const std::uint16_t address) {
     return this->bytes[address - this->offset];
 }
 
-inline std::uint8_t Memory::operator[](const std::uint16_t address) const {
+inline std::uint8_t MemBlock::operator[](const std::uint16_t address) const {
     return this->bytes[address - this->offset];
 }
 
-inline std::uint16_t Memory::Offset() const { return this->offset; }
+inline std::uint16_t MemBlock::Offset() const { return this->offset; }
 
-inline std::size_t Memory::Size() const { return this->bytes.size(); }
+inline std::size_t MemBlock::Size() const { return this->bytes.size(); }
 
 }
