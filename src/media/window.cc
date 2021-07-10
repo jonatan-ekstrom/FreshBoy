@@ -21,7 +21,9 @@ Window_::Window_(sdl::Instance instance, const std::string& title,
 }
 
 Window_::~Window_() {
-    SDL_DestroyWindow(this->handle);
+    if (this->handle != nullptr) {
+        SDL_DestroyWindow(this->handle);
+    }
 }
 
 void Window_::Show() {
@@ -35,6 +37,21 @@ Window Window_::Create(Instance instance, const std::string& title,
 
 SDL_Window* Window_::Handle() {
     return this->handle;
+}
+
+Window_::Window_(Window_&& other) noexcept : handle{nullptr} {
+    Swap(*this, other);
+}
+
+Window_& Window_::operator=(Window_&& other) noexcept {
+    Swap(*this, other);
+    return *this;
+}
+
+void Swap(Window_& lhs, Window_& rhs) noexcept {
+    using std::swap;
+    swap(lhs.instance, rhs.instance);
+    swap(lhs.handle, rhs.handle);
 }
 
 }
