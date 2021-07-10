@@ -24,6 +24,15 @@ Renderer_::~Renderer_() {
     }
 }
 
+Renderer_::Renderer_(Renderer_&& other) noexcept : handle{nullptr}  {
+    Swap(*this, other);
+}
+
+Renderer_& Renderer_::operator=(Renderer_&& other) noexcept {
+    Swap(*this, other);
+    return *this;
+}
+
 Renderer Renderer_::Create(Instance instance, Window window) {
     return Renderer{new Renderer_{std::move(instance), std::move(window)}};
 }
@@ -44,15 +53,6 @@ void Renderer_::Present() {
 
 SDL_Renderer* Renderer_::Handle() {
     return this->handle;
-}
-
-Renderer_::Renderer_(Renderer_&& other) noexcept : handle{nullptr}  {
-    Swap(*this, other);
-}
-
-Renderer_& Renderer_::operator=(Renderer_&& other) noexcept {
-    Swap(*this, other);
-    return *this;
 }
 
 void Swap(Renderer_& lhs, Renderer_& rhs) noexcept {

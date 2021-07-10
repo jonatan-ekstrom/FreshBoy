@@ -8,9 +8,9 @@ using Instance = std::shared_ptr<const Instance_>;
 
 class Instance_ {
 public:
+    ~Instance_();
     Instance_(const Instance_&) = delete;
     Instance_(Instance_&& other) noexcept;
-    ~Instance_();
     Instance_& operator=(const Instance_&) = delete;
     Instance_& operator=(Instance_&& other) noexcept;
     static Instance Create();

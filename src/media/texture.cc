@@ -36,6 +36,15 @@ Texture::~Texture() {
     }
 }
 
+Texture::Texture(Texture&& other) noexcept : width{0}, height{0}, handle{nullptr}  {
+    Swap(*this, other);
+}
+
+Texture& Texture::operator=(Texture&& other) noexcept {
+    Swap(*this, other);
+    return *this;
+}
+
 void Texture::Unlock() {
     SDL_UnlockTexture(this->handle);
 }
@@ -63,15 +72,6 @@ int Texture::Height() const {
 
 SDL_Texture* Texture::Handle() {
     return this->handle;
-}
-
-Texture::Texture(Texture&& other) noexcept : width{0}, height{0}, handle{nullptr}  {
-    Swap(*this, other);
-}
-
-Texture& Texture::operator=(Texture&& other) noexcept {
-    Swap(*this, other);
-    return *this;
 }
 
 void Swap(Texture& lhs, Texture& rhs) noexcept {

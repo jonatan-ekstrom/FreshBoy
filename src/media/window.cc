@@ -26,6 +26,15 @@ Window_::~Window_() {
     }
 }
 
+Window_::Window_(Window_&& other) noexcept : handle{nullptr} {
+    Swap(*this, other);
+}
+
+Window_& Window_::operator=(Window_&& other) noexcept {
+    Swap(*this, other);
+    return *this;
+}
+
 void Window_::Show() {
     SDL_ShowWindow(this->handle);
 }
@@ -37,15 +46,6 @@ Window Window_::Create(Instance instance, const std::string& title,
 
 SDL_Window* Window_::Handle() {
     return this->handle;
-}
-
-Window_::Window_(Window_&& other) noexcept : handle{nullptr} {
-    Swap(*this, other);
-}
-
-Window_& Window_::operator=(Window_&& other) noexcept {
-    Swap(*this, other);
-    return *this;
 }
 
 void Swap(Window_& lhs, Window_& rhs) noexcept {

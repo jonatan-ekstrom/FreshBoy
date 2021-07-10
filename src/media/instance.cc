@@ -16,24 +16,24 @@ Instance_::Instance_() : active{true} {
     instanceExists = true;
 }
 
-Instance_::Instance_(Instance_&& other) noexcept : active{false} {
-    Swap(*this, other);
-}
-
 Instance_::~Instance_() {
-    if (active) {
+    if (this->active) {
         SDL_Quit();
         instanceExists = false;
     }
 }
 
-Instance Instance_::Create() {
-    return Instance{new Instance_};
+Instance_::Instance_(Instance_&& other) noexcept : active{false} {
+    Swap(*this, other);
 }
 
 Instance_& Instance_::operator=(Instance_&& other) noexcept {
     Swap(*this, other);
     return *this;
+}
+
+Instance Instance_::Create() {
+    return Instance{new Instance_};
 }
 
 bool Instance_::instanceExists{false};
