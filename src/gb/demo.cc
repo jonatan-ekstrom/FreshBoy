@@ -1,8 +1,8 @@
 #include "demo.h"
 #include <algorithm>
 #include <iostream>
+#include "cartridge.h"
 #include "key.h"
-#include "header.h"
 
 using namespace sdl;
 
@@ -20,14 +20,13 @@ Demo::Demo()
 }
 
 void Demo::Run() {
-    //this->running = true;
-    //this->window->Show();
-    //while (this->running) {
-    //    this->eventManager.WaitForEvent();
-    //}
-
-    const gb::Header header{"/home/jonatan/Desktop/zelda.gb"};
-    std::cout << header.PrettyPrint() << std::endl;
+    const auto cart{gb::Cartridge_::Create("/home/jonatan/Desktop/zelda.gb")};
+    std::cout << cart->HeaderInfo() << std::endl;
+    this->running = true;
+    this->window->Show();
+    while (this->running) {
+        this->eventManager.WaitForEvent();
+    }
 }
 
 void Demo::KeyHandler(const Key& key) {

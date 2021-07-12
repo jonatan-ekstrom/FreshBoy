@@ -43,7 +43,6 @@ set(warningList
     -Wmissing-declarations
     -Wmissing-format-attribute
     -Wmissing-include-dirs
-    -Wmissing-noreturn
     -Wmultichar
     -Wmultiple-inheritance
     -Wnoexcept
