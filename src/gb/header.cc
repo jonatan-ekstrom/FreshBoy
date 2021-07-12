@@ -40,6 +40,57 @@ std::string MemSizeToStr(const gb::MemSize sz) {
     }
 }
 
+unsigned int MemSizeToRomBanks(const gb::MemSize sz) {
+    switch (sz) {
+        case gb::MemSize::KB32:
+            return 2;
+        case gb::MemSize::KB64:
+            return 4;
+        case gb::MemSize::KB128:
+            return 8;
+        case gb::MemSize::KB256:
+            return 16;
+        case gb::MemSize::KB512:
+            return 32;
+        case gb::MemSize::MB1:
+            return 64;
+        case gb::MemSize::MB2:
+            return 128;
+        case gb::MemSize::MB4:
+            return 256;
+        case gb::MemSize::MB8:
+            return 512;
+        case gb::MemSize::Zero:
+        case gb::MemSize::KB8:
+        case gb::MemSize::Unknown:
+        default:
+            throw std::runtime_error{"Invalid memsize for rom bank calculation."};
+    }
+}
+
+unsigned int MemSizeToRamBanks(const gb::MemSize sz) {
+    switch (sz) {
+        case gb::MemSize::KB8:
+            return 1;
+        case gb::MemSize::KB32:
+            return 4;
+        case gb::MemSize::KB64:
+            return 8;
+        case gb::MemSize::KB128:
+            return 16;
+        case gb::MemSize::Zero:
+        case gb::MemSize::KB256:
+        case gb::MemSize::KB512:
+        case gb::MemSize::MB1:
+        case gb::MemSize::MB2:
+        case gb::MemSize::MB4:
+        case gb::MemSize::MB8:
+        case gb::MemSize::Unknown:
+        default:
+            throw std::runtime_error{"Invalid memsize for ram bank calculation."};
+    }
+}
+
 }
 
 namespace gb {
@@ -176,6 +227,10 @@ std::string Header::RomStr() const {
     return MemSizeToStr(RomSize());
 }
 
+unsigned int Header::RomBanks() const {
+    return MemSizeToRomBanks(RomSize());
+}
+
 MemSize Header::RamSize() const {
     const auto byte{this->bytes[0x149 - HeaderOffset]};
     switch (byte) {
@@ -192,6 +247,10 @@ MemSize Header::RamSize() const {
         default:
             return MemSize::Unknown;
     }
+}
+
+unsigned int Header::RamBanks() const {
+    return MemSizeToRamBanks(RamSize());
 }
 
 std::string Header::RamStr() const {

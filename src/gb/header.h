@@ -47,7 +47,9 @@ public:
     std::string TypeStr() const;
     MemSize RomSize() const;
     std::string RomStr() const;
+    unsigned int RomBanks() const;
     MemSize RamSize() const;
+    unsigned int RamBanks() const;
     std::string RamStr() const;
     bool Japanese() const;
     std::string Licensee() const;
