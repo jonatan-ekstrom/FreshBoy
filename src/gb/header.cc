@@ -1,8 +1,8 @@
 #include "header.h"
 #include <cstddef>
-#include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include "file.h"
 
 namespace {
 
@@ -44,21 +44,9 @@ std::string MemSizeToStr(const gb::MemSize sz) {
 
 namespace gb {
 
-Header::Header(const std::string& fileName) : bytes(HeaderSize) {
-    using Byte = std::ifstream::char_type;
-    std::ifstream file{fileName, std::ios::binary};
-    if (!file) {
-        throw std::runtime_error{"Failed to open file: " + fileName};
-    }
-    file.seekg(HeaderOffset);
-    if (!file) {
-        throw std::runtime_error{"Failed to seek to header offset."};
-    }
-
-    file.read(reinterpret_cast<Byte*>(this->bytes.data()), HeaderSize);
-    if (file.gcount() != HeaderSize) {
-        throw std::runtime_error{"Failed to read entire header."};
-    }
+Header::Header(const std::string& filePath) {
+    File file{filePath};
+    this->bytes = file.ReadBytes(HeaderOffset, HeaderSize);
 }
 
 std::string Header::Entry() const {

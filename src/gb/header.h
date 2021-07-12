@@ -34,7 +34,7 @@ enum class MemSize {
 
 class Header {
 public:
-    explicit Header(const std::string& fileName);
+    explicit Header(const std::string& filePath);
     std::string Entry() const;
     std::string Logo() const;
     std::string Title() const;
