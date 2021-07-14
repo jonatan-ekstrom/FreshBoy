@@ -26,11 +26,16 @@ Cartridge_::Cartridge_(Header&& header) : header{std::move(header)} {}
 
 Cartridge Cartridge_::Create(const std::string& filePath) {
     Header header{filePath};
+    const auto checksum{header.GlobalChecksum()};
+
+    Cartridge res;
     switch (header.Type()) {
         case CartridgeType::RomOnly:
-            return std::make_unique<RomOnly>(filePath, std::move(header));
+            res = std::make_unique<RomOnly>(filePath, std::move(header));
+            break;
         case CartridgeType::MBC1:
-            return std::make_unique<MBC1>(filePath, std::move(header));
+            res = std::make_unique<MBC1>(filePath, std::move(header));
+            break;
         case CartridgeType::MBC2:
         case CartridgeType::MBC3:
         case CartridgeType::MBC5:
@@ -40,6 +45,10 @@ Cartridge Cartridge_::Create(const std::string& filePath) {
         default:
             throw std::runtime_error{"Unsupported cartridge type."};
     }
+    if (res->Checksum() != checksum) {
+        throw std::runtime_error{"Cartridge checksum mismatch."};
+    }
+    return res;
 }
 
 std::string Cartridge_::HeaderInfo() const { return this->header.PrettyPrint(); }
@@ -59,6 +68,16 @@ uint8_t RomOnly::Read(const std::uint16_t address) const {
 
 void RomOnly::Write(std::uint16_t, std::uint8_t) {
     throw std::runtime_error{"RomOnly - Write to ROM area."};
+}
+
+uint16_t RomOnly::Checksum() const {
+    std::uint16_t sum{0};
+    for (auto i{0u}; i < this->rom.size(); ++i) {
+        if (i != 0x14E && i != 0x14F) {
+            sum += this->rom[i];
+        }
+    }
+    return sum;
 }
 
 MBC::MBC(Header&& header)
@@ -171,6 +190,25 @@ unsigned int MBC1::RamBank() const {
 
 bool MBC1::AdvancedMode() const {
     return (this->modeSelect & 0x01) != 0;
+}
+
+uint16_t MBC1::Checksum() const {
+    std::uint16_t sum{0};
+    const auto& bank0{this->romBanks[0]};
+    for (auto i{0u}; i < bank0.size(); ++i) {
+        if (i != 0x14E && i != 0x14F) {
+            sum += bank0[i];
+        }
+    }
+
+    for (auto b{1u}; b < this->romBanks.size(); ++b) {
+        const auto& bank{this->romBanks[b]};
+        for (const auto byte : bank) {
+            sum += byte;
+        }
+    }
+
+    return sum;
 }
 
 }

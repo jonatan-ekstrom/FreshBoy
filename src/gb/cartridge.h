@@ -22,6 +22,8 @@ public:
 protected:
     explicit Cartridge_(Header&& header);
     Header header;
+private:
+    virtual std::uint16_t Checksum() const = 0;
 };
 
 class RomOnly : public Cartridge_ {
@@ -30,6 +32,7 @@ public:
     uint8_t Read(std::uint16_t address) const override;
     void Write(std::uint16_t address, std::uint8_t byte) override;
 private:
+    uint16_t Checksum() const override;
     MemBlock rom;
 };
 
@@ -51,6 +54,7 @@ private:
     unsigned int RomBankHigh() const;
     unsigned int RamBank() const;
     bool AdvancedMode() const;
+    uint16_t Checksum() const override;
     std::uint8_t ramEnable;
     std::uint8_t bankLow;
     std::uint8_t bankHigh;
