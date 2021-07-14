@@ -55,12 +55,12 @@ public:
     std::string Licensee() const;
     std::uint8_t VersionNumber() const;
     std::uint8_t Checksum() const;
-    std::uint8_t ComputedChecksum() const;
-    std::uint16_t GlobalChecksum() const;
+    std::uint16_t CartridgeChecksum() const;
     std::string PrettyPrint() const;
 private:
     std::string Stringify(std::uint16_t begin, std::uint16_t end) const;
     std::string Hexdump(std::uint16_t begin, std::uint16_t end) const;
+    std::uint8_t ComputedChecksum() const;
     std::vector<std::uint8_t> bytes;
 };
 

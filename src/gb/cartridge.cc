@@ -26,7 +26,7 @@ Cartridge_::Cartridge_(Header&& header) : header{std::move(header)} {}
 
 Cartridge Cartridge_::Create(const std::string& filePath) {
     Header header{filePath};
-    const auto checksum{header.GlobalChecksum()};
+    const auto checksum{header.CartridgeChecksum()};
 
     Cartridge res;
     switch (header.Type()) {

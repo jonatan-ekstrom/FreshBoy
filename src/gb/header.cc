@@ -98,6 +98,9 @@ namespace gb {
 Header::Header(const std::string& filePath) {
     File file{filePath};
     this->bytes = file.ReadBytes(HeaderOffset, HeaderSize);
+    if (Checksum() != ComputedChecksum()) {
+        throw std::runtime_error{"Header checksum mismatch."};
+    }
 }
 
 std::string Header::Entry() const {
@@ -273,20 +276,33 @@ std::uint8_t Header::Checksum() const {
     return this->bytes[0x14D - HeaderOffset];
 }
 
-std::uint8_t Header::ComputedChecksum() const {
-    std::uint8_t checksum{0};
-    const auto begin{this->bytes.cbegin() + 0x134 - HeaderOffset};
-    const auto end{this->bytes.cbegin() + 0x14C - HeaderOffset + 1};
-    for (auto p{begin}; p != end; ++p) {
-        checksum = static_cast<std::uint8_t>(checksum - *p - 1);
-    }
-    return checksum;
-}
-
-std::uint16_t Header::GlobalChecksum() const {
+std::uint16_t Header::CartridgeChecksum() const {
     const auto upper{this->bytes[0x14E - HeaderOffset]};
     const auto lower{this->bytes[0x14F - HeaderOffset]};
     return static_cast<uint16_t>(upper << 8 | lower);
+}
+
+std::string Header::PrettyPrint() const {
+    std::ostringstream ss;
+    ss << "------------ Contents of ROM header ------------\n"
+       << "Title: " << Title() << '\n'
+       << "Type: " << TypeCode() << " - " << TypeStr() << '\n'
+       << "Version: " << static_cast<int>(VersionNumber()) << '\n'
+       << "ROM Size: " << RomStr() << '\n'
+       << "RAM Size: " << RamStr() << '\n'
+       << "Japanese: " << (Japanese() ? "Yes" : "No") << '\n'
+        << "Licensee: " << Licensee() << '\n'
+        << "New Licensee: " << NewLicenseeCode() << '\n'
+        << "Manufacturer: " << ManufacturerCode() << '\n'
+        << "CGB Flag: " << CGBFlag() << '\n'
+        << "SGB Flag: " << SGBFlag() << '\n'
+        << "Entry: " << Entry() << '\n'
+        << "--------------------- Logo ---------------------\n"
+        << Logo()
+        << "------------------------------------------------\n"
+        << "Header checksum: " << static_cast<int>(Checksum()) << '\n'
+        << "Cartridge checksum: " << CartridgeChecksum() << std::endl;
+    return ss.str();
 }
 
 std::string Header::Stringify(const std::uint16_t begin, const std::uint16_t end) const {
@@ -319,28 +335,14 @@ std::string Header::Hexdump(const std::uint16_t begin, const std::uint16_t end) 
     return result;
 }
 
-std::string Header::PrettyPrint() const {
-    std::ostringstream ss;
-    ss << "------------ Contents of ROM header ------------\n"
-       << "Title: " << Title() << '\n'
-       << "Type: " << TypeCode() << " - " << TypeStr() << '\n'
-       << "Version: " << static_cast<int>(VersionNumber()) << '\n'
-       << "ROM Size: " << RomStr() << '\n'
-       << "RAM Size: " << RamStr() << '\n'
-       << "Japanese: " << (Japanese() ? "Yes" : "No") << '\n'
-       << "Licensee: " << Licensee() << '\n'
-       << "New Licensee: " << NewLicenseeCode() << '\n'
-       << "Manufacturer: " << ManufacturerCode() << '\n'
-       << "CGB Flag: " << CGBFlag() << '\n'
-       << "SGB Flag: " << SGBFlag() << '\n'
-       << "Entry: " << Entry() << '\n'
-       << "--------------------- Logo ---------------------\n"
-       << Logo()
-       << "------------------------------------------------\n"
-       << "Checksum: " << static_cast<int>(Checksum()) << '\n'
-       << "Computed checksum: " << static_cast<int>(ComputedChecksum()) << '\n'
-       << "Global checksum: " << GlobalChecksum() << std::endl;
-    return ss.str();
+std::uint8_t Header::ComputedChecksum() const {
+    std::uint8_t checksum{0};
+    const auto begin{this->bytes.cbegin() + 0x134 - HeaderOffset};
+    const auto end{this->bytes.cbegin() + 0x14C - HeaderOffset + 1};
+    for (auto p{begin}; p != end; ++p) {
+        checksum = static_cast<std::uint8_t>(checksum - *p - 1);
+    }
+    return checksum;
 }
 
 }
