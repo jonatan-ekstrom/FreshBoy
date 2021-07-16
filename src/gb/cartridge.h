@@ -10,10 +10,10 @@ namespace gb {
 
 class Cartridge_;
 using Cartridge = std::unique_ptr<Cartridge_>;
-using MemBlock = std::vector<std::uint8_t>;
 
 class Cartridge_ {
 public:
+    using MemBlock = std::vector<std::uint8_t>;
     static Cartridge Create(const std::string& filePath);
     virtual ~Cartridge_() = default;
     std::string HeaderInfo() const;
