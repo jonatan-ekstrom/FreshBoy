@@ -5,6 +5,11 @@
 
 namespace gb {
 
+enum class TileMap {
+    Low,
+    High
+};
+
 class TileMaps {
 public:
     using Map = std::vector<std::uint8_t>;

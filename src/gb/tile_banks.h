@@ -13,6 +13,11 @@ enum ColorIndex : std::uint8_t {
     Three
 };
 
+enum class TileBank {
+    Low,
+    High
+};
+
 class Tile {
 public:
     Tile();
