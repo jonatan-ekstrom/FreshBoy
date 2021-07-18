@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace gb {
@@ -28,14 +29,18 @@ private:
     std::array<std::uint8_t, 16> data;
 };
 
-class TileBanks {
+class TileBanks_;
+using TileBanks = std::shared_ptr<TileBanks_>;
+
+class TileBanks_ {
 public:
-    TileBanks();
+    static TileBanks Create();
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
     Tile GetTileLow(std::uint8_t index) const;
     Tile GetTileHigh(std::uint8_t index) const;
 private:
+    TileBanks_();
     std::vector<Tile> tiles;
 };
 
