@@ -23,9 +23,9 @@ private:
     std::array<std::uint8_t, 16> data;
 };
 
-class TileBank {
+class TileBanks {
 public:
-    TileBank();
+    TileBanks();
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
     Tile GetTileLow(std::uint8_t index) const;

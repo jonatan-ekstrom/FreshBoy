@@ -1,6 +1,6 @@
 # Creates the 'gb' static library.
-set(gbHeaders cartridge.h demo.h file.h header.h tile_bank.h tile_maps.h)
-set(gbSources cartridge.cc demo.cc file.cc header.cc tile_bank.cc tile_maps.cc)
+set(gbHeaders cartridge.h demo.h file.h header.h tile_banks.h tile_maps.h)
+set(gbSources cartridge.cc demo.cc file.cc header.cc tile_banks.cc tile_maps.cc)
 add_library(gb STATIC ${gbSources})
 target_include_directories(gb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gb PUBLIC media)

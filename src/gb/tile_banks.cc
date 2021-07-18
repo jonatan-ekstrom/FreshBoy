@@ -1,4 +1,4 @@
-#include "tile_bank.h"
+#include "tile_banks.h"
 #include <stdexcept>
 #include <tuple>
 
@@ -48,31 +48,31 @@ ColorIndex Tile::Dot(const unsigned int row, const unsigned int col) const {
     return static_cast<ColorIndex>(color);
 }
 
-TileBank::TileBank() : tiles(NumTiles) {}
+TileBanks::TileBanks() : tiles(NumTiles) {}
 
-std::uint8_t TileBank::Read(const std::uint16_t address) const {
+std::uint8_t TileBanks::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileBank - Invalid read access."};
+        throw std::runtime_error{"TileBanks - Invalid read access."};
     }
     unsigned int tile, index;
     std::tie(tile, index) = GetTileAndIndex(address);
     return this->tiles[tile].Read(index);
 }
 
-void TileBank::Write(const std::uint16_t address, const std::uint8_t byte) {
+void TileBanks::Write(const std::uint16_t address, const std::uint8_t byte) {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileBank - Invalid write access."};
+        throw std::runtime_error{"TileBanks - Invalid write access."};
     }
     unsigned int tile, index;
     std::tie(tile, index) = GetTileAndIndex(address);
     this->tiles[tile].Write(index, byte);
 }
 
-Tile TileBank::GetTileLow(const std::uint8_t index) const {
+Tile TileBanks::GetTileLow(const std::uint8_t index) const {
     return this->tiles[index];
 }
 
-Tile TileBank::GetTileHigh(const std::uint8_t index) const {
+Tile TileBanks::GetTileHigh(const std::uint8_t index) const {
     constexpr auto base{256};
     const auto sign{static_cast<std::int8_t>(index)};
     const auto offset{static_cast<unsigned int>(base + sign)};
