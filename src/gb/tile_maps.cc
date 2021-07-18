@@ -17,11 +17,15 @@ bool ValidAddress(const std::uint16_t address) {
 
 namespace gb {
 
-TileMaps::TileMaps() : map0(TilesPerMap), map1(TilesPerMap) {}
+TileMaps TileMaps_::Create() {
+    return TileMaps{new TileMaps_()};
+}
 
-std::uint8_t TileMaps::Read(const std::uint16_t address) const {
+TileMaps_::TileMaps_() : map0(TilesPerMap), map1(TilesPerMap) {}
+
+std::uint8_t TileMaps_::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileMaps - Invalid read address."};
+        throw std::runtime_error{"TileMaps_ - Invalid read address."};
     }
     const auto useMap1{address >= Map1Offset};
     const auto& map{useMap1 ? map1 : map0};
@@ -29,9 +33,9 @@ std::uint8_t TileMaps::Read(const std::uint16_t address) const {
     return map[address - offset];
 }
 
-void TileMaps::Write(const std::uint16_t address, const std::uint8_t byte) {
+void TileMaps_::Write(const std::uint16_t address, const std::uint8_t byte) {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileMaps - Invalid write address."};
+        throw std::runtime_error{"TileMaps_ - Invalid write address."};
     }
     const auto useMap1{address >= Map1Offset};
     auto& map{useMap1 ? map1 : map0};
@@ -39,11 +43,11 @@ void TileMaps::Write(const std::uint16_t address, const std::uint8_t byte) {
     map[address - offset] = byte;
 }
 
-const TileMaps::Map& TileMaps::LowMap() const {
+const TileMaps_::Map& TileMaps_::LowMap() const {
     return map0;
 }
 
-const TileMaps::Map& TileMaps::HighMap() const {
+const TileMaps_::Map& TileMaps_::HighMap() const {
     return map1;
 }
 
