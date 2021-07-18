@@ -6,7 +6,7 @@
 
 namespace gb {
 
-enum ColorIndex : unsigned int {
+enum ColorIndex : std::uint8_t {
     Zero,
     One,
     Two,
