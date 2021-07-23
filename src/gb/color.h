@@ -5,7 +5,7 @@
 
 namespace gb {
 
-using Rgb = std::tuple<std::uint8_t, std::uint8_t, std::uint8_t>;
+using Rgba = std::tuple<std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t>;
 
 enum ColorIndex : std::uint8_t {
     Zero,
@@ -18,7 +18,8 @@ enum Shade : std::uint8_t {
     White,
     Light,
     Dark,
-    Black
+    Black,
+    Transparent
 };
 
 class Color {
@@ -28,11 +29,13 @@ public:
     std::uint8_t R() const;
     std::uint8_t G() const;
     std::uint8_t B() const;
-    Rgb Deconstruct() const;
+    std::uint8_t A() const;
+    Rgba Deconstruct() const;
 private:
     std::uint8_t r;
     std::uint8_t g;
     std::uint8_t b;
+    std::uint8_t a;
 };
 
 }

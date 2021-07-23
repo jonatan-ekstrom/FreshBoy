@@ -7,6 +7,7 @@ Color::Color() : r{0}, g{0}, b{0} {}
 
 Color::Color(const Shade shade) {
     std::uint8_t gray;
+    std::uint8_t alpha{255};
     switch (shade) {
         case White:
             gray = 255;
@@ -20,10 +21,14 @@ Color::Color(const Shade shade) {
         case Black:
             gray = 0;
             break;
+        case Transparent:
+            gray = 0;
+            alpha = 0;
         default:
             throw std::runtime_error{"Color - Unknown shade."};
     }
     this->r = this->g = this->b = gray;
+    this->a = alpha;
 }
 
 std::uint8_t Color::R() const {
@@ -38,7 +43,12 @@ std::uint8_t Color::B() const {
     return this->b;
 }
 
-Rgb Color::Deconstruct() const {
-    return std::make_tuple(this->r, this->g, this->b);
+std::uint8_t Color::A() const {
+    return this->a;
 }
+
+Rgba Color::Deconstruct() const {
+    return std::make_tuple(this->r, this->g, this->b, this->a);
+}
+
 }
