@@ -8,7 +8,7 @@ namespace gb {
 
 class Palette {
 public:
-    explicit Palette(std::uint8_t data);
+    Palette(std::uint8_t data, bool object);
     Shade Map(ColorIndex index) const;
 private:
     std::unordered_map<ColorIndex, Shade> map;
