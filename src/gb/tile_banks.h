@@ -4,15 +4,9 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+#include "color.h"
 
 namespace gb {
-
-enum ColorIndex : std::uint8_t {
-    Zero,
-    One,
-    Two,
-    Three
-};
 
 enum class TileBank {
     Low,
