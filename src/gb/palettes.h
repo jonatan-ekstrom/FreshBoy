@@ -18,4 +18,18 @@ private:
     bool object;
 };
 
+class Palettes {
+public:
+    Palettes();
+    std::uint8_t Read(std::uint16_t address) const;
+    void Write(std::uint16_t address, std::uint8_t byte);
+    const Palette& Background() const;
+    const Palette& Object0() const;
+    const Palette& Object1() const;
+private:
+    Palette bg;
+    Palette obj0;
+    Palette obj1;
+};
+
 }
