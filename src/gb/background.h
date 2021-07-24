@@ -11,10 +11,10 @@ namespace gb {
 class Background {
 public:
     Background(TileBanks banks, TileMaps maps);
+    std::uint8_t Read(std::uint16_t address) const;
+    void Write(std::uint16_t address, std::uint8_t byte);
     void Enable();
     void Disable();
-    void ScrollX(std::uint8_t x);
-    void ScrollY(std::uint8_t y);
     void UseBank(TileBank bank);
     void UseMap(TileMap map);
     std::vector<ColorIndex> Render() const;
@@ -22,10 +22,10 @@ private:
     TileBanks banks;
     TileMaps maps;
     bool enabled;
-    unsigned int scX;
-    unsigned int scY;
-    TileBank currentBank;
-    TileMap currentMap;
+    std::uint8_t scX;
+    std::uint8_t scY;
+    TileBank activeBank;
+    TileMap activeMap;
 };
 
 }
