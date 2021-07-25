@@ -39,11 +39,11 @@ void Tile::Write(const unsigned int index, const std::uint8_t byte) {
     this->data[index] = byte;
 }
 
-ColorIndex Tile::Dot(const unsigned int row, const unsigned int col) const {
-    const auto lowByte{this->data[row * 2]};
-    const auto highByte{this->data[row * 2 + 1]};
-    const auto highBit{GetBit(highByte, col)};
-    const auto lowBit{GetBit(lowByte, col)};
+ColorIndex Tile::Dot(const unsigned int dotX, const unsigned int dotY) const {
+    const auto lowByte{this->data[dotY * 2]};
+    const auto highByte{this->data[dotY * 2 + 1]};
+    const auto highBit{GetBit(highByte, dotX)};
+    const auto lowBit{GetBit(lowByte, dotX)};
     const auto color{highBit << 1 | lowBit};
     return static_cast<ColorIndex>(color);
 }

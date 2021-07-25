@@ -98,7 +98,7 @@ ColorIndex Background::GetDot(const unsigned int displayX,
                     this->banks->GetTileLow(tileIndex) :
                     this->banks->GetTileHigh(tileIndex)};
 
-    return tile.Dot(pixelY, pixelX);
+    return tile.Dot(pixelX, pixelY);
 }
 
 }
