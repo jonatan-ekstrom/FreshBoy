@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include "color.h"
+#include "palettes.h"
 #include "tile_banks.h"
 #include "tile_maps.h"
 
@@ -17,8 +18,10 @@ public:
     void Disable();
     void UseBank(TileBank bank);
     void UseMap(TileMap map);
-    std::vector<ColorIndex> Render() const;
+    std::vector<Shade> RenderScanline(unsigned int line,
+                                      const Palette& palette) const;
 private:
+    ColorIndex GetDot(unsigned int displayX, unsigned int displayY) const;
     TileBanks banks;
     TileMaps maps;
     bool enabled;
