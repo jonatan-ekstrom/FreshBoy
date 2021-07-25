@@ -24,6 +24,7 @@ Color::Color(const Shade shade) {
         case Transparent:
             gray = 0;
             alpha = 0;
+            break;
         default:
             throw std::runtime_error{"Color - Unknown shade."};
     }
