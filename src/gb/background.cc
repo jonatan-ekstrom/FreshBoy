@@ -4,9 +4,10 @@
 
 namespace gb {
 
-Background::Background(TileBanks banks, TileMaps maps)
+Background::Background(TileBanks banks, TileMaps maps, Palette palette)
     : banks{std::move(banks)},
       maps{std::move(maps)},
+      palette{std::move(palette)},
       enabled{true},
       scX{0},
       scY{0},
@@ -53,8 +54,7 @@ void Background::UseMap(const TileMap map) {
     this->activeMap = map;
 }
 
-std::vector<Shade> Background::RenderScanline(const unsigned int line,
-                                              const Palette& palette) const {
+std::vector<Shade> Background::RenderScanline(const unsigned int line) const {
     constexpr auto displayWidth{160u};
     constexpr auto displayHeight{144u};
 
@@ -69,7 +69,7 @@ std::vector<Shade> Background::RenderScanline(const unsigned int line,
     std::vector<Shade> scanline(displayWidth);
     const auto displayY{line};
     for (auto displayX{0u}; displayX < displayWidth; ++displayX) {
-        scanline[displayX] = palette.Map(GetDot(displayX, displayY));
+        scanline[displayX] = this->palette->Map(GetDot(displayX, displayY));
     }
     return scanline;
 }
