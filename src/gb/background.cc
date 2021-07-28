@@ -76,17 +76,17 @@ std::vector<Shade> Background::RenderScanline(const unsigned int line) const {
 
 ColorIndex Background::GetDot(const unsigned int displayX,
                               const unsigned int displayY) const {
-    constexpr auto bgHeight{255u};
-    constexpr auto bgWidth{255u};
+    constexpr auto mapHeight{255u};
+    constexpr auto mapWidth{255u};
     constexpr auto tileSize{8u};
     constexpr auto tilesPerLine{32u};
 
-    const auto bgX{(displayX + this->scX) % bgWidth};
-    const auto bgY{(displayY + this->scY) % bgHeight};
-    const auto tileX{bgX / tileSize};
-    const auto tileY{bgY / tileSize};
-    const auto pixelX{bgX % tileSize};
-    const auto pixelY{bgY % tileSize};
+    const auto mapX{(this->scX + displayX) % mapWidth};
+    const auto mapY{(this->scY + displayY) % mapHeight};
+    const auto tileX{mapX / tileSize};
+    const auto dotX{mapX % tileSize};
+    const auto tileY{mapY / tileSize};
+    const auto dotY{mapY % tileSize};
 
     const auto tileMap{this->activeMap == TileMap::Low ?
                        this->maps->LowMap() :
@@ -98,7 +98,7 @@ ColorIndex Background::GetDot(const unsigned int displayX,
                     this->banks->GetTileLow(tileIndex) :
                     this->banks->GetTileHigh(tileIndex)};
 
-    return tile.Dot(pixelX, pixelY);
+    return tile.Dot(dotX, dotY);
 }
 
 }
