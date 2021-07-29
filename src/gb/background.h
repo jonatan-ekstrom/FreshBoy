@@ -20,7 +20,7 @@ public:
     void UseMap(TileMap map);
     std::vector<Shade> RenderScanline(unsigned int line) const;
 private:
-    ColorIndex GetDot(unsigned int displayX, unsigned int displayY) const;
+    ColorIndex GetDot(unsigned int mapX, unsigned int mapY) const;
     TileBanks banks;
     TileMaps maps;
     Palette palette;

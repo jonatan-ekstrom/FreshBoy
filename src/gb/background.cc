@@ -57,6 +57,7 @@ void Background::UseMap(const TileMap map) {
 std::vector<Shade> Background::RenderScanline(const unsigned int line) const {
     constexpr auto displayWidth{160u};
     constexpr auto displayHeight{144u};
+    constexpr auto mapSize{255u};
 
     if (line >= displayHeight) {
         throw std::runtime_error{"Background - invalid scanline."};
@@ -68,21 +69,18 @@ std::vector<Shade> Background::RenderScanline(const unsigned int line) const {
 
     std::vector<Shade> scanline(displayWidth);
     const auto displayY{line};
+    const auto mapY{(this->scY + displayY) % mapSize};
     for (auto displayX{0u}; displayX < displayWidth; ++displayX) {
-        scanline[displayX] = this->palette->Map(GetDot(displayX, displayY));
+        const auto mapX{(this->scX + displayX) % mapSize};
+        scanline[displayX] = this->palette->Map(GetDot(mapX, mapY));
     }
     return scanline;
 }
 
-ColorIndex Background::GetDot(const unsigned int displayX,
-                              const unsigned int displayY) const {
-    constexpr auto mapHeight{255u};
-    constexpr auto mapWidth{255u};
+ColorIndex Background::GetDot(const unsigned int mapX,
+                              const unsigned int mapY) const {
     constexpr auto tileSize{8u};
     constexpr auto tilesPerLine{32u};
-
-    const auto mapX{(this->scX + displayX) % mapWidth};
-    const auto mapY{(this->scY + displayY) % mapHeight};
     const auto tileX{mapX / tileSize};
     const auto dotX{mapX % tileSize};
     const auto tileY{mapY / tileSize};
