@@ -26,7 +26,7 @@ private:
     virtual std::uint16_t Checksum() const = 0;
 };
 
-class RomOnly : public Cartridge_ {
+class RomOnly final : public Cartridge_ {
 public:
     explicit RomOnly(const std::string& filePath, Header&& header);
     uint8_t Read(std::uint16_t address) const override;
@@ -43,7 +43,7 @@ protected:
     std::vector<MemBlock> ramBanks;
 };
 
-class MBC1 : public MBC {
+class MBC1 final : public MBC {
 public:
     explicit MBC1(const std::string& filePath, Header&& header);
     uint8_t Read(std::uint16_t address) const override;
