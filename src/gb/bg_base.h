@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 #include "color.h"
 #include "palettes.h"
 #include "tile_banks.h"
@@ -20,6 +21,10 @@ public:
 protected:
     BgBase(TileBanks banks, TileMaps maps, Palette palette, std::uint16_t address);
     Shade Map(unsigned int mapX, unsigned int mapY) const;
+    static std::vector<Shade> GetLine(Shade shade);
+    static constexpr unsigned int DisplayWidth{160u};
+    static constexpr unsigned int DisplayHeight{144u};
+    static constexpr unsigned int MapSize{255u};
     std::uint8_t X() const;
     std::uint8_t Y() const;
 private:

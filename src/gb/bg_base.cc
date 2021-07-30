@@ -75,6 +75,10 @@ Shade BgBase::Map(const unsigned int mapX, const unsigned int mapY) const {
 }
 
 
+std::vector<Shade> BgBase::GetLine(const Shade shade) {
+    return std::vector<Shade>{DisplayWidth, shade};
+}
+
 ColorIndex BgBase::GetDot(const unsigned int mapX,
                           const unsigned int mapY) const {
     constexpr auto tileSize{8u};

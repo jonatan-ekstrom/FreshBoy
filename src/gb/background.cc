@@ -2,14 +2,6 @@
 #include <stdexcept>
 #include <utility>
 
-namespace {
-
-std::vector<gb::Shade> GetWhite(const unsigned int count) {
-    return std::vector<gb::Shade>{count, gb::Shade::White};
-}
-
-}
-
 namespace gb {
 
 Background::Background(TileBanks banks, TileMaps maps, Palette palette)
@@ -18,23 +10,19 @@ Background::Background(TileBanks banks, TileMaps maps, Palette palette)
 }
 
 std::vector<Shade> Background::RenderScanline(const unsigned int line) const {
-    constexpr auto displayWidth{160u};
-    constexpr auto displayHeight{144u};
-    constexpr auto mapSize{255u};
-
-    if (line >= displayHeight) {
+    if (line >= DisplayHeight) {
         throw std::runtime_error{"Background - invalid scanline."};
     }
 
+    auto scanline{GetLine(Shade::White)};
     if (!Enabled()) {
-        return GetWhite(displayWidth);
+        return scanline;
     }
 
     const auto displayY{line};
-    const auto mapY{(Y() + displayY) % mapSize};
-    std::vector<Shade> scanline(GetWhite(displayWidth));
-    for (auto displayX{0u}; displayX < displayWidth; ++displayX) {
-        const auto mapX{(X() + displayX) % mapSize};
+    const auto mapY{(Y() + displayY) % MapSize};
+    for (auto displayX{0u}; displayX < DisplayWidth; ++displayX) {
+        const auto mapX{(X() + displayX) % MapSize};
         scanline[displayX] = Map(mapX, mapY);
     }
     return scanline;
