@@ -1,6 +1,7 @@
 # Creates the 'gb' static library.
 set(gbHeaders
     background.h
+    bg_base.h
     cartridge.h
     color.h
     demo.h
@@ -13,6 +14,7 @@ set(gbHeaders
 
 set(gbSources
     background.cc
+    bg_base.cc
     cartridge.cc
     color.cc
     demo.cc
