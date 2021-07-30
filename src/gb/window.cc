@@ -5,7 +5,7 @@
 namespace gb {
 
 Window::Window(TileBanks banks, TileMaps maps, Palette palette)
-    : BgBase{std::move(banks), std::move(maps), std::move(palette), 0xFF4Au} {}
+    : BgBase{std::move(banks), std::move(maps), std::move(palette), Address} {}
 
 std::vector<Shade> Window::RenderScanline(const unsigned int line) const {
     if (line >= DisplayHeight) {

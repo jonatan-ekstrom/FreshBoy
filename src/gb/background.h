@@ -13,6 +13,8 @@ class Background : public BgBase {
 public:
     Background(TileBanks banks, TileMaps maps, Palette palette);
     std::vector<Shade> RenderScanline(unsigned int line) const;
+private:
+    static constexpr unsigned int Address{0xFF42u};
 };
 
 }

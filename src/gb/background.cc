@@ -5,7 +5,7 @@
 namespace gb {
 
 Background::Background(TileBanks banks, TileMaps maps, Palette palette)
-    : BgBase{std::move(banks), std::move(maps), std::move(palette), 0xFF42u} {
+    : BgBase{std::move(banks), std::move(maps), std::move(palette), Address} {
     Enable();
 }
 
