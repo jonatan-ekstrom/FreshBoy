@@ -7,6 +7,11 @@
 
 namespace gb {
 
+enum class SpritePalette {
+    Zero,
+    One
+};
+
 class Palette_;
 using Palette = std::shared_ptr<Palette_>;
 
