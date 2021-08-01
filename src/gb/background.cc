@@ -14,7 +14,7 @@ std::vector<Shade> Background::RenderScanline(const unsigned int line) const {
         throw std::runtime_error{"Background - invalid scanline."};
     }
 
-    auto scanline{GetLine(Shade::White)};
+    auto scanline{GetLine()};
     if (!Enabled()) {
         return scanline;
     }

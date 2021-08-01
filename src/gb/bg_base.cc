@@ -75,8 +75,8 @@ Shade BgBase::Map(const unsigned int mapX, const unsigned int mapY) const {
 }
 
 
-std::vector<Shade> BgBase::GetLine(const Shade shade) {
-    return std::vector<Shade>{DisplayWidth, shade};
+std::vector<Shade> BgBase::GetLine() {
+    return std::vector<Shade>{DisplayWidth, Shade::Transparent };
 }
 
 ColorIndex BgBase::GetDot(const unsigned int mapX,

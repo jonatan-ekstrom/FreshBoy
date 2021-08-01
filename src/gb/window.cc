@@ -12,7 +12,7 @@ std::vector<Shade> Window::RenderScanline(const unsigned int line) const {
         throw std::runtime_error{"Window - invalid scanline."};
     }
 
-    auto scanline{GetLine(Shade::Transparent)};
+    auto scanline{GetLine()};
     if (!Enabled()) {
         return scanline;
     }

@@ -21,7 +21,7 @@ public:
 protected:
     BgBase(TileBanks banks, TileMaps maps, Palette palette, std::uint16_t address);
     Shade Map(unsigned int mapX, unsigned int mapY) const;
-    static std::vector<Shade> GetLine(Shade shade);
+    static std::vector<Shade> GetLine();
     static constexpr unsigned int DisplayWidth{160u};
     static constexpr unsigned int DisplayHeight{144u};
     static constexpr unsigned int MapSize{255u};
