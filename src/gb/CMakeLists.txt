@@ -8,6 +8,7 @@ set(gbHeaders
     file.h
     header.h
     palettes.h
+    sprite_renderer.h
     sprite_table.h
     tile_banks.h
     tile_maps.h
@@ -22,6 +23,7 @@ set(gbSources
     file.cc
     header.cc
     palettes.cc
+    sprite_renderer.cc
     sprite_table.cc
     tile_banks.cc
     tile_maps.cc
