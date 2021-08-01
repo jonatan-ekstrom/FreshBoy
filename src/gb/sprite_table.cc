@@ -93,13 +93,13 @@ void SpriteTable_::Write(const std::uint16_t address, const std::uint8_t byte) {
 
 std::vector<const Sprite*>
 SpriteTable_::GetSpritesToRender(const unsigned int line,
-                                 const bool largeSprites) const {
+                                 const SpriteSize size) const {
     constexpr auto displayHeight{144};
     if (line >= displayHeight) {
         throw std::runtime_error{"SpriteTable_ - invalid scanline."};
     }
     const auto scanline{static_cast<int>(line)};
-    const auto spriteHeight{largeSprites ? 16 : 8};
+    const auto spriteHeight{size == SpriteSize::Large ? 16 : 8};
 
     constexpr auto maxCandidates{10u};
     std::vector<const Sprite*> candidates;

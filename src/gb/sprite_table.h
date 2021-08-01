@@ -8,6 +8,11 @@
 
 namespace gb {
 
+enum class SpriteSize {
+    Small,
+    Large
+};
+
 class Sprite {
 public:
     Sprite();
@@ -34,7 +39,7 @@ public:
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
     std::vector<const Sprite*> GetSpritesToRender(unsigned int line,
-                                                  bool largeSprites) const;
+                                                  SpriteSize size) const;
 private:
     SpriteTable_();
     std::vector<Sprite> sprites;
