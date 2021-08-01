@@ -1,7 +1,7 @@
 #include "sprite_table.h"
+#include <algorithm>
 #include <tuple>
 #include <stdexcept>
-
 
 namespace {
 
@@ -89,6 +89,38 @@ void SpriteTable_::Write(const std::uint16_t address, const std::uint8_t byte) {
     unsigned int sprite, index;
     std::tie(sprite, index) = GetSpriteAndIndex(address);
     this->sprites[sprite].Write(index, byte);
+}
+
+std::vector<const Sprite*>
+SpriteTable_::GetSpritesToRender(const unsigned int line,
+                                 const bool largeSprites) const {
+    constexpr auto displayHeight{144};
+    if (line >= displayHeight) {
+        throw std::runtime_error{"SpriteTable_ - invalid scanline."};
+    }
+    const auto scanline{static_cast<int>(line)};
+    const auto spriteHeight{largeSprites ? 16 : 8};
+
+    constexpr auto maxCandidates{10u};
+    std::vector<const Sprite*> candidates;
+    candidates.reserve(maxCandidates);
+    for (const auto& sprite : this->sprites) {
+        const auto topRow{sprite.Y()};
+        const auto bottomRow{topRow + spriteHeight - 1};
+        const bool include{scanline >= topRow && scanline <= bottomRow};
+        if (include) {
+            candidates.push_back(&sprite);
+        }
+        if (candidates.size() == maxCandidates) {
+            break;
+        }
+    }
+
+    // Sort in priority order high -> low.
+    const auto cmp{[](auto s1, auto s2) { return s1->X() < s2->X(); }};
+    std::stable_sort(candidates.begin(), candidates.end(), cmp);
+
+    return candidates;
 }
 
 }
