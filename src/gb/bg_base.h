@@ -24,7 +24,7 @@ protected:
     static std::vector<Shade> GetLine();
     static constexpr unsigned int DisplayWidth{160u};
     static constexpr unsigned int DisplayHeight{144u};
-    static constexpr unsigned int MapSize{255u};
+    static constexpr unsigned int MapSize{256u};
     std::uint8_t X() const;
     std::uint8_t Y() const;
 private:
