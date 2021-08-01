@@ -9,7 +9,7 @@ namespace {
 constexpr std::ptrdiff_t HeaderOffset{0x100};
 constexpr std::size_t HeaderSize{80};
 
-std::string MemSizeToStr(const gb::MemSize sz) {
+constexpr const char* MemSizeToStr(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
         case MemSize::Zero:
@@ -40,7 +40,7 @@ std::string MemSizeToStr(const gb::MemSize sz) {
     }
 }
 
-unsigned int MemSizeToRomBanks(const gb::MemSize sz) {
+constexpr unsigned int MemSizeToRomBanks(const gb::MemSize sz) {
     switch (sz) {
         case gb::MemSize::KB32:
             return 2;
@@ -68,7 +68,7 @@ unsigned int MemSizeToRomBanks(const gb::MemSize sz) {
     }
 }
 
-unsigned int MemSizeToRamBanks(const gb::MemSize sz) {
+constexpr unsigned int MemSizeToRamBanks(const gb::MemSize sz) {
     switch (sz) {
         case gb::MemSize::KB8:
             return 1;
@@ -318,7 +318,7 @@ std::string Header::Hexdump(const std::uint16_t begin, const std::uint16_t end) 
     const auto start{this->bytes.cbegin() + begin - HeaderOffset};
     const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};
     std::string result;
-    int count{};
+    int count{0};
     for (auto p{start}; p != stop; ++p) {
         const auto byte{*p};
         const auto upper{(byte & 0xF0) >> 4};

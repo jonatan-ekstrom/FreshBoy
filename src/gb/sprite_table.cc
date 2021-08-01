@@ -7,13 +7,14 @@ namespace {
 
 constexpr auto BaseAddress{0xFE00u};
 constexpr auto HighAddress{0xFE9Fu};
+constexpr auto NumSprites{40u};
 constexpr auto SpriteSize{4u};
 
-bool ValidAddress(const std::uint16_t address) {
+constexpr bool ValidAddress(const std::uint16_t address) {
     return (address >= BaseAddress && address <= HighAddress);
 }
 
-auto GetSpriteAndIndex(const std::uint16_t address) {
+constexpr auto GetSpriteAndIndex(const std::uint16_t address) {
     const auto adjusted{address - BaseAddress};
     const auto sprite{adjusted / SpriteSize};
     const auto index{adjusted % SpriteSize};
@@ -60,22 +61,22 @@ SpritePalette Sprite::Palette() const {
 
 bool Sprite::BitSet(const unsigned int bit) const {
     const auto flags{this->data[3]};
-    return (flags & (1u << bit)) != 0;
+    return (flags & (1 << bit)) != 0;
 }
 
 bool Sprite::Hidden() const {
     return BitSet(7);
 }
 
-SpriteTable_::SpriteTable_() : sprites(40) {}
+SpriteTable_::SpriteTable_() : sprites(NumSprites) {}
 
 SpriteTable SpriteTable_::Create() {
-    return SpriteTable{new SpriteTable_()};
+    return SpriteTable{new SpriteTable_{}};
 }
 
 std::uint8_t SpriteTable_::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"SpriteTable_ - invalid read address."};
+        throw std::runtime_error{"SpriteTable - invalid read address."};
     }
     unsigned int sprite, index;
     std::tie(sprite, index) = GetSpriteAndIndex(address);
@@ -84,7 +85,7 @@ std::uint8_t SpriteTable_::Read(const std::uint16_t address) const {
 
 void SpriteTable_::Write(const std::uint16_t address, const std::uint8_t byte) {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"SpriteTable_ - invalid write address."};
+        throw std::runtime_error{"SpriteTable - invalid write address."};
     }
     unsigned int sprite, index;
     std::tie(sprite, index) = GetSpriteAndIndex(address);

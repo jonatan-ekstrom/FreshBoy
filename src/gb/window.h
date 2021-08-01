@@ -13,8 +13,6 @@ class Window : public BgBase {
 public:
     Window(TileBanks banks, TileMaps maps, Palette palette);
     std::vector<Shade> RenderScanline(unsigned int line) const;
-private:
-    static constexpr unsigned int Address{0xFF4Au};
 };
 
 }

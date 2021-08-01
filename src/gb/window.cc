@@ -2,6 +2,12 @@
 #include <stdexcept>
 #include <utility>
 
+namespace {
+
+constexpr unsigned int Address{0xFF4A};
+
+}
+
 namespace gb {
 
 Window::Window(TileBanks banks, TileMaps maps, Palette palette)

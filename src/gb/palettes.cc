@@ -1,6 +1,14 @@
 #include "palettes.h"
 #include <stdexcept>
 
+namespace {
+
+constexpr auto BgAddr{0xFF47u};
+constexpr auto Obj0Addr{0xFF48u};
+constexpr auto Obj1Addr{0xFF49u};
+
+}
+
 namespace gb {
 
 Palette Palette_::Create(const std::uint8_t init, const bool obj) {
@@ -42,15 +50,15 @@ Palettes::Palettes()
       obj1{Palette_::Create(0xFF, true)} {}
 
 std::uint8_t Palettes::Read(const std::uint16_t address) const {
-    if (address == 0xFF47) {
+    if (address == BgAddr) {
         return this->bg->Read();
     }
 
-    if (address == 0xFF48) {
+    if (address == Obj0Addr) {
         return this->obj0->Read();
     }
 
-    if (address == 0xFF49) {
+    if (address == Obj1Addr) {
         return this->obj1->Read();
     }
 
@@ -58,17 +66,17 @@ std::uint8_t Palettes::Read(const std::uint16_t address) const {
 }
 
 void Palettes::Write(const std::uint16_t address, const std::uint8_t byte) {
-    if (address == 0xFF47) {
+    if (address == BgAddr) {
         this->bg->Write(byte);
         return;
     }
 
-    if (address == 0xFF48) {
+    if (address == Obj0Addr) {
         this->obj0->Write(byte);
         return;
     }
 
-    if (address == 0xFF49) {
+    if (address == Obj1Addr) {
         this->obj1->Write(byte);
         return;
     }

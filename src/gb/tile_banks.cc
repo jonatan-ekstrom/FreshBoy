@@ -4,22 +4,22 @@
 
 namespace {
 
+constexpr auto BaseAddress{0x8000u};
+constexpr auto HighAddress{0x97FFu};
 constexpr auto NumTiles{384u};
 constexpr auto TileSize{16u};
-constexpr auto StartAddress{0x8000u};
-constexpr auto EndAddress{0x97FFu};
 
-unsigned int GetBit(const std::uint8_t byte, const unsigned int bit) {
-    const auto mask = 1u << bit;
+constexpr unsigned int GetBit(const std::uint8_t byte, const unsigned int bit) {
+    const auto mask{1 << bit};
     return (byte & mask) != 0 ? 1 : 0;
 }
 
-bool ValidAddress(const std::uint16_t address) {
-    return address >= StartAddress && address <= EndAddress;
+constexpr bool ValidAddress(const std::uint16_t address) {
+    return address >= BaseAddress && address <= HighAddress;
 }
 
-auto GetTileAndIndex(const std::uint16_t address) {
-    const auto adjusted{address - StartAddress};
+constexpr auto GetTileAndIndex(const std::uint16_t address) {
+    const auto adjusted{address - BaseAddress};
     const auto tile{adjusted / TileSize};
     const auto index{adjusted % TileSize};
     return std::make_tuple(tile, index);
@@ -49,14 +49,14 @@ ColorIndex Tile::Dot(const unsigned int dotX, const unsigned int dotY) const {
 }
 
 TileBanks TileBanks_::Create() {
-    return TileBanks{new TileBanks_()};
+    return TileBanks{new TileBanks_{}};
 }
 
 TileBanks_::TileBanks_() : tiles(NumTiles) {}
 
 std::uint8_t TileBanks_::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileBanks_ - Invalid read access."};
+        throw std::runtime_error{"TileBanks - Invalid read access."};
     }
     unsigned int tile, index;
     std::tie(tile, index) = GetTileAndIndex(address);
@@ -65,7 +65,7 @@ std::uint8_t TileBanks_::Read(const std::uint16_t address) const {
 
 void TileBanks_::Write(const std::uint16_t address, const std::uint8_t byte) {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileBanks_ - Invalid write access."};
+        throw std::runtime_error{"TileBanks - Invalid write access."};
     }
     unsigned int tile, index;
     std::tie(tile, index) = GetTileAndIndex(address);

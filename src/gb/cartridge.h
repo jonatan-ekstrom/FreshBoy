@@ -28,7 +28,7 @@ private:
 
 class RomOnly final : public Cartridge_ {
 public:
-    explicit RomOnly(const std::string& filePath, Header&& header);
+    RomOnly(const std::string& filePath, Header&& header);
     uint8_t Read(std::uint16_t address) const override;
     void Write(std::uint16_t address, std::uint8_t byte) override;
 private:
@@ -45,7 +45,7 @@ protected:
 
 class MBC1 final : public MBC {
 public:
-    explicit MBC1(const std::string& filePath, Header&& header);
+    MBC1(const std::string& filePath, Header&& header);
     uint8_t Read(std::uint16_t address) const override;
     void Write(std::uint16_t address, std::uint8_t byte) override;
 private:

@@ -6,11 +6,11 @@
 
 namespace {
 
-std::uint8_t GetRomBitMask(const unsigned int romBanks) {
+constexpr std::uint8_t GetRomBitMask(const unsigned int romBanks) {
     auto tmp{romBanks};
-    unsigned int shift{0};
+    auto shift{0};
     std::uint8_t mask{0};
-    while (tmp > 0) {
+    while (tmp != 0) {
         mask = mask | static_cast<std::uint8_t>(1 << shift);
         tmp = tmp >> 1;
         ++shift;

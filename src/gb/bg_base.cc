@@ -102,7 +102,7 @@ ColorIndex BgBase::GetDot(const unsigned int mapX,
 }
 
 std::uint16_t BgBase::XAddr() const {
-    return YAddr() + 1u;
+    return YAddr() + 1;
 }
 
 std::uint16_t BgBase::YAddr() const {

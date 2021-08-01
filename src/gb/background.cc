@@ -2,6 +2,12 @@
 #include <stdexcept>
 #include <utility>
 
+namespace {
+
+constexpr unsigned int Address{0xFF42};
+
+}
+
 namespace gb {
 
 Background::Background(TileBanks banks, TileMaps maps, Palette palette)
