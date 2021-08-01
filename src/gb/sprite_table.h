@@ -2,6 +2,8 @@
 
 #include <array>
 #include <cstdint>
+#include <memory>
+#include <vector>
 #include "palettes.h"
 
 namespace gb {
@@ -23,4 +25,18 @@ private:
     std::array<std::uint8_t, 4> data;
 };
 
+class SpriteTable_;
+using SpriteTable = std::shared_ptr<SpriteTable_>;
+
+class SpriteTable_ {
+public:
+    static SpriteTable Create();
+    std::uint8_t Read(std::uint16_t address) const;
+    void Write(std::uint16_t address, std::uint8_t byte);
+private:
+    SpriteTable_();
+    std::vector<Sprite> sprites;
+};
+
 }
+
