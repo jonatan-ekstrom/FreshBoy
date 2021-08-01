@@ -24,7 +24,7 @@ public:
     void WaitForEvent() const;
 private:
     void HandleEvent(const SDL_Event& event) const;
-    static bool instanceExists;
+    static bool InstanceExists;
     Instance instance;
     KeyHandler keyHandler;
     QuitHandler quitHandler;

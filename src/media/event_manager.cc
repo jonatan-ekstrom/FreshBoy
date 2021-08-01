@@ -8,15 +8,15 @@ namespace sdl {
 
 EventManager::EventManager(sdl::Instance instance)
     : instance{std::move(instance)}, active{true} {
-    if (instanceExists) {
+    if (InstanceExists) {
         throw std::runtime_error{"Only one event manager may be active at a time."};
     }
-    instanceExists = true;
+    InstanceExists = true;
 }
 
 EventManager::~EventManager() {
     if (this->active) {
-        instanceExists = false;
+        InstanceExists = false;
     }
 }
 
@@ -70,7 +70,7 @@ void EventManager::HandleEvent(const SDL_Event& event) const {
     }
 }
 
-bool EventManager::instanceExists{false};
+bool EventManager::InstanceExists{false};
 
 void Swap(EventManager& lhs, EventManager& rhs) noexcept {
     using std::swap;
