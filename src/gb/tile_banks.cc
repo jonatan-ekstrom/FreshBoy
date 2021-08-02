@@ -58,8 +58,7 @@ std::uint8_t TileBanks_::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileBanks - Invalid read access."};
     }
-    unsigned int tile, index;
-    std::tie(tile, index) = GetTileAndIndex(address);
+    const auto [tile, index] = GetTileAndIndex(address);
     return this->tiles[tile].Read(index);
 }
 
@@ -67,8 +66,7 @@ void TileBanks_::Write(const std::uint16_t address, const std::uint8_t byte) {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileBanks - Invalid write access."};
     }
-    unsigned int tile, index;
-    std::tie(tile, index) = GetTileAndIndex(address);
+    const auto [tile, index] = GetTileAndIndex(address);
     this->tiles[tile].Write(index, byte);
 }
 

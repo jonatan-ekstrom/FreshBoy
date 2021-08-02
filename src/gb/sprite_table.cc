@@ -78,8 +78,7 @@ std::uint8_t SpriteTable_::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"SpriteTable - invalid read address."};
     }
-    unsigned int sprite, index;
-    std::tie(sprite, index) = GetSpriteAndIndex(address);
+    const auto [sprite, index] = GetSpriteAndIndex(address);
     return this->sprites[sprite].Read(index);
 }
 
@@ -87,8 +86,7 @@ void SpriteTable_::Write(const std::uint16_t address, const std::uint8_t byte) {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"SpriteTable - invalid write address."};
     }
-    unsigned int sprite, index;
-    std::tie(sprite, index) = GetSpriteAndIndex(address);
+    const auto [sprite, index] = GetSpriteAndIndex(address);
     this->sprites[sprite].Write(index, byte);
 }
 
