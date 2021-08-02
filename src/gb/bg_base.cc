@@ -1,4 +1,5 @@
 #include "bg_base.h"
+#include "lcd.h"
 #include <stdexcept>
 #include <utility>
 
@@ -76,7 +77,7 @@ Shade BgBase::Map(const unsigned int mapX, const unsigned int mapY) const {
 
 
 std::vector<Shade> BgBase::GetLine() {
-    return std::vector<Shade>{DisplayWidth, Shade::Transparent };
+    return std::vector<Shade>{lcd::DisplayWidth, Shade::Transparent };
 }
 
 ColorIndex BgBase::GetDot(const unsigned int mapX,

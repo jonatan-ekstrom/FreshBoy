@@ -1,4 +1,5 @@
 #include "window.h"
+#include "lcd.h"
 #include <stdexcept>
 #include <utility>
 
@@ -14,7 +15,7 @@ Window::Window(TileBanks banks, TileMaps maps, Palette palette)
     : BgBase{std::move(banks), std::move(maps), std::move(palette), Address} {}
 
 std::vector<Shade> Window::RenderScanline(const unsigned int line) const {
-    if (line >= DisplayHeight) {
+    if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"Window - invalid scanline."};
     }
 
@@ -29,13 +30,13 @@ std::vector<Shade> Window::RenderScanline(const unsigned int line) const {
     }
 
     const auto originX{X() - 7u};
-    if (originX >= DisplayWidth) {
+    if (originX >= lcd::DisplayWidth) {
         return scanline;
     }
 
     const auto displayY{line};
     const auto mapY{displayY - originY};
-    for (auto displayX{originX}; displayX < DisplayWidth; ++displayX) {
+    for (auto displayX{originX}; displayX < lcd::DisplayWidth; ++displayX) {
         const auto mapX{displayX - originX};
         scanline[displayX] = Map(mapX, mapY);
     }

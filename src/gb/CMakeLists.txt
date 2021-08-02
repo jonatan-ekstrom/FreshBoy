@@ -7,6 +7,7 @@ set(gbHeaders
     demo.h
     file.h
     header.h
+    lcd.h
     palettes.h
     sprite_renderer.h
     sprite_table.h
