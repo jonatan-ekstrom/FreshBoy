@@ -95,7 +95,7 @@ SpriteTable_::GetSpritesToRender(const unsigned int line,
                                  const SpriteSize size) const {
     constexpr auto displayHeight{144};
     if (line >= displayHeight) {
-        throw std::runtime_error{"SpriteTable_ - invalid scanline."};
+        throw std::runtime_error{"SpriteTable - invalid scanline."};
     }
     const auto scanline{static_cast<int>(line)};
     const auto spriteHeight{size == SpriteSize::Large ? 16 : 8};
