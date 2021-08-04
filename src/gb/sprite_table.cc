@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <tuple>
 #include <stdexcept>
+#include "lcd.h"
 
 namespace {
 
@@ -93,8 +94,7 @@ void SpriteTable_::Write(const std::uint16_t address, const std::uint8_t byte) {
 std::vector<const Sprite*>
 SpriteTable_::GetSpritesToRender(const unsigned int line,
                                  const SpriteSize size) const {
-    constexpr auto displayHeight{144};
-    if (line >= displayHeight) {
+    if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"SpriteTable - invalid scanline."};
     }
     const auto scanline{static_cast<int>(line)};
