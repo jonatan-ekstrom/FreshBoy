@@ -70,11 +70,11 @@ void TileBanks_::Write(const std::uint16_t address, const std::uint8_t byte) {
     this->tiles[tile].Write(index, byte);
 }
 
-Tile TileBanks_::GetTileLow(const std::uint8_t index) const {
+const Tile& TileBanks_::GetTileLow(const std::uint8_t index) const {
     return this->tiles[index];
 }
 
-Tile TileBanks_::GetTileHigh(const std::uint8_t index) const {
+const Tile& TileBanks_::GetTileHigh(const std::uint8_t index) const {
     constexpr auto base{256};
     const auto sign{static_cast<std::int8_t>(index)};
     const auto offset{static_cast<unsigned int>(base + sign)};

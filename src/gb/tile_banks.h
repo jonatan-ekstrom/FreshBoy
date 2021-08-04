@@ -31,8 +31,8 @@ public:
     static TileBanks Create();
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
-    Tile GetTileLow(std::uint8_t index) const;
-    Tile GetTileHigh(std::uint8_t index) const;
+    const Tile& GetTileLow(std::uint8_t index) const;
+    const Tile& GetTileHigh(std::uint8_t index) const;
 private:
     TileBanks_();
     std::vector<Tile> tiles;
