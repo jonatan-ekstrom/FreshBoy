@@ -17,6 +17,8 @@ public:
     void SmallSprites();
     std::vector<Shade> RenderScanline(unsigned int line) const;
 private:
+    Shade GetShade(const std::vector<const Sprite*>& sprites,
+                   unsigned int displayX, unsigned int displayY) const;
     TileBanks banks;
     SpriteTable table;
     Palette obp0;
