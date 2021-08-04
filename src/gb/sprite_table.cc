@@ -43,7 +43,7 @@ int Sprite::Y() const {
     return this->data[0] - 16;
 }
 
-unsigned int Sprite::TileIndex() const {
+std::uint8_t Sprite::TileIndex() const {
     return this->data[2];
 }
 

@@ -20,7 +20,7 @@ public:
     void Write(unsigned int index, std::uint8_t byte);
     int X() const;
     int Y() const;
-    unsigned int TileIndex() const;
+    std::uint8_t TileIndex() const;
     bool FlipX() const;
     bool FlipY() const;
     SpritePalette Palette() const;
