@@ -8,6 +8,15 @@ namespace {
 constexpr unsigned int Address{0xFF42};
 constexpr unsigned int MapSize{256};
 
+gb::Dot MakeDot(const gb::Shade shade) {
+    return gb::Dot{shade, gb::Layer::Background};
+}
+
+auto GetLine() {
+    return std::vector<gb::Dot>{gb::lcd::DisplayWidth,
+                                MakeDot(gb::Shade::Transparent)};
+}
+
 }
 
 namespace gb {
@@ -17,7 +26,7 @@ Background::Background(TileBanks banks, TileMaps maps, Palette palette)
     Enable();
 }
 
-std::vector<Shade> Background::RenderScanline(const unsigned int line) const {
+std::vector<Dot> Background::RenderScanline(const unsigned int line) const {
     if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"Background - invalid scanline."};
     }
@@ -31,7 +40,8 @@ std::vector<Shade> Background::RenderScanline(const unsigned int line) const {
     const auto mapY{(Y() + displayY) % MapSize};
     for (auto displayX{0u}; displayX < lcd::DisplayWidth; ++displayX) {
         const auto mapX{(X() + displayX) % MapSize};
-        scanline[displayX] = Map(mapX, mapY);
+        const auto shade{Map(mapX, mapY)};
+        scanline[displayX] = MakeDot(shade);
     }
     return scanline;
 }

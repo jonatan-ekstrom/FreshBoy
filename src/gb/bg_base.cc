@@ -1,5 +1,4 @@
 #include "bg_base.h"
-#include "lcd.h"
 #include <stdexcept>
 #include <utility>
 
@@ -72,16 +71,11 @@ std::uint8_t BgBase::Y() const {
 }
 
 Shade BgBase::Map(const unsigned int mapX, const unsigned int mapY) const {
-    return this->palette->Map(GetDot(mapX, mapY));
+    return this->palette->Map(GetColorIndex(mapX, mapY));
 }
 
-
-std::vector<Shade> BgBase::GetLine() {
-    return std::vector<Shade>{lcd::DisplayWidth, Shade::Transparent };
-}
-
-ColorIndex BgBase::GetDot(const unsigned int mapX,
-                          const unsigned int mapY) const {
+ColorIndex BgBase::GetColorIndex(const unsigned int mapX,
+                                 const unsigned int mapY) const {
     constexpr auto tileSize{8u};
     constexpr auto tilesPerLine{32u};
     const auto tileX{mapX / tileSize};
@@ -99,7 +93,7 @@ ColorIndex BgBase::GetDot(const unsigned int mapX,
                     this->banks->GetTileLow(tileIndex) :
                     this->banks->GetTileHigh(tileIndex)};
 
-    return tile.Dot(dotX, dotY);
+    return tile.Color(dotX, dotY);
 }
 
 std::uint16_t BgBase::XAddr() const {

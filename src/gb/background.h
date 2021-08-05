@@ -12,7 +12,7 @@ namespace gb {
 class Background : public BgBase {
 public:
     Background(TileBanks banks, TileMaps maps, Palette palette);
-    std::vector<Shade> RenderScanline(unsigned int line) const;
+    std::vector<Dot> RenderScanline(unsigned int line) const;
 };
 
 }

@@ -15,7 +15,7 @@ public:
     void Disable();
     void LargeSprites();
     void SmallSprites();
-    std::vector<Shade> RenderScanline(unsigned int line) const;
+    std::vector<Dot> RenderScanline(unsigned int line) const;
 private:
     Shade GetShade(const std::vector<const Sprite*>& sprites,
                    unsigned int displayX, unsigned int displayY) const;

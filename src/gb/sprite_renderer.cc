@@ -7,9 +7,13 @@ namespace {
 
 constexpr auto Size{8};
 
+gb::Dot MakeDot(const gb::Shade shade) {
+    return gb::Dot{shade, gb::Layer::Object};
+}
+
 auto GetLine() {
-    return std::vector<gb::Shade>{gb::lcd::DisplayWidth,
-                                  gb::Shade::Transparent};
+    return std::vector<gb::Dot>{gb::lcd::DisplayWidth,
+                                MakeDot(gb::Shade::Transparent)};
 }
 
 bool OverlapX(const gb::Sprite& sprite, const unsigned int displayX) {
@@ -55,7 +59,7 @@ void SpriteRenderer::SmallSprites() {
     this->spriteSize = SpriteSize::Small;
 }
 
-std::vector<Shade> SpriteRenderer::RenderScanline(const unsigned int line) const {
+std::vector<Dot> SpriteRenderer::RenderScanline(const unsigned int line) const {
     if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"SpriteRenderer - invalid scanline."};
     }
@@ -69,7 +73,8 @@ std::vector<Shade> SpriteRenderer::RenderScanline(const unsigned int line) const
     const auto sprites{this->table->GetSpritesToRender(line, this->spriteSize)};
 
     for (auto displayX{0u}; displayX < lcd::DisplayWidth; ++displayX) {
-        scanline[displayX] = GetShade(sprites, displayX, line);
+        const auto shade{GetShade(sprites, displayX, line)};
+        scanline[displayX] = MakeDot(shade);
     }
     return scanline;
 }
@@ -85,7 +90,7 @@ Shade SpriteRenderer::GetShade(const std::vector<const Sprite*>& sprites,
         const auto dotX{DotX(*s, displayX)};
         const auto dotY{DotY(*s, displayY)};
         const auto& tile{GetTile(*s, dotY)};
-        const auto color{tile.Dot(dotX, dotY)};
+        const auto color{tile.Color(dotX, dotY)};
         const auto zero{s->Palette() == SpritePalette::Zero};
         const auto& palette{zero ? this->obp0 : this->obp1};
         shade = palette->Map(color);

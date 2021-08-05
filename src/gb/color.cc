@@ -3,6 +3,10 @@
 
 namespace gb {
 
+Dot::Dot() : Tone{Shade::Screen}, Level{Layer::Screen} {}
+
+Dot::Dot(const Shade shade, const Layer layer) : Tone{shade}, Level{layer} {}
+
 Color::Color() : R{0}, G{0}, B{0}, A{255} {}
 
 Color::Color(const Shade shade) : Color{} {
@@ -41,5 +45,6 @@ Color::Color(const Shade shade) : Color{} {
     }
     this->A = alpha;
 }
+
 
 }

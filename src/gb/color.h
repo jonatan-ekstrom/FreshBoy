@@ -20,6 +20,21 @@ enum class Shade {
     Lightest
 };
 
+enum class Layer {
+    Screen,
+    Hidden,
+    Background,
+    Window,
+    Object
+};
+
+struct Dot {
+    Dot();
+    Dot(Shade tone, Layer level);
+    Shade Tone;
+    Layer Level;
+};
+
 struct Color {
     Color();
     explicit Color(Shade shade);

@@ -21,12 +21,10 @@ public:
 protected:
     BgBase(TileBanks banks, TileMaps maps, Palette palette, std::uint16_t address);
     Shade Map(unsigned int mapX, unsigned int mapY) const;
-    static std::vector<Shade> GetLine();
     std::uint8_t X() const;
     std::uint8_t Y() const;
 private:
-    ColorIndex GetDot(unsigned int mapX,
-                      unsigned int mapY) const;
+    ColorIndex GetColorIndex(unsigned int mapX, unsigned int mapY) const;
     std::uint16_t XAddr() const;
     std::uint16_t YAddr() const;
     TileBanks banks;

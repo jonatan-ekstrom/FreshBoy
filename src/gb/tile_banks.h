@@ -18,7 +18,7 @@ public:
     Tile();
     std::uint8_t Read(unsigned int index) const;
     void Write(unsigned int index, std::uint8_t byte);
-    ColorIndex Dot(unsigned int dotX, unsigned int dotY) const;
+    ColorIndex Color(unsigned int dotX, unsigned int dotY) const;
 private:
     std::array<std::uint8_t, 16> data;
 };
