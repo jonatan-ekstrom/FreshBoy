@@ -4,20 +4,20 @@
 
 namespace gb {
 
-enum ColorIndex : std::uint8_t {
+enum class ColorIndex {
     Zero,
     One,
     Two,
     Three
 };
 
-enum Shade : std::uint8_t {
-    Lightest,
-    Light,
-    Dark,
-    Darkest,
+enum class Shade {
     Screen,
-    Transparent
+    Transparent,
+    Darkest,
+    Dark,
+    Light,
+    Lightest
 };
 
 struct Color {

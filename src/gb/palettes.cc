@@ -7,6 +7,21 @@ constexpr auto BgAddr{0xFF47u};
 constexpr auto Obj0Addr{0xFF48u};
 constexpr auto Obj1Addr{0xFF49u};
 
+gb::Shade NumToShade(const int number) {
+    switch (number) {
+        case 0:
+            return gb::Shade::Lightest;
+        case 1:
+            return gb::Shade::Light;
+        case 2:
+            return gb::Shade::Dark;
+        case 3:
+            return gb::Shade::Darkest;
+        default:
+            throw std::runtime_error{"Unknown color code."};
+    }
+}
+
 }
 
 namespace gb {
@@ -32,11 +47,11 @@ void Palette_::Write(const std::uint8_t byte) {
     if (this->object) {
         this->map[ColorIndex::Zero] = Shade::Transparent;
     } else {
-        this->map[ColorIndex::Zero] = static_cast<Shade>(shade0);
+        this->map[ColorIndex::Zero] = NumToShade(shade0);
     }
-    this->map[ColorIndex::One] = static_cast<Shade>(shade1);
-    this->map[ColorIndex::Two] = static_cast<Shade>(shade2);
-    this->map[ColorIndex::Three] = static_cast<Shade>(shade3);
+    this->map[ColorIndex::One] = NumToShade(shade1);
+    this->map[ColorIndex::Two] = NumToShade(shade2);
+    this->map[ColorIndex::Three] = NumToShade(shade3);
     this->data = byte;
 }
 
