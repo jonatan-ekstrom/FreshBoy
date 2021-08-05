@@ -31,9 +31,12 @@ enum class Layer {
 struct Dot {
     Dot();
     Dot(Shade tone, Layer level);
+    Dot& operator+=(const Dot& other);
     Shade Tone;
     Layer Level;
 };
+
+Dot operator+(Dot lhs, const Dot& rhs);
 
 struct Color {
     Color();
