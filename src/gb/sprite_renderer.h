@@ -19,6 +19,9 @@ public:
 private:
     Shade GetShade(const std::vector<const Sprite*>& sprites,
                    unsigned int displayX, unsigned int displayY) const;
+    static unsigned int DotX(const Sprite& sprite, unsigned int displayX);
+    unsigned int DotY(const Sprite& sprite, unsigned int displayY) const;
+    const Tile& GetTile(const Sprite& sprite, unsigned int dotY) const;
     TileBanks banks;
     SpriteTable table;
     Palette obp0;

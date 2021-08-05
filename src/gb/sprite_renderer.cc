@@ -5,9 +5,26 @@
 
 namespace {
 
+constexpr auto Size{8};
+
 auto GetLine() {
     return std::vector<gb::Shade>{gb::lcd::DisplayWidth,
                                   gb::Shade::Transparent};
+}
+
+bool OverlapX(const gb::Sprite& sprite, const unsigned int displayX) {
+    const auto x{static_cast<int>(displayX)};
+    const auto low{sprite.X()};
+    const auto high{low + Size};
+    return (x >= low && x < high);
+}
+
+bool OverlapY(const gb::Sprite& sprite, const unsigned int displayY, const bool small) {
+    const auto y{static_cast<int>(displayY)};
+    const auto height{small ? Size : 2 * Size};
+    const auto low{sprite.Y()};
+    const auto high{low + height};
+    return (y >= low && y < high);
 }
 
 }
@@ -60,50 +77,65 @@ std::vector<Shade> SpriteRenderer::RenderScanline(const unsigned int line) const
 Shade SpriteRenderer::GetShade(const std::vector<const Sprite*>& sprites,
                                const unsigned int displayX,
                                const unsigned int displayY) const {
-    const auto x{static_cast<int>(displayX)};
-    const auto y{static_cast<int>(displayY)};
-
     auto shade{Shade::Transparent};
     for (const auto s : sprites) {
         // If the current pixel does not overlap this sprite, move to the next.
-        if (x < s->X() || x > (s->X() + 7)) continue;
+        if (!OverlapX(*s, displayX)) continue;
 
-        const auto& palette{s->Palette() == SpritePalette::Zero ?
-                            this->obp0 :
-                            this->obp1};
-        // 0 <= (x - s->X()) <= 7
-        // 0 <= (y - s->Y()) <= 15
-        auto dotX{static_cast<unsigned int>(x - s->X())};
-        auto dotY{static_cast<unsigned int>(y - s->Y())};
+        const auto dotX{DotX(*s, displayX)};
+        const auto dotY{DotY(*s, displayY)};
+        const auto& tile{GetTile(*s, dotY)};
+        const auto color{tile.Dot(dotX, dotY)};
+        const auto zero{s->Palette() == SpritePalette::Zero};
+        const auto& palette{zero ? this->obp0 : this->obp1};
+        shade = palette->Map(color);
 
-        if (s->FlipX()) {
-            dotX = 7 - dotX;
-        }
-
-        if (this->spriteSize == SpriteSize::Small) {
-            if (s->FlipY()) {
-                dotY = 7 - dotY;
-            }
-            const auto tile{this->banks->GetTileLow(s->TileIndex())};
-            shade = palette->Map(tile.Dot(dotX, dotY));
-        } else {
-            const auto base{static_cast<std::uint8_t>(s->TileIndex() & 0xFE)};
-            const auto next{static_cast<std::uint8_t>(base + 1)};
-            if (s->FlipY()) {
-                dotY = 15 - dotY;
-            }
-            if (dotY < 8) {
-                const auto tile{this->banks->GetTileLow(base)};
-                shade = palette->Map(tile.Dot(dotX, dotY));
-            } else {
-                const auto tile{this->banks->GetTileLow(next)};
-                shade = palette->Map(tile.Dot(dotX, dotY - 8));
-            }
-        }
-        // If we've found a non-transparent dot, we're done.
+        // If we've found a non-transparent pixel, we're done.
         if (shade != Shade::Transparent) break;
     }
     return shade;
+}
+
+unsigned int SpriteRenderer::DotX(const Sprite& sprite,
+                                  const unsigned int displayX) {
+    if (!OverlapX(sprite, displayX)) {
+        throw std::runtime_error{"DisplayX outside sprite."};
+    }
+    const auto x{static_cast<int>(displayX)};
+    auto dotX{x - sprite.X()};
+    if (sprite.FlipX()) {
+        dotX = Size - 1 - dotX;
+    }
+    return static_cast<unsigned int>(dotX);
+}
+
+unsigned int SpriteRenderer::DotY(const Sprite& sprite,
+                                  const unsigned int displayY) const {
+    const bool small{this->spriteSize == SpriteSize::Small};
+    if (!OverlapY(sprite, displayY, small)) {
+        throw std::runtime_error{"DisplayY outside sprite."};
+    }
+    const auto y{static_cast<int>(displayY)};
+    const auto height{small ? Size : 2 * Size};
+    auto dotY{y - sprite.Y()};
+    if (sprite.FlipY()) {
+        dotY = height - 1 - dotY;
+    }
+    return static_cast<unsigned int>(dotY);
+}
+
+const Tile& SpriteRenderer::GetTile(const Sprite& sprite,
+                                    const unsigned int dotY) const {
+    if (this->spriteSize == SpriteSize::Small) {
+        return this->banks->GetTileLow(sprite.TileIndex());
+    }
+
+    constexpr std::uint8_t mask{0xFE};
+    if (dotY < Size) {
+        return this->banks->GetTileLow(sprite.TileIndex() & mask);
+    }
+
+    return this->banks->GetTileLow((sprite.TileIndex() & mask) + 1);
 }
 
 }
