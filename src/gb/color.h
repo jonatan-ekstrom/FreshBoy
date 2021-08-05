@@ -12,10 +12,11 @@ enum ColorIndex : std::uint8_t {
 };
 
 enum Shade : std::uint8_t {
-    White,
+    Lightest,
     Light,
     Dark,
-    Black,
+    Darkest,
+    Screen,
     Transparent
 };
 
