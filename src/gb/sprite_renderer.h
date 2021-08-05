@@ -17,8 +17,8 @@ public:
     void SmallSprites();
     std::vector<Dot> RenderScanline(unsigned int line) const;
 private:
-    Shade GetShade(const std::vector<const Sprite*>& sprites,
-                   unsigned int displayX, unsigned int displayY) const;
+    Dot GetDot(const std::vector<const Sprite*>& sprites,
+               unsigned int displayX, unsigned int displayY) const;
     static unsigned int DotX(const Sprite& sprite, unsigned int displayX);
     unsigned int DotY(const Sprite& sprite, unsigned int displayY) const;
     const Tile& GetTile(const Sprite& sprite, unsigned int dotY) const;

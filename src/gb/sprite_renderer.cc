@@ -7,13 +7,10 @@ namespace {
 
 constexpr auto Size{8};
 
-gb::Dot MakeDot(const gb::Shade shade) {
-    return gb::Dot{shade, gb::Layer::Object};
-}
-
 auto GetLine() {
     return std::vector<gb::Dot>{gb::lcd::DisplayWidth,
-                                MakeDot(gb::Shade::Transparent)};
+                                gb::Dot{gb::Shade::Transparent,
+                                        gb::Layer::Object}};
 }
 
 bool OverlapX(const gb::Sprite& sprite, const unsigned int displayX) {
@@ -73,16 +70,15 @@ std::vector<Dot> SpriteRenderer::RenderScanline(const unsigned int line) const {
     const auto sprites{this->table->GetSpritesToRender(line, this->spriteSize)};
 
     for (auto displayX{0u}; displayX < lcd::DisplayWidth; ++displayX) {
-        const auto shade{GetShade(sprites, displayX, line)};
-        scanline[displayX] = MakeDot(shade);
+        scanline[displayX] = GetDot(sprites, displayX, line);
     }
     return scanline;
 }
 
-Shade SpriteRenderer::GetShade(const std::vector<const Sprite*>& sprites,
-                               const unsigned int displayX,
-                               const unsigned int displayY) const {
-    auto shade{Shade::Transparent};
+Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
+                           unsigned int displayX,
+                           unsigned int displayY) const {
+    Dot dot{Shade::Transparent, Layer::Object};
     for (const auto s : sprites) {
         // If the current pixel does not overlap this sprite, move to the next.
         if (!OverlapX(*s, displayX)) continue;
@@ -93,12 +89,16 @@ Shade SpriteRenderer::GetShade(const std::vector<const Sprite*>& sprites,
         const auto color{tile.Color(dotX, dotY)};
         const auto zero{s->Palette() == SpritePalette::Zero};
         const auto& palette{zero ? this->obp0 : this->obp1};
-        shade = palette->Map(color);
+        const auto shade = palette->Map(color);
 
         // If we've found a non-transparent pixel, we're done.
-        if (shade != Shade::Transparent) break;
+        if (shade != Shade::Transparent) {
+            dot.Tone = shade;
+            dot.Level = s->Hidden() ? Layer::Hidden : Layer::Object;
+            break;
+        }
     }
-    return shade;
+    return dot;
 }
 
 unsigned int SpriteRenderer::DotX(const Sprite& sprite,
