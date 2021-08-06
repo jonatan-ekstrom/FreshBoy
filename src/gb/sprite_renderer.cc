@@ -1,7 +1,7 @@
 #include "sprite_renderer.h"
 #include <stdexcept>
 #include <utility>
-#include "lcd.h"
+#include "display.h"
 
 namespace {
 

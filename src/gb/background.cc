@@ -1,5 +1,5 @@
 #include "background.h"
-#include "lcd.h"
+#include "display.h"
 #include <stdexcept>
 #include <utility>
 

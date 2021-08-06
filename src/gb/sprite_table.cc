@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <tuple>
 #include <stdexcept>
-#include "lcd.h"
+#include "display.h"
 
 namespace {
 
