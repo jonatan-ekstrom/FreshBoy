@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
+#include "sprite_table.h"
 #include "tile_banks.h"
 #include "tile_maps.h"
-#include "sprite_table.h"
 
 namespace gb {
 
@@ -22,6 +23,35 @@ public:
     bool BackgroundEnabled() const;
 private:
     std::uint8_t lcdc;
+};
+
+enum class LcdMode {
+    HBlank,
+    VBlank,
+    Oam,
+    Transfer
+};
+
+class LcdStat {
+public:
+    using InterruptHandler = std::function<void(void)>;
+    explicit LcdStat(InterruptHandler handler);
+    LcdMode Mode() const;
+    std::uint8_t Ly() const;
+    std::uint8_t Read(std::uint16_t address) const;
+    void Write(std::uint16_t address, std::uint8_t byte);
+    void SetMode(LcdMode mode);
+    void SetLy(std::uint8_t newLy);
+private:
+    void Refresh();
+    void SetLyFlag(bool flag);
+    bool UpdateInterruptLine(bool lycMatch);
+    void FireInterrupt() const;
+    InterruptHandler interruptHandler;
+    bool interruptLine;
+    std::uint8_t stat;
+    std::uint8_t ly;
+    std::uint8_t lyc;
 };
 
 }
