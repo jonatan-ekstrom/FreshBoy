@@ -34,9 +34,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 # Look for the SDL2 libraries, abort if not found.
 find_package(SDL2 REQUIRED)
 
-# Make building tests optional.
-option(BUILD_TESTS "" ON)
-
 # Make it possible to opt out from GNU specific flags (if unsupported by compiler).
 option(USE_GNU_FLAGS "" ON)
 
@@ -47,4 +44,3 @@ endif ()
 
 # Parse the source directory
 add_subdirectory(src)
-
