@@ -34,6 +34,11 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 # Look for the SDL2 libraries, abort if not found.
 find_package(SDL2 REQUIRED)
 
+# Set build type to Release if not provided.
+if (NOT haveBuildType)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
+endif ()
+
 # Make it possible to opt out from GNU specific flags (if unsupported by compiler).
 option(USE_GNU_FLAGS "" ON)
 

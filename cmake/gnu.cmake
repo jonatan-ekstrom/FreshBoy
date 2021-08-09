@@ -103,11 +103,7 @@ set(releaseList
     -march=native
     -mtune=native)
 
-# Setup build type and debug/release flags.
-if (NOT haveBuildType)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
-endif ()
-
+# Setup build flags.
 if (NOT haveFlags)
     list(JOIN warningList " " warningFlags)
     set(CMAKE_CXX_FLAGS "${warningFlags}" CACHE STRING "" FORCE)
@@ -123,4 +119,3 @@ if (NOT haveReleaseFlags)
     list(JOIN releaseList " " releaseFlags)
     set(CMAKE_CXX_FLAGS_RELEASE "${releaseFlags}" CACHE STRING "" FORCE)
 endif ()
-
