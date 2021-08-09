@@ -4,6 +4,7 @@ set(ppuHeaders
     bg_base.h
     color.h
     display.h
+    lcd.h
     lcd_regs.h
     palettes.h
     sprite_renderer.h
@@ -16,6 +17,7 @@ set(ppuSources
     background.cc
     bg_base.cc
     color.cc
+    lcd.cc
     lcd_regs.cc
     palettes.cc
     sprite_renderer.cc
