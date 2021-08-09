@@ -1,39 +1,20 @@
-# Creates the 'gb' static library.
-set(gbHeaders
-    background.h
-    bg_base.h
-    cartridge.h
-    color.h
-    demo.h
-    display.h
-    file.h
-    header.h
-    lcd_regs.h
-    palettes.h
-    sprite_renderer.h
-    sprite_table.h
-    tile_banks.h
-    tile_maps.h
-    window.h)
+# List gb top level header and source files.
+set(gbHeaders demo.h)
+set(gbSources demo.cc)
 
-set(gbSources
-    background.cc
-    bg_base.cc
-    cartridge.cc
-    color.cc
-    demo.cc
-    file.cc
-    header.cc
-    lcd_regs.cc
-    palettes.cc
-    sprite_renderer.cc
-    sprite_table.cc
-    tile_banks.cc
-    tile_maps.cc
-    window.cc)
-
+# Add the 'gb' static library.
 add_library(gb STATIC ${gbSources})
-target_include_directories(gb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Recurse into subdirectories.
+add_subdirectory(cart)
+add_subdirectory(ppu)
+
+# Reference the 'media' library.
 target_link_libraries(gb PUBLIC media)
+
+# Setup include directories.
+target_include_directories(gb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Tag library for installation.
 install(TARGETS gb DESTINATION lib)
 install(FILES ${gbHeaders} DESTINATION include/gb)
