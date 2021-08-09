@@ -1,4 +1,4 @@
-#include "lcd.h"
+#include "lcd_regs.h"
 #include <stdexcept>
 
 namespace {

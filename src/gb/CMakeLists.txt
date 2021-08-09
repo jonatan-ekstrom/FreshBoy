@@ -8,7 +8,7 @@ set(gbHeaders
     display.h
     file.h
     header.h
-    lcd.h
+    lcd_regs.h
     palettes.h
     sprite_renderer.h
     sprite_table.h
@@ -24,7 +24,7 @@ set(gbSources
     demo.cc
     file.cc
     header.cc
-    lcd.cc
+    lcd_regs.cc
     palettes.cc
     sprite_renderer.cc
     sprite_table.cc
