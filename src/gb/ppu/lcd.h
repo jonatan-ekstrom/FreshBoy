@@ -26,8 +26,8 @@ public:
 private:
     Lcd_(const InterruptHandler& blankHandler,
          const InterruptHandler& statHandler);
-    void FireBlank();
-    void FireStat();
+    void FireBlank() const;
+    void FireStat() const;
     InterruptHandler blankHandler;
     InterruptHandler statHandler;
     TileBanks banks;

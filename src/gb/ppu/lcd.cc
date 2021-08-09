@@ -27,7 +27,8 @@ Lcd_::Lcd_(const InterruptHandler& blankHandler,
               this->palettes.Object0(),
               this->palettes.Object1()},
       lcdc{},
-      stat{[this] { FireStat(); }} {}
+      stat{[this] { FireBlank(); },
+           [this] { FireStat(); }} {}
 
 std::uint8_t Lcd_::Read(const std::uint16_t address) const {
     // Tile banks
@@ -136,11 +137,11 @@ void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"LCD - Invalid write address."};
 }
 
-void Lcd_::FireBlank() {
+void Lcd_::FireBlank() const {
     this->blankHandler();
 }
 
-void Lcd_::FireStat() {
+void Lcd_::FireStat() const {
     this->statHandler();
 }
 

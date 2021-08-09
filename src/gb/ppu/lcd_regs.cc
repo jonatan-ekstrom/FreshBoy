@@ -69,9 +69,12 @@ bool LcdControl::BackgroundEnabled() const {
     return BitSet(this->lcdc, 0);
 }
 
-LcdStat::LcdStat(const InterruptHandler& handler)
-    : interruptHandler{handler},
-      interruptLine{false},
+LcdStat::LcdStat(const InterruptHandler& blankHandler,
+                 const InterruptHandler& statHandler)
+    : blankHandler{blankHandler},
+      statHandler{statHandler},
+      blankLine{true},
+      statLine{false},
       stat{0x81},
       ly{0x91},
       lyc{0} { Refresh(); }
@@ -121,10 +124,12 @@ void LcdStat::SetLy(const std::uint8_t newLy) {
 }
 
 void LcdStat::Refresh() {
-    const auto lycMatch{this->ly == this->lyc};
-    SetLyFlag(lycMatch);
-    if (UpdateInterruptLine(lycMatch)) {
-        FireInterrupt();
+    SetLyFlag(this->ly == this->lyc);
+    if (UpdateBlankLine()) {
+        FireBlank();
+    }
+    if (UpdateStatLine()) {
+        FireStat();
     }
 }
 
@@ -132,21 +137,32 @@ void LcdStat::SetLyFlag(const bool flag) {
     UpdateBit(this->stat, 2, flag);
 }
 
-bool LcdStat::UpdateInterruptLine(const bool lycMatch) {
-    const auto prevLine{this->interruptLine};
+bool LcdStat::UpdateBlankLine() {
+    const auto prevLine{this->blankLine};
+    const auto newLine{Mode() == LcdMode::VBlank};
+    this->blankLine = newLine;
+    return newLine && !prevLine;
+}
+
+bool LcdStat::UpdateStatLine() {
+    const auto prevLine{this->statLine};
 
     bool newLine{false};
-    newLine = newLine || (BitSet(this->stat, 6) && lycMatch);
+    newLine = newLine || (BitSet(this->stat, 6) && (this->ly == this->lyc));
     newLine = newLine || (BitSet(this->stat, 5) && Mode() == LcdMode::Oam);
     newLine = newLine || (BitSet(this->stat, 4) && Mode() == LcdMode::VBlank);
     newLine = newLine || (BitSet(this->stat, 3) && Mode() == LcdMode::HBlank);
-    this->interruptLine = newLine;
+    this->statLine = newLine;
 
     return newLine && !prevLine;
 }
 
-void LcdStat::FireInterrupt() const {
-    this->interruptHandler();
+void LcdStat::FireBlank() const {
+    this->blankHandler();
+}
+
+void LcdStat::FireStat() const {
+    this->statHandler();
 }
 
 }
