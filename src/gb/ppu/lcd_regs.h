@@ -35,7 +35,7 @@ enum class LcdMode {
 class LcdStat {
 public:
     using InterruptHandler = std::function<void(void)>;
-    explicit LcdStat(InterruptHandler handler);
+    explicit LcdStat(const InterruptHandler& handler);
     LcdMode Mode() const;
     std::uint8_t Ly() const;
     std::uint8_t Read(std::uint16_t address) const;

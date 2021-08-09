@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include "background.h"
 #include "lcd_regs.h"
@@ -17,12 +18,18 @@ using Lcd = std::shared_ptr<Lcd_>;
 
 class Lcd_ {
 public:
-    static Lcd Create();
+    using InterruptHandler = std::function<void(void)>;
+    static Lcd Create(const InterruptHandler& blankHandler,
+                      const InterruptHandler& statHandler);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
 private:
-    Lcd_();
-    void StatInterrupt();
+    Lcd_(const InterruptHandler& blankHandler,
+         const InterruptHandler& statHandler);
+    void FireBlank();
+    void FireStat();
+    InterruptHandler blankHandler;
+    InterruptHandler statHandler;
     TileBanks banks;
     TileMaps maps;
     SpriteTable table;

@@ -69,7 +69,7 @@ bool LcdControl::BackgroundEnabled() const {
     return BitSet(this->lcdc, 0);
 }
 
-LcdStat::LcdStat(const InterruptHandler handler)
+LcdStat::LcdStat(const InterruptHandler& handler)
     : interruptHandler{handler},
       interruptLine{false},
       stat{0x81},

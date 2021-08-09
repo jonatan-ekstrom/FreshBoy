@@ -3,12 +3,16 @@
 
 namespace gb {
 
-Lcd Lcd_::Create() {
-    return Lcd{new Lcd_{}};
+Lcd Lcd_::Create(const InterruptHandler& blankHandler,
+                 const InterruptHandler& statHandler) {
+    return Lcd{new Lcd_{blankHandler, statHandler}};
 }
 
-Lcd_::Lcd_()
-    : banks{TileBanks_::Create()},
+Lcd_::Lcd_(const InterruptHandler& blankHandler,
+           const InterruptHandler& statHandler)
+    : blankHandler{blankHandler},
+      statHandler{statHandler},
+      banks{TileBanks_::Create()},
       maps{TileMaps_::Create()},
       table{SpriteTable_::Create()},
       palettes{},
@@ -23,7 +27,7 @@ Lcd_::Lcd_()
               this->palettes.Object0(),
               this->palettes.Object1()},
       lcdc{},
-      stat{[this] { StatInterrupt(); }} {}
+      stat{[this] { FireStat(); }} {}
 
 std::uint8_t Lcd_::Read(const std::uint16_t address) const {
     // Tile banks
@@ -132,6 +136,12 @@ void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"LCD - Invalid write address."};
 }
 
-void Lcd_::StatInterrupt() {}
+void Lcd_::FireBlank() {
+    this->blankHandler();
+}
+
+void Lcd_::FireStat() {
+    this->statHandler();
+}
 
 }
