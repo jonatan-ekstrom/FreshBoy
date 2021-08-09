@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <memory>
 #include "background.h"
 #include "lcd_regs.h"
 #include "palettes.h"
@@ -11,12 +12,16 @@
 
 namespace gb {
 
-class Lcd {
+class Lcd_;
+using Lcd = std::shared_ptr<Lcd_>;
+
+class Lcd_ {
 public:
-    Lcd();
+    static Lcd Create();
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
 private:
+    Lcd_();
     void StatInterrupt();
     TileBanks banks;
     TileMaps maps;

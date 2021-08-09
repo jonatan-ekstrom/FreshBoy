@@ -3,7 +3,11 @@
 
 namespace gb {
 
-Lcd::Lcd()
+Lcd Lcd_::Create() {
+    return Lcd{new Lcd_{}};
+}
+
+Lcd_::Lcd_()
     : banks{TileBanks_::Create()},
       maps{TileMaps_::Create()},
       table{SpriteTable_::Create()},
@@ -21,7 +25,7 @@ Lcd::Lcd()
       lcdc{},
       stat{[this] { StatInterrupt(); }} {}
 
-std::uint8_t Lcd::Read(const std::uint16_t address) const {
+std::uint8_t Lcd_::Read(const std::uint16_t address) const {
     // Tile banks
     if (address >= 0x8000 && address <= 0x97FF) {
         return this->banks->Read(address);
@@ -70,7 +74,7 @@ std::uint8_t Lcd::Read(const std::uint16_t address) const {
     throw std::runtime_error{"LCD - Invalid read address."};
 }
 
-void Lcd::Write(const std::uint16_t address, const std::uint8_t byte) {
+void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
     // Tile banks
     if (address >= 0x8000 && address <= 0x97FF) {
         this->banks->Write(address, byte);
@@ -128,6 +132,6 @@ void Lcd::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"LCD - Invalid write address."};
 }
 
-void Lcd::StatInterrupt() {}
+void Lcd_::StatInterrupt() {}
 
 }
