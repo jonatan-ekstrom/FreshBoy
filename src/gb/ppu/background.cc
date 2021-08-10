@@ -5,9 +5,6 @@
 
 namespace {
 
-constexpr unsigned int Address{0xFF42};
-constexpr unsigned int MapSize{256};
-
 gb::Dot MakeDot(const gb::Shade shade) {
     return gb::Dot{shade, gb::Layer::Background};
 }
@@ -16,6 +13,8 @@ auto GetLine() {
     return std::vector<gb::Dot>{gb::lcd::DisplayWidth,
                                 MakeDot(gb::Shade::Transparent)};
 }
+
+constexpr auto Address{0xFF42};
 
 }
 
@@ -36,10 +35,11 @@ std::vector<Dot> Background::RenderScanline(const unsigned int line) const {
         return scanline;
     }
 
+    constexpr auto mapSize{256};
     const auto displayY{line};
-    const auto mapY{(Y() + displayY) % MapSize};
+    const auto mapY{(Y() + displayY) % mapSize};
     for (auto displayX{0u}; displayX < lcd::DisplayWidth; ++displayX) {
-        const auto mapX{(X() + displayX) % MapSize};
+        const auto mapX{(X() + displayX) % mapSize};
         const auto shade{Map(mapX, mapY)};
         scanline[displayX] = MakeDot(shade);
     }

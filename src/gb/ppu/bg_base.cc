@@ -76,8 +76,8 @@ Shade BgBase::Map(const unsigned int mapX, const unsigned int mapY) const {
 
 ColorIndex BgBase::GetColorIndex(const unsigned int mapX,
                                  const unsigned int mapY) const {
-    constexpr auto tileSize{8u};
-    constexpr auto tilesPerLine{32u};
+    constexpr auto tileSize{8};
+    constexpr auto tilesPerLine{32};
     const auto tileX{mapX / tileSize};
     const auto dotX{mapX % tileSize};
     const auto tileY{mapY / tileSize};

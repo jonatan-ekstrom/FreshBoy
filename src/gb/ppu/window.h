@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vector>
 #include "bg_base.h"
 #include "color.h"

@@ -3,9 +3,9 @@
 
 namespace {
 
-constexpr auto BgAddr{0xFF47u};
-constexpr auto Obj0Addr{0xFF48u};
-constexpr auto Obj1Addr{0xFF49u};
+constexpr auto BgAddr{0xFF47};
+constexpr auto Obj0Addr{0xFF48};
+constexpr auto Obj1Addr{0xFF49};
 
 gb::Shade NumToShade(const int number) {
     switch (number) {

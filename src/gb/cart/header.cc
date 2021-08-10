@@ -119,7 +119,7 @@ std::string Header::ManufacturerCode() const {
     return Stringify(0x13F, 0x142);
 }
 
-std::string Header::CGBFlag() const {
+std::string Header::CgbFlag() const {
     return Hexdump(0x143, 0x143);
 }
 
@@ -127,7 +127,7 @@ std::string Header::NewLicenseeCode() const {
     return Stringify(0x144, 0x145);
 }
 
-std::string Header::SGBFlag() const {
+std::string Header::SgbFlag() const {
     return Hexdump(0x146, 0x146);
 }
 
@@ -285,17 +285,17 @@ std::uint16_t Header::CartridgeChecksum() const {
 std::string Header::PrettyPrint() const {
     std::ostringstream ss;
     ss << "------------ Contents of ROM header ------------\n"
-       << "Title: " << Title() << '\n'
-       << "Type: " << TypeCode() << " - " << TypeStr() << '\n'
-       << "Version: " << static_cast<int>(VersionNumber()) << '\n'
-       << "ROM Size: " << RomStr() << '\n'
-       << "RAM Size: " << RamStr() << '\n'
-       << "Japanese: " << (Japanese() ? "Yes" : "No") << '\n'
+        << "Title: " << Title() << '\n'
+        << "Type: " << TypeCode() << " - " << TypeStr() << '\n'
+        << "Version: " << static_cast<int>(VersionNumber()) << '\n'
+        << "ROM Size: " << RomStr() << '\n'
+        << "RAM Size: " << RamStr() << '\n'
+        << "Japanese: " << (Japanese() ? "Yes" : "No") << '\n'
         << "Licensee: " << Licensee() << '\n'
         << "New Licensee: " << NewLicenseeCode() << '\n'
         << "Manufacturer: " << ManufacturerCode() << '\n'
-        << "CGB Flag: " << CGBFlag() << '\n'
-        << "SGB Flag: " << SGBFlag() << '\n'
+        << "CGB Flag: " << CgbFlag() << '\n'
+        << "SGB Flag: " << SgbFlag() << '\n'
         << "Entry: " << Entry() << '\n'
         << "--------------------- Logo ---------------------\n"
         << Logo()

@@ -5,8 +5,6 @@
 
 namespace {
 
-constexpr unsigned int Address{0xFF4A};
-
 gb::Dot MakeDot(const gb::Shade shade) {
     return gb::Dot{shade, gb::Layer::Window};
 }
@@ -15,6 +13,8 @@ auto GetLine() {
     return std::vector<gb::Dot>{gb::lcd::DisplayWidth,
                                 MakeDot(gb::Shade::Transparent)};
 }
+
+constexpr auto Address{0xFF4A};
 
 }
 

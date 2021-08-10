@@ -1,5 +1,4 @@
 #pragma once
-
 #include <cstdint>
 #include <functional>
 #include "sprite_table.h"

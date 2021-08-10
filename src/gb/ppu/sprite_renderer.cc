@@ -135,7 +135,7 @@ const Tile& SpriteRenderer::GetTile(const Sprite& sprite,
         return this->banks->GetTileLow(sprite.TileIndex());
     }
 
-    constexpr std::uint8_t mask{0xFE};
+    constexpr auto mask{0xFE};
     if (dotY < Size) {
         return this->banks->GetTileLow(sprite.TileIndex() & mask);
     }

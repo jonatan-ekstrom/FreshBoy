@@ -1,5 +1,4 @@
 #pragma once
-
 #include <memory>
 #include "instance.h"
 #include "window.h"

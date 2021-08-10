@@ -76,5 +76,4 @@ Color::Color(const Shade shade) : Color{} {
     this->A = alpha;
 }
 
-
 }

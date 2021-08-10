@@ -1,5 +1,4 @@
 #pragma once
-
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -13,13 +12,13 @@ using Cartridge = std::unique_ptr<Cartridge_>;
 
 class Cartridge_ {
 public:
-    using MemBlock = std::vector<std::uint8_t>;
     static Cartridge Create(const std::string& filePath);
     virtual ~Cartridge_() = default;
     std::string HeaderInfo() const;
     virtual std::uint8_t Read(std::uint16_t address) const = 0;
     virtual void Write(std::uint16_t address, std::uint8_t byte) = 0;
 protected:
+    using MemBlock = std::vector<std::uint8_t>;
     explicit Cartridge_(Header&& header);
     Header header;
 private:
