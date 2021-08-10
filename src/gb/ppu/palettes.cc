@@ -7,7 +7,7 @@ constexpr auto BgAddr{0xFF47};
 constexpr auto Obj0Addr{0xFF48};
 constexpr auto Obj1Addr{0xFF49};
 
-gb::Shade NumToShade(const int number) {
+constexpr gb::Shade NumToShade(const int number) {
     switch (number) {
         case 0:
             return gb::Shade::Lightest;
@@ -26,14 +26,11 @@ gb::Shade NumToShade(const int number) {
 
 namespace gb {
 
-Palette Palette_::Create(const std::uint8_t init, const bool obj) {
-    return Palette{new Palette_{init, obj}};
+Palette Palette_::Create(const bool obj) {
+    return Palette{new Palette_{obj}};
 }
 
-Palette_::Palette_(const std::uint8_t byte, const bool object)
-    : data{}, object{object} {
-    Write(byte);
-}
+Palette_::Palette_(const bool object) : data{}, object{object} {}
 
 std::uint8_t Palette_::Read() const {
     return this->data;
@@ -60,9 +57,9 @@ Shade Palette_::Map(const ColorIndex index) const {
 }
 
 Palettes::Palettes()
-    : bg{Palette_::Create(0xFC, false)},
-      obj0{Palette_::Create(0xFF, true)},
-      obj1{Palette_::Create(0xFF, true)} {}
+    : bg{Palette_::Create(false)},
+      obj0{Palette_::Create(true)},
+      obj1{Palette_::Create(true)} {}
 
 std::uint8_t Palettes::Read(const std::uint16_t address) const {
     if (address == BgAddr) {

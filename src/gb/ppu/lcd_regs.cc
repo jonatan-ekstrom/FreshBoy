@@ -27,7 +27,7 @@ constexpr auto LycAddress{0xFF45u};
 
 namespace gb {
 
-LcdControl::LcdControl() : lcdc{0x91} {}
+LcdControl::LcdControl() : lcdc{0} {}
 
 std::uint8_t LcdControl::Read() const {
     return this->lcdc;
@@ -73,11 +73,11 @@ LcdStat::LcdStat(const InterruptHandler& blankHandler,
                  const InterruptHandler& statHandler)
     : blankHandler{blankHandler},
       statHandler{statHandler},
-      blankLine{true},
+      blankLine{false},
       statLine{false},
-      stat{0x81},
-      ly{0x91},
-      lyc{0} { Refresh(); }
+      stat{0x86}, // 1000 0110
+      ly{0},
+      lyc{0} {}
 
 LcdMode LcdStat::Mode() const {
     return static_cast<LcdMode>(this->stat & 0x03);

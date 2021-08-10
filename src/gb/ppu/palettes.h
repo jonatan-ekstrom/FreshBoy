@@ -16,12 +16,12 @@ using Palette = std::shared_ptr<Palette_>;
 
 class Palette_ {
 public:
-    static Palette Create(std::uint8_t init, bool obj);
+    static Palette Create(bool obj);
     std::uint8_t Read() const;
     void Write(std::uint8_t byte);
     Shade Map(ColorIndex index) const;
 private:
-    Palette_(std::uint8_t init, bool object);
+    explicit Palette_(bool object);
     std::unordered_map<ColorIndex, Shade> map;
     std::uint8_t data;
     bool object;
