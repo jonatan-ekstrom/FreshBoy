@@ -13,7 +13,7 @@ add_subdirectory(ppu)
 target_link_libraries(gb PUBLIC media)
 
 # Setup include directories.
-target_include_directories(gb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(gb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Tag library for installation.
 install(TARGETS gb DESTINATION lib)
