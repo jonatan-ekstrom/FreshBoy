@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include "background.h"
+#include "framebuffer.h"
 #include "lcd_regs.h"
 #include "palettes.h"
 #include "sprite_renderer.h"
@@ -18,16 +19,21 @@ using Lcd = std::shared_ptr<Lcd_>;
 
 class Lcd_ {
 public:
+    using FrameHandler = std::function<void(const Framebuffer::Pixels&)>;
     using InterruptHandler = std::function<void(void)>;
-    static Lcd Create(const InterruptHandler& blankHandler,
+    static Lcd Create(const FrameHandler& frameHandler,
+                      const InterruptHandler& blankHandler,
                       const InterruptHandler& statHandler);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
 private:
-    Lcd_(const InterruptHandler& blankHandler,
+    Lcd_(const FrameHandler& frameHandler,
+         const InterruptHandler& blankHandler,
          const InterruptHandler& statHandler);
+    void FrameReady() const;
     void FireBlank() const;
     void FireStat() const;
+    FrameHandler frameHandler;
     InterruptHandler blankHandler;
     InterruptHandler statHandler;
     TileBanks banks;
@@ -39,6 +45,7 @@ private:
     SpriteRenderer sprites;
     LcdControl lcdc;
     LcdStat stat;
+    Framebuffer frame;
 };
 
 }

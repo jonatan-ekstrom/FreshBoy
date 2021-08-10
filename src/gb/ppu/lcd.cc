@@ -3,14 +3,17 @@
 
 namespace gb {
 
-Lcd Lcd_::Create(const InterruptHandler& blankHandler,
+Lcd Lcd_::Create(const FrameHandler& frameHandler,
+                 const InterruptHandler& blankHandler,
                  const InterruptHandler& statHandler) {
-    return Lcd{new Lcd_{blankHandler, statHandler}};
+    return Lcd{new Lcd_{frameHandler, blankHandler, statHandler}};
 }
 
-Lcd_::Lcd_(const InterruptHandler& blankHandler,
+Lcd_::Lcd_(const FrameHandler& frameHandler,
+           const InterruptHandler& blankHandler,
            const InterruptHandler& statHandler)
-    : blankHandler{blankHandler},
+    : frameHandler{frameHandler},
+      blankHandler{blankHandler},
       statHandler{statHandler},
       banks{TileBanks_::Create()},
       maps{TileMaps_::Create()},
@@ -135,6 +138,10 @@ void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
     }
 
     throw std::runtime_error{"LCD - Invalid write address."};
+}
+
+void Lcd_::FrameReady() const {
+    this->frameHandler(this->frame.Buffer());
 }
 
 void Lcd_::FireBlank() const {
