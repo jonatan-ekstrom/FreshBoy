@@ -23,6 +23,10 @@ constexpr auto Size{lcd::DisplayWidth * lcd::DisplayHeight};
 
 Framebuffer::Framebuffer() : buffer{Size, ShadeToPixel(Shade::Screen)} {}
 
+const Framebuffer::Pixels& Framebuffer::Buffer() const {
+    return this->buffer;
+}
+
 void Framebuffer::WriteLine(const Scanline& line,
                             const unsigned int index) {
     if (line.size() != lcd::DisplayWidth) {
@@ -38,8 +42,9 @@ void Framebuffer::WriteLine(const Scanline& line,
     std::transform(line.cbegin(), line.cend(), pos, DotToPixel);
 }
 
-const Framebuffer::Pixels& Framebuffer::Buffer() const {
-    return this->buffer;
+Framebuffer::Scanline Framebuffer::GetScreenLine() {
+    const Dot dot{Shade::Screen, Layer::Screen};
+    return Scanline{lcd::DisplayWidth, dot};
 }
 
 }

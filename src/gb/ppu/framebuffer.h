@@ -10,8 +10,9 @@ public:
     using Scanline = std::vector<Dot>;
     using Pixels = std::vector<std::uint32_t>;
     Framebuffer();
-    void WriteLine(const Scanline& line, unsigned int index);
     const Pixels& Buffer() const;
+    void WriteLine(const Scanline& line, unsigned int index);
+    static Scanline GetScreenLine();
 private:
     Pixels buffer;
 };
