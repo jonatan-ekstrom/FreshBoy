@@ -28,6 +28,7 @@ public:
     void Write(std::uint16_t address, std::uint8_t byte);
     void Tick(unsigned int cycles);
 private:
+    using Scanline = Framebuffer::Scanline;
     Lcd_(const FrameHandler& frameHandler,
          const InterruptHandler& blankHandler,
          const InterruptHandler& statHandler);
@@ -39,6 +40,9 @@ private:
     void HandleHBlank();
     void HandleVBlank();
     void WriteScanline();
+    Scanline GetBgLine();
+    Scanline GetWindowLine();
+    Scanline GetSpriteLine();
     FrameHandler frameHandler;
     InterruptHandler blankHandler;
     InterruptHandler statHandler;
