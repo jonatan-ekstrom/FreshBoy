@@ -31,7 +31,9 @@ Lcd_::Lcd_(const FrameHandler& frameHandler,
               this->palettes.Object1()},
       lcdc{},
       stat{[this] { FireBlank(); },
-           [this] { FireStat(); }} {}
+           [this] { FireStat(); }},
+      frame{},
+      cycleCount{0} {}
 
 std::uint8_t Lcd_::Read(const std::uint16_t address) const {
     // Tile banks
@@ -140,6 +142,26 @@ void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"LCD - Invalid write address."};
 }
 
+void Lcd_::Tick(const unsigned int cycles) {
+    this->cycleCount += cycles;
+    switch (this->stat.Mode()) {
+        case LcdMode::HBlank:
+            HandleHBlank();
+            return;
+        case LcdMode::VBlank:
+            HandleVBlank();
+            return;
+        case LcdMode::Oam:
+            HandleOam();
+            return;
+        case LcdMode::Transfer:
+            HandleTransfer();
+            return;
+        default:
+            throw std::runtime_error{"Unknown state in PPU state machine."};
+    }
+}
+
 void Lcd_::FrameReady() const {
     this->frameHandler(this->frame.Buffer());
 }
@@ -151,5 +173,63 @@ void Lcd_::FireBlank() const {
 void Lcd_::FireStat() const {
     this->statHandler();
 }
+
+void Lcd_::HandleOam() {
+    constexpr auto cyclesPerOam{80};
+    if (this->cycleCount < cyclesPerOam) return;
+    this->cycleCount %= cyclesPerOam;
+
+    // OAM search is done, time to write the scanline.
+    WriteScanline();
+
+    // Switch to scanline transfer.
+    this->stat.SetMode(LcdMode::Transfer);
+}
+
+void Lcd_::HandleTransfer() {
+    constexpr auto cyclesPerTransfer{172};
+    if (this->cycleCount < cyclesPerTransfer) return;
+    this->cycleCount %= cyclesPerTransfer;
+
+    // Scanline transfer is done, switch to HBlank.
+    this->stat.SetMode(LcdMode::HBlank);
+}
+
+void Lcd_::HandleHBlank() {
+    constexpr auto cyclesPerHBlank{204};
+    if (this->cycleCount < cyclesPerHBlank) return;
+    this->cycleCount %= cyclesPerHBlank;
+
+    constexpr auto lastLine{143};
+    const auto ly{this->stat.Ly()};
+    if (ly == lastLine) {
+        // This frame is done, render frame and switch to VBlank.
+        FrameReady();
+        this->stat.SetMode(LcdMode::VBlank);
+    } else {
+        // This scanline is done, switch to OAM search.
+        this->stat.SetMode(LcdMode::Oam);
+    }
+    // Start a new scanline.
+    this->stat.SetLy(ly + 1);
+}
+
+void Lcd_::HandleVBlank() {
+    constexpr auto cyclesPerVBlank{456};
+    if (this->cycleCount < cyclesPerVBlank) return;
+    this->cycleCount %= cyclesPerVBlank;
+
+    constexpr auto numLines{154};
+    const auto ly{this->stat.Ly()};
+    const auto newLy{static_cast<std::uint8_t>((ly + 1) % numLines)};
+    if (newLy == 0) {
+        // VBlank is done, switch to OAM search.
+        this->stat.SetMode(LcdMode::Oam);
+    }
+    // Start a new scanline.
+    this->stat.SetLy(newLy);
+}
+
+void Lcd_::WriteScanline() {}
 
 }

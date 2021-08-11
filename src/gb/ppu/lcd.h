@@ -26,6 +26,7 @@ public:
                       const InterruptHandler& statHandler);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
+    void Tick(unsigned int cycles);
 private:
     Lcd_(const FrameHandler& frameHandler,
          const InterruptHandler& blankHandler,
@@ -33,6 +34,11 @@ private:
     void FrameReady() const;
     void FireBlank() const;
     void FireStat() const;
+    void HandleOam();
+    void HandleTransfer();
+    void HandleHBlank();
+    void HandleVBlank();
+    void WriteScanline();
     FrameHandler frameHandler;
     InterruptHandler blankHandler;
     InterruptHandler statHandler;
@@ -46,6 +52,7 @@ private:
     LcdControl lcdc;
     LcdStat stat;
     Framebuffer frame;
+    unsigned int cycleCount;
 };
 
 }
