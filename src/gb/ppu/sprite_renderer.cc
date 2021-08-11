@@ -37,16 +37,7 @@ SpriteRenderer::SpriteRenderer(TileBanks banks, SpriteTable table, Palette obp0,
       table{std::move(table)},
       obp0{std::move(obp0)},
       obp1{std::move(obp1)},
-      enabled{false},
       spriteSize{SpriteSize::Small} {}
-
-void SpriteRenderer::Enable() {
-    this->enabled = true;
-}
-
-void SpriteRenderer::Disable() {
-    this->enabled = false;
-}
 
 void SpriteRenderer::LargeSprites() {
     this->spriteSize = SpriteSize::Large;
@@ -62,9 +53,6 @@ std::vector<Dot> SpriteRenderer::RenderScanline(const unsigned int line) const {
     }
 
     auto scanline{GetLine()};
-    if (!this->enabled) {
-        return scanline;
-    }
 
     // Get (up to 10) sprites matching this scanline sorted in priority order.
     const auto sprites{this->table->GetSpritesToRender(line, this->spriteSize)};

@@ -10,9 +10,6 @@ namespace gb {
 
 class BgBase {
 public:
-    bool Enabled() const;
-    void Enable();
-    void Disable();
     void UseBank(TileBank bank);
     void UseMap(TileMap map);
     std::uint8_t Read(std::uint16_t address) const;
@@ -29,7 +26,6 @@ private:
     TileBanks banks;
     TileMaps maps;
     Palette palette;
-    bool enabled;
     std::uint16_t baseAddress;
     std::uint8_t xReg;
     std::uint8_t yReg;

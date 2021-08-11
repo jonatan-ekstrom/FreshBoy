@@ -9,24 +9,11 @@ BgBase::BgBase(TileBanks banks, TileMaps maps, Palette palette,
     : banks{std::move(banks)},
       maps{std::move(maps)},
       palette{std::move(palette)},
-      enabled{false},
       baseAddress{address},
       xReg{0},
       yReg{0},
       activeBank{TileBank::Low},
       activeMap{TileMap::Low} {}
-
-bool BgBase::Enabled() const {
-    return this->enabled;
-}
-
-void BgBase::Enable() {
-    this->enabled = true;
-}
-
-void BgBase::Disable() {
-    this->enabled = false;
-}
 
 void BgBase::UseBank(const TileBank bank) {
     this->activeBank = bank;

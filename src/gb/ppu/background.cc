@@ -21,9 +21,7 @@ constexpr auto Address{0xFF42};
 namespace gb {
 
 Background::Background(TileBanks banks, TileMaps maps, Palette palette)
-    : BgBase{std::move(banks), std::move(maps), std::move(palette), Address} {
-    Enable();
-}
+    : BgBase{std::move(banks), std::move(maps), std::move(palette), Address} {}
 
 std::vector<Dot> Background::RenderScanline(const unsigned int line) const {
     if (line >= lcd::DisplayHeight) {
@@ -31,9 +29,6 @@ std::vector<Dot> Background::RenderScanline(const unsigned int line) const {
     }
 
     auto scanline{GetLine()};
-    if (!Enabled()) {
-        return scanline;
-    }
 
     constexpr auto mapSize{256};
     const auto displayY{line};

@@ -10,8 +10,6 @@ namespace gb {
 class SpriteRenderer {
 public:
     SpriteRenderer(TileBanks banks, SpriteTable table, Palette obp0, Palette obp1);
-    void Enable();
-    void Disable();
     void LargeSprites();
     void SmallSprites();
     std::vector<Dot> RenderScanline(unsigned int line) const;
@@ -25,7 +23,6 @@ private:
     SpriteTable table;
     Palette obp0;
     Palette obp1;
-    bool enabled;
     SpriteSize spriteSize;
 };
 

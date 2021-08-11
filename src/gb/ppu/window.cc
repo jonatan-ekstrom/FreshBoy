@@ -29,9 +29,6 @@ std::vector<Dot> Window::RenderScanline(const unsigned int line) const {
     }
 
     auto scanline{GetLine()};
-    if (!Enabled()) {
-        return scanline;
-    }
 
     const auto originY{Y()};
     if (line < originY) {
