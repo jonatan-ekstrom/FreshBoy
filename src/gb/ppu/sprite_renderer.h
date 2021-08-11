@@ -10,8 +10,7 @@ namespace gb {
 class SpriteRenderer {
 public:
     SpriteRenderer(TileBanks banks, SpriteTable table, Palette obp0, Palette obp1);
-    void LargeSprites();
-    void SmallSprites();
+    void SetSize(SpriteSize size);
     std::vector<Dot> RenderScanline(unsigned int line) const;
 private:
     Dot GetDot(const std::vector<const Sprite*>& sprites,

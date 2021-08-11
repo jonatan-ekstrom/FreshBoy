@@ -39,12 +39,9 @@ SpriteRenderer::SpriteRenderer(TileBanks banks, SpriteTable table, Palette obp0,
       obp1{std::move(obp1)},
       spriteSize{SpriteSize::Small} {}
 
-void SpriteRenderer::LargeSprites() {
-    this->spriteSize = SpriteSize::Large;
-}
 
-void SpriteRenderer::SmallSprites() {
-    this->spriteSize = SpriteSize::Small;
+void SpriteRenderer::SetSize(const SpriteSize size) {
+    this->spriteSize = size;
 }
 
 std::vector<Dot> SpriteRenderer::RenderScanline(const unsigned int line) const {
