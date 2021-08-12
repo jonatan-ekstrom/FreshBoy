@@ -7,6 +7,7 @@ add_library(gb STATIC ${gbSources})
 
 # Recurse into subdirectories.
 add_subdirectory(cart)
+add_subdirectory(mmu)
 add_subdirectory(ppu)
 
 # Reference the 'media' library.
