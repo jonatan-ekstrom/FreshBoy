@@ -26,6 +26,7 @@ public:
                       const InterruptHandler& statHandler);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
+    void DmaTransfer(const std::vector<std::uint8_t>& data);
     void Tick(unsigned int cycles);
 private:
     using Scanline = Framebuffer::Scanline;

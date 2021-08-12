@@ -11,6 +11,7 @@ Memory::Memory(Cartridge cart, Lcd lcd)
       boot{dmg::BootRom.cbegin(), dmg::BootRom.cend()},
       wram(0x2000),
       hram(0x7F),
+      dma{0},
       bank{0} {}
 
 std::uint8_t Memory::Read(const std::uint16_t address) const {
@@ -184,7 +185,7 @@ std::uint8_t gb::Memory::ReadIo(const std::uint16_t address) const {
 
     // DMA
     if (address == 0xFF46) {
-        return 0; // TODO - DMA
+        return this->dma;
     }
 
     // LCD
@@ -234,7 +235,8 @@ void gb::Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
 
     // DMA
     if (address == 0xFF46) {
-        return; // TODO - DMA
+        DmaTransfer(byte);
+        return;
     }
 
     // LCD
@@ -250,4 +252,16 @@ void gb::Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
     }
 
     throw std::runtime_error{"MMU - invalid write address"};
+}
+
+void gb::Memory::DmaTransfer(const std::uint8_t byte) {
+    constexpr auto numBytes{160};
+    std::vector<std::uint8_t> data(numBytes);
+    std::uint16_t src{static_cast<uint16_t>(byte * 0x100)};
+    for (auto& b : data) {
+        b = Read(src++);
+    }
+
+    this->lcd->DmaTransfer(data);
+    this->dma = byte;
 }
