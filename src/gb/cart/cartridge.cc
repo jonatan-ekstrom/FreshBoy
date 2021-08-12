@@ -31,10 +31,10 @@ Cartridge Cartridge_::Create(const std::string& filePath) {
     Cartridge res;
     switch (header.Type()) {
         case CartridgeType::RomOnly:
-            res = std::make_unique<RomOnly>(filePath, std::move(header));
+            res = std::make_shared<RomOnly>(filePath, std::move(header));
             break;
         case CartridgeType::MBC1:
-            res = std::make_unique<MBC1>(filePath, std::move(header));
+            res = std::make_shared<MBC1>(filePath, std::move(header));
             break;
         case CartridgeType::MBC2:
         case CartridgeType::MBC3:

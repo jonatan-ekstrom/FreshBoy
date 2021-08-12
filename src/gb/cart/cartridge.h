@@ -8,7 +8,7 @@
 namespace gb {
 
 class Cartridge_;
-using Cartridge = std::unique_ptr<Cartridge_>;
+using Cartridge = std::shared_ptr<Cartridge_>;
 
 class Cartridge_ {
 public:
