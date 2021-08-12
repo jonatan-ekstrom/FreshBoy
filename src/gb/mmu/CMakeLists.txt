@@ -1,6 +1,6 @@
 # List MMU header and source files.
-set(mmuHeaders boot.h mmu.h)
-set(mmuSources mmu.cc)
+set(mmuHeaders boot.h memory.h)
+set(mmuSources memory.cc)
 
 # Add cartridge sources to 'gb' target.
 target_sources(gb PRIVATE ${mmuSources})
