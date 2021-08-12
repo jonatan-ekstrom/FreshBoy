@@ -1,5 +1,5 @@
 # List MMU header and source files.
-set(mmuHeaders mmu.h)
+set(mmuHeaders boot.h mmu.h)
 set(mmuSources mmu.cc)
 
 # Add cartridge sources to 'gb' target.
