@@ -16,7 +16,7 @@ private:
     bool BootRomEnabled() const;
     std::uint8_t ReadIo(std::uint16_t address) const;
     void WriteIo(std::uint16_t address, std::uint8_t byte);
-    void DmaTransfer(const uint8_t byte);
+    void DmaTransfer(uint8_t byte);
     Cartridge cart;
     Lcd lcd;
     MemBlock boot;

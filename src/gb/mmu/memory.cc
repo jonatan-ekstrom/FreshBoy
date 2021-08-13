@@ -146,13 +146,11 @@ void Memory::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"MMU - invalid write address."};
 }
 
-}
-
-bool gb::Memory::BootRomEnabled() const {
+bool Memory::BootRomEnabled() const {
     return this->bank == 0;
 }
 
-std::uint8_t gb::Memory::ReadIo(const std::uint16_t address) const {
+std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
     // Input
     if (address == 0xFF00) {
         return 0; // TODO - Input
@@ -201,7 +199,7 @@ std::uint8_t gb::Memory::ReadIo(const std::uint16_t address) const {
     throw std::runtime_error{"MMU - invalid read address"};
 }
 
-void gb::Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
+void Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
     // Input
     if (address == 0xFF00) {
         return; // TODO - Input
@@ -254,7 +252,7 @@ void gb::Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"MMU - invalid write address"};
 }
 
-void gb::Memory::DmaTransfer(const std::uint8_t byte) {
+void Memory::DmaTransfer(const std::uint8_t byte) {
     constexpr auto numBytes{160};
     std::uint16_t src{static_cast<uint16_t>(byte * 0x100)};
     std::uint16_t dst{0xFE00};
@@ -262,4 +260,6 @@ void gb::Memory::DmaTransfer(const std::uint8_t byte) {
         this->lcd->Write(dst++, Read(src++));
     }
     this->dma = byte;
+}
+
 }
