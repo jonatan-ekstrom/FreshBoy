@@ -1,6 +1,7 @@
 #include "lcd.h"
 #include <algorithm>
 #include <stdexcept>
+#include <vector>
 
 namespace {
 
@@ -153,16 +154,6 @@ void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
     }
 
     throw std::runtime_error{"LCD - Invalid write address."};
-}
-
-void Lcd_::DmaTransfer(const std::vector<std::uint8_t>& data) {
-    if (data.size() != 160) {
-        throw std::runtime_error{"LCD - Unexpected size of DMA transfer."};
-    }
-    std::uint16_t dst{0xFE00};
-    for (const auto byte : data) {
-        this->table->Write(dst++, byte);
-    }
 }
 
 void Lcd_::Tick(const unsigned int cycles) {

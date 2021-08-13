@@ -256,12 +256,10 @@ void gb::Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
 
 void gb::Memory::DmaTransfer(const std::uint8_t byte) {
     constexpr auto numBytes{160};
-    std::vector<std::uint8_t> data(numBytes);
     std::uint16_t src{static_cast<uint16_t>(byte * 0x100)};
-    for (auto& b : data) {
-        b = Read(src++);
+    std::uint16_t dst{0xFE00};
+    for (auto i{0}; i < numBytes; ++i) {
+        this->lcd->Write(dst++, Read(src++));
     }
-
-    this->lcd->DmaTransfer(data);
     this->dma = byte;
 }
