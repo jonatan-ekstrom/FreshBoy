@@ -5,6 +5,7 @@
 #include "input.h"
 #include "interrupt.h"
 #include "lcd.h"
+#include "serial.h"
 #include "timer.h"
 
 namespace gb {
@@ -12,7 +13,7 @@ namespace gb {
 class Memory {
 public:
     Memory(Cartridge cart, Input input, InterruptManager interrupts,
-           Lcd lcd, Timer timer);
+           Lcd lcd, Serial serial, Timer timer);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
 private:
@@ -25,6 +26,7 @@ private:
     Input input;
     InterruptManager interrupts;
     Lcd lcd;
+    Serial serial;
     Timer timer;
     MemBlock boot;
     MemBlock wram;
