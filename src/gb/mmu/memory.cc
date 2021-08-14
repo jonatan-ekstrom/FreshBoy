@@ -73,6 +73,7 @@ std::uint8_t Memory::Read(const std::uint16_t address) const {
         return this->hram[address - 0xFF80];
     }
 
+    // IE
     if (address == 0xFFFF) {
         return this->interrupts->Read(address);
     }
@@ -143,6 +144,7 @@ void Memory::Write(const std::uint16_t address, const std::uint8_t byte) {
         return;
     }
 
+    // IE
     if (address == 0xFFFF) {
         this->interrupts->Write(address, byte);
         return;
@@ -171,7 +173,7 @@ std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
         return this->timer->Read(address);
     }
 
-    // Interrupt
+    // IF
     if (address == 0xFF0F) {
         return this->interrupts->Read(address);
     }
@@ -222,7 +224,7 @@ void Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
         return;
     }
 
-    // Interrupt
+    // IF
     if (address == 0xFF0F) {
         this->interrupts->Write(address, byte);
         return;
