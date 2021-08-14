@@ -1,6 +1,6 @@
 # List misc header and source files.
-set(miscHeaders input.h timer.h)
-set(miscSources input.cc timer.cc)
+set(miscHeaders input.h serial.h timer.h)
+set(miscSources input.cc serial.cc timer.cc)
 
 # Add cartridge sources to 'gb' target.
 target_sources(gb PRIVATE ${miscSources})
