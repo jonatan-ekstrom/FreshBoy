@@ -9,6 +9,7 @@ add_library(gb STATIC ${gbSources})
 add_subdirectory(apu)
 add_subdirectory(cpu)
 add_subdirectory(cart)
+add_subdirectory(misc)
 add_subdirectory(mmu)
 add_subdirectory(ppu)
 
