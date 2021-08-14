@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace gb {
@@ -12,9 +13,12 @@ enum class Interrupt {
     Joypad
 };
 
-class InterruptManager {
+class InterruptManager_;
+using InterruptManager = std::shared_ptr<InterruptManager_>;
+
+class InterruptManager_ {
 public:
-    InterruptManager();
+    static InterruptManager Create();
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
     std::vector<Interrupt> PendingInterrupts() const;
@@ -23,6 +27,7 @@ public:
     void RequestInterrupt(Interrupt intr);
     void AcknowledgeInterrupt(Interrupt intr);
 private:
+    InterruptManager_();
     bool ime;
     std::uint8_t flags;
     std::uint8_t enabled;
