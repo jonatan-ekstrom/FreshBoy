@@ -5,9 +5,10 @@
 
 namespace gb {
 
-Memory::Memory(Cartridge cart, Lcd lcd)
+Memory::Memory(Cartridge cart, Lcd lcd, InterruptManager interrupts)
     : cart{std::move(cart)},
       lcd{std::move(lcd)},
+      interrupts{std::move(interrupts)},
       boot{dmg::BootRom.cbegin(), dmg::BootRom.cend()},
       wram(0x2000),
       hram(0x7F),
@@ -70,7 +71,7 @@ std::uint8_t Memory::Read(const std::uint16_t address) const {
     }
 
     if (address == 0xFFFF) {
-        return 0; // TODO - Interrupt handler.
+        return this->interrupts->Read(address);
     }
 
     throw std::runtime_error{"MMU - invalid read address."};
@@ -140,7 +141,8 @@ void Memory::Write(const std::uint16_t address, const std::uint8_t byte) {
     }
 
     if (address == 0xFFFF) {
-        return; // TODO - Interrupt handler.
+        this->interrupts->Write(address, byte);
+        return;
     }
 
     throw std::runtime_error{"MMU - invalid write address."};
@@ -168,7 +170,7 @@ std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
 
     // Interrupt
     if (address == 0xFF0F) {
-        return 0; // TODO - Interrupt
+        return this->interrupts->Read(address);
     }
 
     // APU
@@ -217,7 +219,8 @@ void Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
 
     // Interrupt
     if (address == 0xFF0F) {
-        return; // TODO - Interrupt
+        this->interrupts->Write(address, byte);
+        return;
     }
 
     // APU
