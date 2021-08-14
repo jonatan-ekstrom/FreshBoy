@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <memory>
 #include "interrupt.h"
 
 namespace gb {
@@ -10,13 +11,17 @@ enum class TimerState {
     Load
 };
 
-class Timer {
+class Timer_;
+using Timer = std::shared_ptr<Timer_>;
+
+class Timer_ {
 public:
-    explicit Timer(InterruptManager interrupts);
+    static Timer Create(InterruptManager interrupts);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
     void Tick(unsigned int cycles);
 private:
+    explicit Timer_(InterruptManager&& interrupts);
     bool Output() const;
     std::uint8_t Div() const;
     void FireInterrupt() const;

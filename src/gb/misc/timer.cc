@@ -18,7 +18,7 @@ constexpr bool BitSet(const T reg, const unsigned int bit) {
 
 namespace gb {
 
-Timer::Timer(InterruptManager interrupts)
+Timer_::Timer_(InterruptManager&& interrupts)
     : interrupts{std::move(interrupts)},
       ticks{0},
       tima{0},
@@ -27,7 +27,11 @@ Timer::Timer(InterruptManager interrupts)
       state{TimerState::Normal},
       stateCounter{0} {}
 
-std::uint8_t Timer::Read(const std::uint16_t address) const {
+Timer Timer_::Create(InterruptManager interrupts) {
+    return Timer{new Timer_{std::move(interrupts)}};
+}
+
+std::uint8_t Timer_::Read(const std::uint16_t address) const {
     if (address == DivAddress) {
         return Div();
     }
@@ -47,7 +51,7 @@ std::uint8_t Timer::Read(const std::uint16_t address) const {
     throw std::runtime_error{"Timer - invalid read address."};
 }
 
-void Timer::Write(const std::uint16_t address, const std::uint8_t byte) {
+void Timer_::Write(const std::uint16_t address, const std::uint8_t byte) {
     if (address == DivAddress) {
         Reset();
         return;
@@ -71,13 +75,13 @@ void Timer::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"Timer - invalid write address."};
 }
 
-void Timer::Tick(const unsigned int cycles) {
+void Timer_::Tick(const unsigned int cycles) {
     for (auto i{0u}; i < cycles; ++i) {
         Tick();
     }
 }
 
-bool Timer::Output() const {
+bool Timer_::Output() const {
     const auto enabled{BitSet(this->tac, 2)};
     if (!enabled) return false;
 
@@ -103,15 +107,15 @@ bool Timer::Output() const {
     return BitSet(this->ticks, bit);
 }
 
-std::uint8_t Timer::Div() const {
+std::uint8_t Timer_::Div() const {
     return static_cast<std::uint8_t>((this->ticks >> 8) & 0xFF);
 }
 
-void Timer::FireInterrupt() const {
+void Timer_::FireInterrupt() const {
     this->interrupts->RequestInterrupt(Interrupt::Timer);
 }
 
-void Timer::Reset() {
+void Timer_::Reset() {
     const auto prev{Output()};
     this->ticks = 0;
     if (prev) {
@@ -119,7 +123,7 @@ void Timer::Reset() {
     }
 }
 
-void Timer::TimaWrite(const std::uint8_t byte) {
+void Timer_::TimaWrite(const std::uint8_t byte) {
     switch (this->state) {
         case TimerState::Normal:
             this->tima = byte;
@@ -136,14 +140,14 @@ void Timer::TimaWrite(const std::uint8_t byte) {
     }
 }
 
-void Timer::TmaWrite(const std::uint8_t byte) {
+void Timer_::TmaWrite(const std::uint8_t byte) {
     this->tma = byte;
     if (this->state == TimerState::Load) {
         LoadTima();
     }
 }
 
-void Timer::TacWrite(const std::uint8_t byte) {
+void Timer_::TacWrite(const std::uint8_t byte) {
     const auto prev{Output()};
     this->tac = byte & 0x07;
     const auto curr{Output()};
@@ -152,21 +156,21 @@ void Timer::TacWrite(const std::uint8_t byte) {
     }
 }
 
-void Timer::Tick() {
+void Timer_::Tick() {
     RunStateMachine();
     if (IncrementCounter()) {
         TimaTick();
     }
 }
 
-void Timer::TimaTick() {
+void Timer_::TimaTick() {
     ++this->tima;
     if (this->tima == 0) {
         GotoState(TimerState::Overflow);
     }
 }
 
-void Timer::RunStateMachine() {
+void Timer_::RunStateMachine() {
     constexpr auto cycleLength{4};
     ++this->stateCounter;
     switch (this->state) {
@@ -190,18 +194,18 @@ void Timer::RunStateMachine() {
     }
 }
 
-bool Timer::IncrementCounter() {
+bool Timer_::IncrementCounter() {
     const auto prev{Output()};
     ++this->ticks;
     const auto curr{Output()};
     return (prev && !curr);
 }
 
-void Timer::LoadTima() {
+void Timer_::LoadTima() {
     this->tima = this->tma;
 }
 
-void Timer::GotoState(const TimerState newState) {
+void Timer_::GotoState(const TimerState newState) {
     this->state = newState;
     this->stateCounter = 0;
 }
