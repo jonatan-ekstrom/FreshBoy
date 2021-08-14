@@ -4,6 +4,7 @@
 #include "cartridge.h"
 #include "interrupt.h"
 #include "lcd.h"
+#include "timer.h"
 
 namespace gb {
 
@@ -21,6 +22,7 @@ private:
     Cartridge cart;
     Lcd lcd;
     InterruptManager interrupts;
+    Timer timer;
     MemBlock boot;
     MemBlock wram;
     MemBlock hram;

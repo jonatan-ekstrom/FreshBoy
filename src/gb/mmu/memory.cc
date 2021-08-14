@@ -9,6 +9,7 @@ Memory::Memory(Cartridge cart, Lcd lcd, InterruptManager interrupts)
     : cart{std::move(cart)},
       lcd{std::move(lcd)},
       interrupts{std::move(interrupts)},
+      timer{this->interrupts},
       boot{dmg::BootRom.cbegin(), dmg::BootRom.cend()},
       wram(0x2000),
       hram(0x7F),
@@ -165,7 +166,7 @@ std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
 
     // Timer
     if (address >= 0xFF04 && address <= 0xFF07) {
-        return 0; // TODO - Timer
+        return this->timer.Read(address);
     }
 
     // Interrupt
@@ -214,7 +215,8 @@ void Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
 
     // Timer
     if (address >= 0xFF04 && address <= 0xFF07) {
-        return; // TODO - Timer
+        this->timer.Write(address, byte);
+        return;
     }
 
     // Interrupt
