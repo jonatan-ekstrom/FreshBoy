@@ -5,8 +5,9 @@
 
 namespace gb {
 
-Memory::Memory(Cartridge cart, Lcd lcd, InterruptManager interrupts)
+Memory::Memory(Cartridge cart, Input input, Lcd lcd, InterruptManager interrupts)
     : cart{std::move(cart)},
+      input{std::move(input)},
       lcd{std::move(lcd)},
       interrupts{std::move(interrupts)},
       timer{this->interrupts},
@@ -156,7 +157,7 @@ bool Memory::BootRomEnabled() const {
 std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
     // Input
     if (address == 0xFF00) {
-        return 0; // TODO - Input
+        return this->input->Read();
     }
 
     // Serial
@@ -205,7 +206,8 @@ std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
 void Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
     // Input
     if (address == 0xFF00) {
-        return; // TODO - Input
+        this->input->Write(byte);
+        return;
     }
 
     // Serial

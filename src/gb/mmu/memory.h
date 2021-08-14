@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include "cartridge.h"
+#include "input.h"
 #include "interrupt.h"
 #include "lcd.h"
 #include "timer.h"
@@ -10,7 +11,7 @@ namespace gb {
 
 class Memory {
 public:
-    Memory(Cartridge cart, Lcd lcd, InterruptManager interrupts);
+    Memory(Cartridge cart, Input input, Lcd lcd, InterruptManager interrupts);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
 private:
@@ -20,6 +21,7 @@ private:
     void WriteIo(std::uint16_t address, std::uint8_t byte);
     void DmaTransfer(uint8_t byte);
     Cartridge cart;
+    Input input;
     Lcd lcd;
     InterruptManager interrupts;
     Timer timer;
