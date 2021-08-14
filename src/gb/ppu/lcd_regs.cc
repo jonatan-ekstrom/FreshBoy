@@ -1,5 +1,6 @@
 #include "lcd_regs.h"
 #include <stdexcept>
+#include <utility>
 
 namespace {
 
@@ -69,10 +70,8 @@ bool LcdControl::BackgroundEnabled() const {
     return BitSet(this->lcdc, 0);
 }
 
-LcdStat::LcdStat(const InterruptHandler& blankHandler,
-                 const InterruptHandler& statHandler)
-    : blankHandler{blankHandler},
-      statHandler{statHandler},
+LcdStat::LcdStat(InterruptManager&& interrupts)
+    : interrupts{std::move(interrupts)},
       blankLine{false},
       statLine{false},
       stat{0x86}, // 1000 0110
@@ -158,11 +157,11 @@ bool LcdStat::UpdateStatLine() {
 }
 
 void LcdStat::FireBlank() const {
-    this->blankHandler();
+    this->interrupts->RequestInterrupt(Interrupt::VBlank);
 }
 
 void LcdStat::FireStat() const {
-    this->statHandler();
+    this->interrupts->RequestInterrupt(Interrupt::Stat);
 }
 
 }

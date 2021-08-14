@@ -4,6 +4,7 @@
 #include <memory>
 #include "background.h"
 #include "framebuffer.h"
+#include "interrupt.h"
 #include "lcd_regs.h"
 #include "palettes.h"
 #include "sprite_renderer.h"
@@ -20,21 +21,14 @@ using Lcd = std::shared_ptr<Lcd_>;
 class Lcd_ {
 public:
     using FrameHandler = std::function<void(const Framebuffer::Pixels&)>;
-    using InterruptHandler = std::function<void(void)>;
-    static Lcd Create(const FrameHandler& frameHandler,
-                      const InterruptHandler& blankHandler,
-                      const InterruptHandler& statHandler);
+    static Lcd Create(InterruptManager interrupts, const FrameHandler& frameHandler);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
     void Tick(unsigned int cycles);
 private:
     using Scanline = Framebuffer::Scanline;
-    Lcd_(const FrameHandler& frameHandler,
-         const InterruptHandler& blankHandler,
-         const InterruptHandler& statHandler);
+    Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler);
     void FrameReady() const;
-    void FireBlank() const;
-    void FireStat() const;
     void HandleOam();
     void HandleTransfer();
     void HandleHBlank();
@@ -44,8 +38,6 @@ private:
     Scanline GetWindowLine();
     Scanline GetSpriteLine();
     FrameHandler frameHandler;
-    InterruptHandler blankHandler;
-    InterruptHandler statHandler;
     TileBanks banks;
     TileMaps maps;
     SpriteTable table;
@@ -53,8 +45,8 @@ private:
     Background bg;
     Window window;
     SpriteRenderer sprites;
-    LcdControl lcdc;
     LcdStat stat;
+    LcdControl lcdc;
     Framebuffer frame;
     unsigned int cycleCount;
 };

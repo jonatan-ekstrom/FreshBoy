@@ -1,6 +1,7 @@
 #include "lcd.h"
 #include <algorithm>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -17,18 +18,12 @@ void Merge(std::vector<gb::Dot>& dst, const std::vector<gb::Dot>& src) {
 
 namespace gb {
 
-Lcd Lcd_::Create(const FrameHandler& frameHandler,
-                 const InterruptHandler& blankHandler,
-                 const InterruptHandler& statHandler) {
-    return Lcd{new Lcd_{frameHandler, blankHandler, statHandler}};
+Lcd Lcd_::Create(InterruptManager interrupts, const FrameHandler& frameHandler) {
+    return Lcd{new Lcd_{std::move(interrupts), frameHandler}};
 }
 
-Lcd_::Lcd_(const FrameHandler& frameHandler,
-           const InterruptHandler& blankHandler,
-           const InterruptHandler& statHandler)
+Lcd_::Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler)
     : frameHandler{frameHandler},
-      blankHandler{blankHandler},
-      statHandler{statHandler},
       banks{TileBanks_::Create()},
       maps{TileMaps_::Create()},
       table{SpriteTable_::Create()},
@@ -43,9 +38,8 @@ Lcd_::Lcd_(const FrameHandler& frameHandler,
               this->table,
               this->palettes.Object0(),
               this->palettes.Object1()},
+      stat{std::move(interrupts)},
       lcdc{},
-      stat{[this] { FireBlank(); },
-           [this] { FireStat(); }},
       frame{},
       cycleCount{0} {}
 
@@ -178,14 +172,6 @@ void Lcd_::Tick(const unsigned int cycles) {
 
 void Lcd_::FrameReady() const {
     this->frameHandler(this->frame.Buffer());
-}
-
-void Lcd_::FireBlank() const {
-    this->blankHandler();
-}
-
-void Lcd_::FireStat() const {
-    this->statHandler();
 }
 
 void Lcd_::HandleOam() {

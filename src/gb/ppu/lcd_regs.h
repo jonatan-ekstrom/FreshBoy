@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include <functional>
+#include "interrupt.h"
 #include "sprite_table.h"
 #include "tile_banks.h"
 #include "tile_maps.h"
@@ -33,9 +33,7 @@ enum class LcdMode {
 
 class LcdStat {
 public:
-    using InterruptHandler = std::function<void(void)>;
-    LcdStat(const InterruptHandler& blankHandler,
-            const InterruptHandler& statHandler);
+    explicit LcdStat(InterruptManager&& interrupts);
     LcdMode Mode() const;
     std::uint8_t Ly() const;
     std::uint8_t Read(std::uint16_t address) const;
@@ -49,8 +47,7 @@ private:
     bool UpdateStatLine();
     void FireBlank() const;
     void FireStat() const;
-    InterruptHandler blankHandler;
-    InterruptHandler statHandler;
+    InterruptManager interrupts;
     bool blankLine;
     bool statLine;
     std::uint8_t stat;
