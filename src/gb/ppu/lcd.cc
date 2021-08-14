@@ -44,6 +44,10 @@ Lcd_::Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler)
       cycleCount{0} {}
 
 std::uint8_t Lcd_::Read(const std::uint16_t address) const {
+    if (!Accessible(address)) {
+        return 0xFF;
+    }
+
     // Tile banks
     if (address >= 0x8000 && address <= 0x97FF) {
         return this->banks->Read(address);
@@ -93,6 +97,10 @@ std::uint8_t Lcd_::Read(const std::uint16_t address) const {
 }
 
 void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
+    if (!Accessible(address)) {
+        return;
+    }
+
     // Tile banks
     if (address >= 0x8000 && address <= 0x97FF) {
         this->banks->Write(address, byte);
@@ -168,6 +176,22 @@ void Lcd_::Tick(const unsigned int cycles) {
         default:
             throw std::runtime_error{"Unknown state in PPU state machine."};
     }
+}
+
+bool Lcd_::Accessible(const std::uint16_t address) const {
+    const auto mode{this->stat.Mode()};
+
+    // VRAM
+    if (address >= 0x8000 && address <= 0x9FFF) {
+        return mode != LcdMode::Transfer;
+    }
+
+    // OAM
+    if (address >= 0xFE00 && address <= 0xFE9F) {
+        return mode == LcdMode::HBlank || mode == LcdMode::VBlank;
+    }
+
+    return true;
 }
 
 void Lcd_::FrameReady() const {

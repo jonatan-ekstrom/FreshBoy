@@ -28,6 +28,7 @@ public:
 private:
     using Scanline = Framebuffer::Scanline;
     Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler);
+    bool Accessible(std::uint16_t address) const;
     void FrameReady() const;
     void HandleOam();
     void HandleTransfer();
