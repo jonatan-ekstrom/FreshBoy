@@ -12,6 +12,7 @@ add_subdirectory(cart)
 add_subdirectory(misc)
 add_subdirectory(mmu)
 add_subdirectory(ppu)
+add_subdirectory(utils)
 
 # Reference the 'media' library.
 target_link_libraries(gb PUBLIC media)
