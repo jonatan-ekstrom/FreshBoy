@@ -11,7 +11,8 @@ namespace gb {
 
 class Memory {
 public:
-    Memory(Cartridge cart, Input input, Lcd lcd, InterruptManager interrupts);
+    Memory(Cartridge cart, Input input, InterruptManager interrupts,
+           Lcd lcd, Timer timer);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
 private:
@@ -22,8 +23,8 @@ private:
     void DmaTransfer(uint8_t byte);
     Cartridge cart;
     Input input;
-    Lcd lcd;
     InterruptManager interrupts;
+    Lcd lcd;
     Timer timer;
     MemBlock boot;
     MemBlock wram;

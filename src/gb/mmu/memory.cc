@@ -5,12 +5,13 @@
 
 namespace gb {
 
-Memory::Memory(Cartridge cart, Input input, Lcd lcd, InterruptManager interrupts)
+Memory::Memory(Cartridge cart, Input input, InterruptManager interrupts,
+               Lcd lcd, Timer timer)
     : cart{std::move(cart)},
       input{std::move(input)},
-      lcd{std::move(lcd)},
       interrupts{std::move(interrupts)},
-      timer{this->interrupts},
+      lcd{std::move(lcd)},
+      timer{std::move(timer)},
       boot{dmg::BootRom.cbegin(), dmg::BootRom.cend()},
       wram(0x2000),
       hram(0x7F),
@@ -167,7 +168,7 @@ std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
 
     // Timer
     if (address >= 0xFF04 && address <= 0xFF07) {
-        return this->timer.Read(address);
+        return this->timer->Read(address);
     }
 
     // Interrupt
@@ -217,7 +218,7 @@ void Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
 
     // Timer
     if (address >= 0xFF04 && address <= 0xFF07) {
-        this->timer.Write(address, byte);
+        this->timer->Write(address, byte);
         return;
     }
 
