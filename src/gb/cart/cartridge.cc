@@ -81,8 +81,7 @@ u16 RomOnly::Checksum() const {
     return sum;
 }
 
-MBC::MBC(Header&& header)
-    : Cartridge_{std::move(header)} {}
+MBC::MBC(Header&& header) : Cartridge_{std::move(header)} {}
 
 MBC1::MBC1(const std::string& filePath, Header&& header)
     : MBC{std::move(header)},

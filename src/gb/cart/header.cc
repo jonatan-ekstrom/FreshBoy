@@ -288,23 +288,23 @@ u16 Header::CartridgeChecksum() const {
 std::string Header::PrettyPrint() const {
     std::ostringstream ss;
     ss << "------------ Contents of ROM header ------------\n"
-        << "Title: " << Title() << '\n'
-        << "Type: " << TypeCode() << " - " << TypeStr() << '\n'
-        << "Version: " << static_cast<int>(VersionNumber()) << '\n'
-        << "ROM Size: " << RomStr() << '\n'
-        << "RAM Size: " << RamStr() << '\n'
-        << "Japanese: " << (Japanese() ? "Yes" : "No") << '\n'
-        << "Licensee: " << Licensee() << '\n'
-        << "New Licensee: " << NewLicenseeCode() << '\n'
-        << "Manufacturer: " << ManufacturerCode() << '\n'
-        << "CGB Flag: " << CgbFlag() << '\n'
-        << "SGB Flag: " << SgbFlag() << '\n'
-        << "Entry: " << Entry() << '\n'
-        << "--------------------- Logo ---------------------\n"
-        << Logo()
-        << "------------------------------------------------\n"
-        << "Header checksum: " << static_cast<int>(Checksum()) << '\n'
-        << "Cartridge checksum: " << CartridgeChecksum() << std::endl;
+       << "Title: " << Title() << '\n'
+       << "Type: " << TypeCode() << " - " << TypeStr() << '\n'
+       << "Version: " << static_cast<int>(VersionNumber()) << '\n'
+       << "ROM Size: " << RomStr() << '\n'
+       << "RAM Size: " << RamStr() << '\n'
+       << "Japanese: " << (Japanese() ? "Yes" : "No") << '\n'
+       << "Licensee: " << Licensee() << '\n'
+       << "New Licensee: " << NewLicenseeCode() << '\n'
+       << "Manufacturer: " << ManufacturerCode() << '\n'
+       << "CGB Flag: " << CgbFlag() << '\n'
+       << "SGB Flag: " << SgbFlag() << '\n'
+       << "Entry: " << Entry() << '\n'
+       << "--------------------- Logo ---------------------\n"
+       << Logo()
+       << "------------------------------------------------\n"
+       << "Header checksum: " << static_cast<int>(Checksum()) << '\n'
+       << "Cartridge checksum: " << CartridgeChecksum() << std::endl;
     return ss.str();
 }
 

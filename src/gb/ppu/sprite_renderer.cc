@@ -87,7 +87,7 @@ Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
 }
 
 uint SpriteRenderer::DotX(const Sprite& sprite,
-                                  const uint displayX) {
+                          const uint displayX) {
     if (!OverlapX(sprite, displayX)) {
         throw std::runtime_error{"DisplayX outside sprite."};
     }
@@ -100,7 +100,7 @@ uint SpriteRenderer::DotX(const Sprite& sprite,
 }
 
 uint SpriteRenderer::DotY(const Sprite& sprite,
-                                  const uint displayY) const {
+                          const uint displayY) const {
     const bool small{this->spriteSize == SpriteSize::Small};
     if (!OverlapY(sprite, displayY, small)) {
         throw std::runtime_error{"DisplayY outside sprite."};

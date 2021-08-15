@@ -10,7 +10,7 @@ File::File(const std::string& filePath) : stream{filePath, std::ios::binary} {
 }
 
 std::vector<u8> File::ReadBytes(const std::streampos offset,
-                                          const std::streamsize numBytes) {
+                                const std::streamsize numBytes) {
     if (offset < 0 || numBytes <= 0) {
         throw std::runtime_error{"Invalid offset/numBytes"};
     }
