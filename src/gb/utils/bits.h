@@ -45,24 +45,24 @@ constexpr void Assign(T& to, const T from, const T mask) {
     to = static_cast<T>((to & ~mask) | (from & mask));
 }
 
-constexpr std::uint16_t Merge(const std::uint8_t high, const std::uint8_t low) {
+constexpr std::uint16_t Merge(const u8 high, const u8 low) {
     return static_cast<uint16_t>(high << 8 | low);
 }
 
-constexpr std::uint8_t HighNibble(const std::uint8_t reg) {
-    return static_cast<std::uint8_t>((reg >> 4) & 0x0F);
+constexpr u8 HighNibble(const u8 reg) {
+    return static_cast<u8>((reg >> 4) & 0x0F);
 }
 
-constexpr std::uint8_t LowNibble(const std::uint8_t reg) {
-    return static_cast<std::uint8_t>(reg & 0x0F);
+constexpr u8 LowNibble(const u8 reg) {
+    return static_cast<u8>(reg & 0x0F);
 }
 
-constexpr std::uint8_t HighByte(const std::uint16_t reg) {
-    return static_cast<std::uint8_t>((reg >> 8) & 0xFF);
+constexpr u8 HighByte(const std::uint16_t reg) {
+    return static_cast<u8>((reg >> 8) & 0xFF);
 }
 
-constexpr std::uint8_t LowByte(const std::uint16_t reg) {
-    return static_cast<std::uint8_t>(reg & 0xFF);
+constexpr u8 LowByte(const std::uint16_t reg) {
+    return static_cast<u8>(reg & 0xFF);
 }
 
 }

@@ -43,7 +43,7 @@ Lcd_::Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler)
       frame{},
       cycleCount{0} {}
 
-std::uint8_t Lcd_::Read(const std::uint16_t address) const {
+u8 Lcd_::Read(const std::uint16_t address) const {
     if (!Accessible(address)) {
         return 0xFF;
     }
@@ -96,7 +96,7 @@ std::uint8_t Lcd_::Read(const std::uint16_t address) const {
     throw std::runtime_error{"LCD - Invalid read address."};
 }
 
-void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
+void Lcd_::Write(const std::uint16_t address, const u8 byte) {
     if (!Accessible(address)) {
         return;
     }
@@ -245,7 +245,7 @@ void Lcd_::HandleVBlank() {
 
     constexpr auto numLines{154};
     const auto ly{this->stat.Ly()};
-    const auto newLy{static_cast<std::uint8_t>((ly + 1) % numLines)};
+    const auto newLy{static_cast<u8>((ly + 1) % numLines)};
     if (newLy == 0) {
         // VBlank is done, switch to OAM search.
         this->stat.SetMode(LcdMode::Oam);

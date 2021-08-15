@@ -15,11 +15,11 @@ namespace gb {
 
 LcdControl::LcdControl() : lcdc{0} {}
 
-std::uint8_t LcdControl::Read() const {
+u8 LcdControl::Read() const {
     return this->lcdc;
 }
 
-void LcdControl::Write(const std::uint8_t byte) {
+void LcdControl::Write(const u8 byte) {
     this->lcdc = byte;
 }
 
@@ -67,20 +67,20 @@ LcdMode LcdStat::Mode() const {
     return static_cast<LcdMode>(this->stat & 0x03);
 }
 
-std::uint8_t LcdStat::Ly() const {
+u8 LcdStat::Ly() const {
     return this->ly;
 }
 
-std::uint8_t LcdStat::Read(const std::uint16_t address) const {
+u8 LcdStat::Read(const std::uint16_t address) const {
     if (address == StatAddress) return this->stat;
     if (address == LyAddress) return this->ly;
     if (address == LycAddress) return this->lyc;
     throw std::runtime_error{"LcdStat - invalid read address."};
 }
 
-void LcdStat::Write(const std::uint16_t address, const std::uint8_t byte) {
+void LcdStat::Write(const std::uint16_t address, const u8 byte) {
     if (address == StatAddress) {
-        const std::uint8_t mask{0x78}; // 0111 1000
+        const u8 mask{0x78}; // 0111 1000
         bit::Assign(this->stat, byte, mask);
         Refresh();
         return;
@@ -96,12 +96,12 @@ void LcdStat::Write(const std::uint16_t address, const std::uint8_t byte) {
 }
 
 void LcdStat::SetMode(const LcdMode mode) {
-    const std::uint8_t mask{0x03};
-    bit::Assign(this->stat, static_cast<std::uint8_t>(mode), mask);
+    const u8 mask{0x03};
+    bit::Assign(this->stat, static_cast<u8>(mode), mask);
     Refresh();
 }
 
-void LcdStat::SetLy(const std::uint8_t newLy) {
+void LcdStat::SetLy(const u8 newLy) {
     if (newLy > 153) {
         throw std::runtime_error{"LcdStat - invalid LY value."};
     }

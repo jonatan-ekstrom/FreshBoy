@@ -23,7 +23,7 @@ void BgBase::UseMap(const TileMap map) {
     this->activeMap = map;
 }
 
-std::uint8_t BgBase::Read(const std::uint16_t address) const {
+u8 BgBase::Read(const std::uint16_t address) const {
     if (address == XAddr()) {
         return this->xReg;
     }
@@ -35,7 +35,7 @@ std::uint8_t BgBase::Read(const std::uint16_t address) const {
     throw std::runtime_error{"BgBase - invalid read address."};
 }
 
-void BgBase::Write(const std::uint16_t address, const std::uint8_t byte) {
+void BgBase::Write(const std::uint16_t address, const u8 byte) {
     if (address == XAddr()) {
         this->xReg = byte;
         return;
@@ -49,11 +49,11 @@ void BgBase::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"BgBase - invalid write address."};
 }
 
-std::uint8_t BgBase::X() const {
+u8 BgBase::X() const {
     return this->xReg;
 }
 
-std::uint8_t BgBase::Y() const {
+u8 BgBase::Y() const {
     return this->yReg;
 }
 

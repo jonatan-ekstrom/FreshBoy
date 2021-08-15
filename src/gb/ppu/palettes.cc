@@ -32,11 +32,11 @@ Palette Palette_::Create(const bool obj) {
 
 Palette_::Palette_(const bool object) : data{}, object{object} {}
 
-std::uint8_t Palette_::Read() const {
+u8 Palette_::Read() const {
     return this->data;
 }
 
-void Palette_::Write(const std::uint8_t byte) {
+void Palette_::Write(const u8 byte) {
     const auto shade0{(byte & 0x03)};
     const auto shade1{(byte & 0x0C) >> 2};
     const auto shade2{(byte & 0x30) >> 4};
@@ -61,7 +61,7 @@ Palettes::Palettes()
       obj0{Palette_::Create(true)},
       obj1{Palette_::Create(true)} {}
 
-std::uint8_t Palettes::Read(const std::uint16_t address) const {
+u8 Palettes::Read(const std::uint16_t address) const {
     if (address == BgAddr) {
         return this->bg->Read();
     }
@@ -77,7 +77,7 @@ std::uint8_t Palettes::Read(const std::uint16_t address) const {
     throw std::runtime_error{"Palettes - Invalid read address."};
 }
 
-void Palettes::Write(const std::uint16_t address, const std::uint8_t byte) {
+void Palettes::Write(const std::uint16_t address, const u8 byte) {
     if (address == BgAddr) {
         this->bg->Write(byte);
         return;

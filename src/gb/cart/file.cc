@@ -9,7 +9,7 @@ File::File(const std::string& filePath) : stream{filePath, std::ios::binary} {
     }
 }
 
-std::vector<std::uint8_t> File::ReadBytes(const std::streampos offset,
+std::vector<u8> File::ReadBytes(const std::streampos offset,
                                           const std::streamsize numBytes) {
     if (offset < 0 || numBytes <= 0) {
         throw std::runtime_error{"Invalid offset/numBytes"};
@@ -23,7 +23,7 @@ std::vector<std::uint8_t> File::ReadBytes(const std::streampos offset,
         throw std::runtime_error{"Failed to seek to stream offset."};
     }
 
-    std::vector<std::uint8_t> bytes(size);
+    std::vector<u8> bytes(size);
     this->stream.read(reinterpret_cast<Char*>(bytes.data()), numBytes);
     if (this->stream.gcount() != numBytes) {
         throw std::runtime_error{"Failed to read bytes from file."};

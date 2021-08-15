@@ -19,7 +19,7 @@ Memory::Memory(Cartridge cart, Input input, InterruptManager interrupts,
       dma{0},
       bank{0} {}
 
-std::uint8_t Memory::Read(const std::uint16_t address) const {
+u8 Memory::Read(const std::uint16_t address) const {
     // Boot ROM / Cartridge
     if (address <= 0xFF) {
         if (BootRomEnabled()) {
@@ -82,7 +82,7 @@ std::uint8_t Memory::Read(const std::uint16_t address) const {
     throw std::runtime_error{"MMU - invalid read address."};
 }
 
-void Memory::Write(const std::uint16_t address, const std::uint8_t byte) {
+void Memory::Write(const std::uint16_t address, const u8 byte) {
     // Boot ROM / Cartridge
     if (address <= 0xFF) {
         if (BootRomEnabled()) {
@@ -158,7 +158,7 @@ bool Memory::BootRomEnabled() const {
     return this->bank == 0;
 }
 
-std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
+u8 Memory::ReadIo(const std::uint16_t address) const {
     // Input
     if (address == 0xFF00) {
         return this->input->Read();
@@ -207,7 +207,7 @@ std::uint8_t Memory::ReadIo(const std::uint16_t address) const {
     throw std::runtime_error{"MMU - invalid read address"};
 }
 
-void Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
+void Memory::WriteIo(const std::uint16_t address, const u8 byte) {
     // Input
     if (address == 0xFF00) {
         this->input->Write(byte);
@@ -264,7 +264,7 @@ void Memory::WriteIo(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"MMU - invalid write address"};
 }
 
-void Memory::DmaTransfer(const std::uint8_t byte) {
+void Memory::DmaTransfer(const u8 byte) {
     constexpr auto numBytes{160};
     std::uint16_t src{static_cast<uint16_t>(byte * 0x100)};
     std::uint16_t dst{0xFE00};

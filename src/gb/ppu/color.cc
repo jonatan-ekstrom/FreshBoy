@@ -40,7 +40,7 @@ Dot operator+(Dot lhs, const Dot& rhs) {
 Color::Color() : R{0}, G{0}, B{0}, A{255} {}
 
 Color::Color(const Shade shade) : Color{} {
-    std::uint8_t alpha{255};
+    u8 alpha{255};
     switch (shade) {
         case Shade::Screen:
             this->R = 202;

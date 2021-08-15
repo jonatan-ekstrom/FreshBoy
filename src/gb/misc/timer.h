@@ -18,18 +18,18 @@ using Timer = std::shared_ptr<Timer_>;
 class Timer_ {
 public:
     static Timer Create(InterruptManager interrupts);
-    std::uint8_t Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, std::uint8_t byte);
+    u8 Read(std::uint16_t address) const;
+    void Write(std::uint16_t address, u8 byte);
     void Tick(uint cycles);
 private:
     explicit Timer_(InterruptManager&& interrupts);
     bool Output() const;
-    std::uint8_t Div() const;
+    u8 Div() const;
     void FireInterrupt() const;
     void Reset();
-    void TimaWrite(std::uint8_t byte);
-    void TmaWrite(std::uint8_t byte);
-    void TacWrite(std::uint8_t byte);
+    void TimaWrite(u8 byte);
+    void TmaWrite(u8 byte);
+    void TacWrite(u8 byte);
     void Tick();
     void TimaTick();
     void RunStateMachine();
@@ -38,9 +38,9 @@ private:
     void GotoState(TimerState newState);
     InterruptManager interrupts;
     std::uint16_t ticks;
-    std::uint8_t tima;
-    std::uint8_t tma;
-    std::uint8_t tac;
+    u8 tima;
+    u8 tma;
+    u8 tac;
     TimerState state;
     uint stateCounter;
 };

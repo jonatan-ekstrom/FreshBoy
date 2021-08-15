@@ -27,7 +27,7 @@ Timer Timer_::Create(InterruptManager interrupts) {
     return Timer{new Timer_{std::move(interrupts)}};
 }
 
-std::uint8_t Timer_::Read(const std::uint16_t address) const {
+u8 Timer_::Read(const std::uint16_t address) const {
     if (address == DivAddress) {
         return Div();
     }
@@ -47,7 +47,7 @@ std::uint8_t Timer_::Read(const std::uint16_t address) const {
     throw std::runtime_error{"Timer - invalid read address."};
 }
 
-void Timer_::Write(const std::uint16_t address, const std::uint8_t byte) {
+void Timer_::Write(const std::uint16_t address, const u8 byte) {
     if (address == DivAddress) {
         Reset();
         return;
@@ -103,7 +103,7 @@ bool Timer_::Output() const {
     return bit::IsSet(this->ticks, bit);
 }
 
-std::uint8_t Timer_::Div() const {
+u8 Timer_::Div() const {
     return bit::HighByte(this->ticks);
 }
 
@@ -119,7 +119,7 @@ void Timer_::Reset() {
     }
 }
 
-void Timer_::TimaWrite(const std::uint8_t byte) {
+void Timer_::TimaWrite(const u8 byte) {
     switch (this->state) {
         case TimerState::Normal:
             this->tima = byte;
@@ -136,14 +136,14 @@ void Timer_::TimaWrite(const std::uint8_t byte) {
     }
 }
 
-void Timer_::TmaWrite(const std::uint8_t byte) {
+void Timer_::TmaWrite(const u8 byte) {
     this->tma = byte;
     if (this->state == TimerState::Load) {
         LoadTima();
     }
 }
 
-void Timer_::TacWrite(const std::uint8_t byte) {
+void Timer_::TacWrite(const u8 byte) {
     const auto prev{Output()};
     this->tac = byte & 0x07;
     const auto curr{Output()};

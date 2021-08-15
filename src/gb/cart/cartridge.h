@@ -16,10 +16,10 @@ public:
     static Cartridge Create(const std::string& filePath);
     virtual ~Cartridge_() = default;
     std::string HeaderInfo() const;
-    virtual std::uint8_t Read(std::uint16_t address) const = 0;
-    virtual void Write(std::uint16_t address, std::uint8_t byte) = 0;
+    virtual u8 Read(std::uint16_t address) const = 0;
+    virtual void Write(std::uint16_t address, u8 byte) = 0;
 protected:
-    using MemBlock = std::vector<std::uint8_t>;
+    using MemBlock = std::vector<u8>;
     explicit Cartridge_(Header&& header);
     Header header;
 private:
@@ -29,8 +29,8 @@ private:
 class RomOnly final : public Cartridge_ {
 public:
     RomOnly(const std::string& filePath, Header&& header);
-    uint8_t Read(std::uint16_t address) const override;
-    void Write(std::uint16_t address, std::uint8_t byte) override;
+    u8 Read(std::uint16_t address) const override;
+    void Write(std::uint16_t address, u8 byte) override;
 private:
     uint16_t Checksum() const override;
     MemBlock rom;
@@ -46,8 +46,8 @@ protected:
 class MBC1 final : public MBC {
 public:
     MBC1(const std::string& filePath, Header&& header);
-    uint8_t Read(std::uint16_t address) const override;
-    void Write(std::uint16_t address, std::uint8_t byte) override;
+    u8 Read(std::uint16_t address) const override;
+    void Write(std::uint16_t address, u8 byte) override;
 private:
     bool RamEnabled() const;
     uint RomBankLow() const;
@@ -55,11 +55,11 @@ private:
     uint RamBank() const;
     bool AdvancedMode() const;
     uint16_t Checksum() const override;
-    std::uint8_t ramEnable;
-    std::uint8_t bankLow;
-    std::uint8_t bankHigh;
-    std::uint8_t modeSelect;
-    std::uint8_t romBitMask;
+    u8 ramEnable;
+    u8 bankLow;
+    u8 bankHigh;
+    u8 modeSelect;
+    u8 romBitMask;
 };
 
 }

@@ -23,13 +23,13 @@ Serial Serial_::Create(InterruptManager interrupts) {
     return Serial{new Serial_{std::move(interrupts)}};
 }
 
-std::uint8_t Serial_::Read(const std::uint16_t address) const {
+u8 Serial_::Read(const std::uint16_t address) const {
     if (address == SbAddress) return this->sb;
     if (address == ScAddress) return this->sc;
     throw std::runtime_error{"Serial - invalid read address."};
 }
 
-void Serial_::Write(const std::uint16_t address, const std::uint8_t byte) {
+void Serial_::Write(const std::uint16_t address, const u8 byte) {
     if (address == SbAddress) {
         this->sb = byte;
         return;
@@ -57,7 +57,7 @@ bool Serial_::TransferInProgress() const {
     return this->sc == 0x81;
 }
 
-void Serial_::ScWrite(const std::uint8_t byte) {
+void Serial_::ScWrite(const u8 byte) {
     this->sc = byte & 0x81;
     if (this->sc == 0x81) {
         StartTransfer();
@@ -69,7 +69,7 @@ void Serial_::StartTransfer() {
 }
 
 void Serial_::Shift() {
-    this->sb = static_cast<uint8_t>((this->sb << 1) | 1);
+    this->sb = static_cast<u8>((this->sb << 1) | 1);
     if (this->shifts++ == 8) {
         TransferDone();
     }

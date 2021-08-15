@@ -29,11 +29,11 @@ namespace gb {
 
 Sprite::Sprite() : data{} {}
 
-std::uint8_t Sprite::Read(const uint index) const {
+u8 Sprite::Read(const uint index) const {
     return this->data[index];
 }
 
-void Sprite::Write(const uint index, const std::uint8_t byte) {
+void Sprite::Write(const uint index, const u8 byte) {
     this->data[index] = byte;
 }
 
@@ -45,7 +45,7 @@ int Sprite::Y() const {
     return this->data[0] - 16;
 }
 
-std::uint8_t Sprite::TileIndex() const {
+u8 Sprite::TileIndex() const {
     return this->data[2];
 }
 
@@ -76,7 +76,7 @@ SpriteTable SpriteTable_::Create() {
     return SpriteTable{new SpriteTable_{}};
 }
 
-std::uint8_t SpriteTable_::Read(const std::uint16_t address) const {
+u8 SpriteTable_::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"SpriteTable - invalid read address."};
     }
@@ -84,7 +84,7 @@ std::uint8_t SpriteTable_::Read(const std::uint16_t address) const {
     return this->sprites[sprite].Read(index);
 }
 
-void SpriteTable_::Write(const std::uint16_t address, const std::uint8_t byte) {
+void SpriteTable_::Write(const std::uint16_t address, const u8 byte) {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"SpriteTable - invalid write address."};
     }

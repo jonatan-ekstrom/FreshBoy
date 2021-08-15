@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdint>
+#include "types.h"
 
 namespace gb {
 
@@ -40,10 +40,10 @@ Dot operator+(Dot lhs, const Dot& rhs);
 struct Color {
     Color();
     explicit Color(Shade shade);
-    std::uint8_t R;
-    std::uint8_t G;
-    std::uint8_t B;
-    std::uint8_t A;
+    u8 R;
+    u8 G;
+    u8 B;
+    u8 A;
 };
 
 }

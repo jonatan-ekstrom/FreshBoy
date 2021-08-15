@@ -4,7 +4,7 @@
 
 namespace {
 
-constexpr bool ShouldFire(const std::uint8_t prev, const std::uint8_t curr) {
+constexpr bool ShouldFire(const gb::u8 prev, const gb::u8 curr) {
     using namespace gb;
     for (auto i{0u}; i < 4; ++i) {
         if (bit::IsSet(prev, i) && bit::IsClear(curr, i)) {
@@ -27,8 +27,8 @@ Input Input_::Create(InterruptManager interrupts) {
     return Input{new Input_{std::move(interrupts)}};
 }
 
-std::uint8_t Input_::Read() const {
-    std::uint8_t res{0x3F};
+u8 Input_::Read() const {
+    u8 res{0x3F};
     if (!(this->action || this->direction)) {
         return res;
     }
@@ -52,7 +52,7 @@ std::uint8_t Input_::Read() const {
     return res;
 }
 
-void Input_::Write(const std::uint8_t byte) {
+void Input_::Write(const u8 byte) {
     const auto prev{Read()};
     this->action = bit::IsClear(byte, 5);
     this->direction = bit::IsClear(byte, 4);

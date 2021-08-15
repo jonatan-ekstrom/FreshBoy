@@ -17,7 +17,7 @@ InterruptManager InterruptManager_::Create() {
     return InterruptManager{new InterruptManager_{}};
 }
 
-std::uint8_t InterruptManager_::Read(const std::uint16_t address) const {
+u8 InterruptManager_::Read(const std::uint16_t address) const {
     if (address == FlagsAddress) {
         return this->flags;
     }
@@ -29,7 +29,7 @@ std::uint8_t InterruptManager_::Read(const std::uint16_t address) const {
     throw std::runtime_error{"InterruptManager - invalid read address."};
 }
 
-void InterruptManager_::Write(const std::uint16_t address, const std::uint8_t byte) {
+void InterruptManager_::Write(const std::uint16_t address, const u8 byte) {
     if (address == FlagsAddress) {
         this->flags = byte & 0x1F;
     }
@@ -48,7 +48,7 @@ std::vector<Interrupt> InterruptManager_::PendingInterrupts() const {
 
     std::vector<Interrupt> pending;
     constexpr auto numInterrupts{5};
-    const auto masked{static_cast<std::uint8_t>(this->enabled & this->flags)};
+    const auto masked{static_cast<u8>(this->enabled & this->flags)};
     for (auto i{0u}; i < numInterrupts; ++i) {
         if (bit::IsSet(masked, i)) {
             pending.push_back(static_cast<Interrupt>(i));

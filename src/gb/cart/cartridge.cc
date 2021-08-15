@@ -6,12 +6,13 @@
 
 namespace {
 
-constexpr std::uint8_t GetRomBitMask(const uint romBanks) {
+constexpr gb::u8 GetRomBitMask(const gb::uint romBanks) {
+    using namespace gb;
     auto tmp{romBanks};
     auto shift{0};
-    std::uint8_t mask{0};
+    u8 mask{0};
     while (tmp != 0) {
-        mask = mask | static_cast<std::uint8_t>(1 << shift);
+        mask = mask | static_cast<u8>(1 << shift);
         tmp = tmp >> 1;
         ++shift;
     }
@@ -59,14 +60,14 @@ RomOnly::RomOnly(const std::string& filePath, Header&& header)
     this->rom = file.ReadBytes(0, 0x7FFF);
 }
 
-uint8_t RomOnly::Read(const std::uint16_t address) const {
+u8 RomOnly::Read(const std::uint16_t address) const {
     if (address > 0x7FFF) {
         throw std::runtime_error{"RomOnly - Invalid address."};
     }
     return rom[address];
 }
 
-void RomOnly::Write(std::uint16_t, std::uint8_t) {
+void RomOnly::Write(std::uint16_t, u8) {
     throw std::runtime_error{"RomOnly - Write to ROM area."};
 }
 
@@ -109,7 +110,7 @@ MBC1::MBC1(const std::string& filePath, Header&& header)
     this->romBitMask = GetRomBitMask(numRomBanks);
 }
 
-uint8_t MBC1::Read(const std::uint16_t address) const {
+u8 MBC1::Read(const std::uint16_t address) const {
     if (address <= 0x3FFF) {
         return this->romBanks[RomBankLow()][address];
     }
@@ -128,7 +129,7 @@ uint8_t MBC1::Read(const std::uint16_t address) const {
     throw std::runtime_error{"MBC1 - invalid memory address read."};
 }
 
-void MBC1::Write(const std::uint16_t address, const std::uint8_t byte) {
+void MBC1::Write(const std::uint16_t address, const u8 byte) {
     if (address <= 0x1FFF) {
         this->ramEnable = byte;
         return;

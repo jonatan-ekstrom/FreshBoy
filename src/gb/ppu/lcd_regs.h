@@ -4,14 +4,15 @@
 #include "sprite_table.h"
 #include "tile_banks.h"
 #include "tile_maps.h"
+#include "types.h"
 
 namespace gb {
 
 class LcdControl {
 public:
     LcdControl();
-    std::uint8_t Read() const;
-    void Write(std::uint8_t byte);
+    u8 Read() const;
+    void Write(u8 byte);
     bool LcdEnabled() const;
     TileMap WindowMap() const;
     bool WindowEnabled() const;
@@ -21,7 +22,7 @@ public:
     bool ObjectsEnabled() const;
     bool BackgroundEnabled() const;
 private:
-    std::uint8_t lcdc;
+    u8 lcdc;
 };
 
 enum class LcdMode {
@@ -35,11 +36,11 @@ class LcdStat {
 public:
     explicit LcdStat(InterruptManager&& interrupts);
     LcdMode Mode() const;
-    std::uint8_t Ly() const;
-    std::uint8_t Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, std::uint8_t byte);
+    u8 Ly() const;
+    u8 Read(std::uint16_t address) const;
+    void Write(std::uint16_t address, u8 byte);
     void SetMode(LcdMode mode);
-    void SetLy(std::uint8_t newLy);
+    void SetLy(u8 newLy);
 private:
     void Refresh();
     void SetLyFlag(bool flag);
@@ -50,9 +51,9 @@ private:
     InterruptManager interrupts;
     bool blankLine;
     bool statLine;
-    std::uint8_t stat;
-    std::uint8_t ly;
-    std::uint8_t lyc;
+    u8 stat;
+    u8 ly;
+    u8 lyc;
 };
 
 }

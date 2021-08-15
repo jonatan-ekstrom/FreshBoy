@@ -23,7 +23,7 @@ TileMaps TileMaps_::Create() {
 
 TileMaps_::TileMaps_() : map0(TilesPerMap), map1(TilesPerMap) {}
 
-std::uint8_t TileMaps_::Read(const std::uint16_t address) const {
+u8 TileMaps_::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileMaps - Invalid read address."};
     }
@@ -33,7 +33,7 @@ std::uint8_t TileMaps_::Read(const std::uint16_t address) const {
     return map[address - offset];
 }
 
-void TileMaps_::Write(const std::uint16_t address, const std::uint8_t byte) {
+void TileMaps_::Write(const std::uint16_t address, const u8 byte) {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileMaps - Invalid write address."};
     }

@@ -271,11 +271,11 @@ std::string Header::Licensee() const {
     return Hexdump(0x14B, 0x14B);
 }
 
-std::uint8_t Header::VersionNumber() const {
+u8 Header::VersionNumber() const {
     return this->bytes[0x14C - HeaderOffset];
 }
 
-std::uint8_t Header::Checksum() const {
+u8 Header::Checksum() const {
     return this->bytes[0x14D - HeaderOffset];
 }
 
@@ -336,12 +336,12 @@ std::string Header::Hexdump(const std::uint16_t begin, const std::uint16_t end) 
     return result;
 }
 
-std::uint8_t Header::ComputedChecksum() const {
-    std::uint8_t checksum{0};
+u8 Header::ComputedChecksum() const {
+    u8 checksum{0};
     const auto begin{this->bytes.cbegin() + 0x134 - HeaderOffset};
     const auto end{this->bytes.cbegin() + 0x14C - HeaderOffset + 1};
     for (auto p{begin}; p != end; ++p) {
-        checksum = static_cast<std::uint8_t>(checksum - *p - 1);
+        checksum = static_cast<u8>(checksum - *p - 1);
     }
     return checksum;
 }

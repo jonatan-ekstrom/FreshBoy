@@ -12,19 +12,19 @@ using Serial = std::shared_ptr<Serial_>;
 class Serial_ {
 public:
     static Serial Create(InterruptManager interrupts);
-    std::uint8_t Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, std::uint8_t byte);
+    u8 Read(std::uint16_t address) const;
+    void Write(std::uint16_t address, u8 byte);
     void Tick(uint cycles);
 private:
     explicit Serial_(InterruptManager&& interrupts);
     bool TransferInProgress() const;
-    void ScWrite(std::uint8_t byte);
+    void ScWrite(u8 byte);
     void StartTransfer();
     void Shift();
     void TransferDone();
     InterruptManager interrupts;
-    std::uint8_t sb;
-    std::uint8_t sc;
+    u8 sb;
+    u8 sc;
     uint cycleCount;
     uint shifts;
 };

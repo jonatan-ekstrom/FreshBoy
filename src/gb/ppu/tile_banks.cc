@@ -27,11 +27,11 @@ namespace gb {
 
 Tile::Tile() : data{} {}
 
-std::uint8_t Tile::Read(const uint index) const {
+u8 Tile::Read(const uint index) const {
     return this->data[index];
 }
 
-void Tile::Write(const uint index, const std::uint8_t byte) {
+void Tile::Write(const uint index, const u8 byte) {
     this->data[index] = byte;
 }
 
@@ -50,7 +50,7 @@ TileBanks TileBanks_::Create() {
 
 TileBanks_::TileBanks_() : tiles(NumTiles) {}
 
-std::uint8_t TileBanks_::Read(const std::uint16_t address) const {
+u8 TileBanks_::Read(const std::uint16_t address) const {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileBanks - Invalid read access."};
     }
@@ -58,7 +58,7 @@ std::uint8_t TileBanks_::Read(const std::uint16_t address) const {
     return this->tiles[tile].Read(index);
 }
 
-void TileBanks_::Write(const std::uint16_t address, const std::uint8_t byte) {
+void TileBanks_::Write(const std::uint16_t address, const u8 byte) {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileBanks - Invalid write access."};
     }
@@ -66,11 +66,11 @@ void TileBanks_::Write(const std::uint16_t address, const std::uint8_t byte) {
     this->tiles[tile].Write(index, byte);
 }
 
-const Tile& TileBanks_::GetTileLow(const std::uint8_t index) const {
+const Tile& TileBanks_::GetTileLow(const u8 index) const {
     return this->tiles[index];
 }
 
-const Tile& TileBanks_::GetTileHigh(const std::uint8_t index) const {
+const Tile& TileBanks_::GetTileHigh(const u8 index) const {
     constexpr auto base{256};
     const auto sign{static_cast<std::int8_t>(index)};
     const auto offset{static_cast<uint>(base + sign)};

@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+#include "types.h"
 
 namespace gb {
 
@@ -15,10 +16,10 @@ using TileMaps = std::shared_ptr<TileMaps_>;
 
 class TileMaps_ {
 public:
-    using Map = std::vector<std::uint8_t>;
+    using Map = std::vector<u8>;
     static TileMaps Create();
-    std::uint8_t Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, std::uint8_t byte);
+    u8 Read(std::uint16_t address) const;
+    void Write(std::uint16_t address, u8 byte);
     const Map& LowMap() const;
     const Map& HighMap() const;
 private:
