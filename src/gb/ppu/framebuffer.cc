@@ -28,7 +28,7 @@ const Framebuffer::Pixels& Framebuffer::Buffer() const {
 }
 
 void Framebuffer::WriteLine(const Scanline& line,
-                            const unsigned int index) {
+                            const uint index) {
     if (line.size() != lcd::DisplayWidth) {
         throw std::runtime_error{"Invalid scanline written to framebuffer"};
     }

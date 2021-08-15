@@ -158,7 +158,7 @@ void Lcd_::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"LCD - Invalid write address."};
 }
 
-void Lcd_::Tick(const unsigned int cycles) {
+void Lcd_::Tick(const uint cycles) {
     this->cycleCount += cycles;
     switch (this->stat.Mode()) {
         case LcdMode::HBlank:

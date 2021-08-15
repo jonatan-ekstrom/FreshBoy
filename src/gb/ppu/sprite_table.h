@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "palettes.h"
+#include "types.h"
 
 namespace gb {
 
@@ -15,8 +16,8 @@ enum class SpriteSize {
 class Sprite {
 public:
     Sprite();
-    std::uint8_t Read(unsigned int index) const;
-    void Write(unsigned int index, std::uint8_t byte);
+    std::uint8_t Read(uint index) const;
+    void Write(uint index, std::uint8_t byte);
     int X() const;
     int Y() const;
     std::uint8_t TileIndex() const;
@@ -25,7 +26,7 @@ public:
     SpritePalette Palette() const;
     bool Hidden() const;
 private:
-    bool BitSet(unsigned int bit) const;
+    bool BitSet(uint bit) const;
     std::array<std::uint8_t, 4> data;
 };
 
@@ -37,7 +38,7 @@ public:
     static SpriteTable Create();
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
-    std::vector<const Sprite*> GetSpritesToRender(unsigned int line,
+    std::vector<const Sprite*> GetSpritesToRender(uint line,
                                                   SpriteSize size) const;
 private:
     SpriteTable_();

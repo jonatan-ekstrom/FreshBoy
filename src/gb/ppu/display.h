@@ -1,8 +1,9 @@
 #pragma once
+#include "types.h"
 
 namespace gb::lcd {
 
-inline constexpr unsigned int DisplayWidth{160};
-inline constexpr unsigned int DisplayHeight{144};
+inline constexpr uint DisplayWidth{160};
+inline constexpr uint DisplayHeight{144};
 
 }

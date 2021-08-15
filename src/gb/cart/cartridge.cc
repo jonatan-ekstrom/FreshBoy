@@ -6,7 +6,7 @@
 
 namespace {
 
-constexpr std::uint8_t GetRomBitMask(const unsigned int romBanks) {
+constexpr std::uint8_t GetRomBitMask(const uint romBanks) {
     auto tmp{romBanks};
     auto shift{0};
     std::uint8_t mask{0};
@@ -165,14 +165,14 @@ bool MBC1::RamEnabled() const {
     return (this->ramEnable & 0x0F) == 0x0A;
 }
 
-unsigned int MBC1::RomBankLow() const {
+uint MBC1::RomBankLow() const {
     if (!AdvancedMode()) {
         return 0;
     }
     return (this->bankHigh & 0x03u) << 5;
 }
 
-unsigned int MBC1::RomBankHigh() const {
+uint MBC1::RomBankHigh() const {
     auto lowFive{(this->bankLow & this->romBitMask) & 0x1Fu};
     if (lowFive == 0) {
         lowFive = 1;
@@ -181,7 +181,7 @@ unsigned int MBC1::RomBankHigh() const {
     return (upperTwo << 5) | lowFive;
 }
 
-unsigned int MBC1::RamBank() const {
+uint MBC1::RamBank() const {
     if (!AdvancedMode()) {
         return 0;
     }

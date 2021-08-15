@@ -1,37 +1,38 @@
 #pragma once
 #include <cstdint>
+#include "types.h"
 
 namespace gb {
 
 namespace bit {
 
 template<typename T>
-constexpr bool IsSet(const T reg, const unsigned int bit) {
+constexpr bool IsSet(const T reg, const uint bit) {
     return (reg & (1 << bit)) != 0;
 }
 
 template<typename T>
-constexpr bool IsClear(const T reg, const unsigned int bit) {
+constexpr bool IsClear(const T reg, const uint bit) {
     return (reg & (1 << bit)) == 0;
 }
 
 template<typename T>
-constexpr unsigned int Get(const T reg, const unsigned int bit) {
+constexpr uint Get(const T reg, const uint bit) {
     return IsSet(reg, bit) ? 1 : 0;
 }
 
 template<typename T>
-constexpr void Set(T& reg, const unsigned int bit) {
+constexpr void Set(T& reg, const uint bit) {
     reg = static_cast<T>(reg | (1 << bit));
 }
 
 template<typename T>
-constexpr void Clear(T& reg, const unsigned int bit) {
+constexpr void Clear(T& reg, const uint bit) {
     reg = static_cast<T>(reg & ~(1 << bit));
 }
 
 template<typename T>
-constexpr void Update(T& reg, const unsigned int bit, const bool set) {
+constexpr void Update(T& reg, const uint bit, const bool set) {
     if (set) {
         Set(reg, bit);
     } else {

@@ -27,15 +27,15 @@ namespace gb {
 
 Tile::Tile() : data{} {}
 
-std::uint8_t Tile::Read(const unsigned int index) const {
+std::uint8_t Tile::Read(const uint index) const {
     return this->data[index];
 }
 
-void Tile::Write(const unsigned int index, const std::uint8_t byte) {
+void Tile::Write(const uint index, const std::uint8_t byte) {
     this->data[index] = byte;
 }
 
-ColorIndex Tile::Color(const unsigned int dotX, const unsigned int dotY) const {
+ColorIndex Tile::Color(const uint dotX, const uint dotY) const {
     const auto lowByte{this->data[dotY * 2]};
     const auto highByte{this->data[dotY * 2 + 1]};
     const auto highBit{bit::Get(highByte, dotX)};
@@ -73,7 +73,7 @@ const Tile& TileBanks_::GetTileLow(const std::uint8_t index) const {
 const Tile& TileBanks_::GetTileHigh(const std::uint8_t index) const {
     constexpr auto base{256};
     const auto sign{static_cast<std::int8_t>(index)};
-    const auto offset{static_cast<unsigned int>(base + sign)};
+    const auto offset{static_cast<uint>(base + sign)};
     return this->tiles[offset];
 }
 

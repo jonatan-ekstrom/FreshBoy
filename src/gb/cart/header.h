@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include "types.h"
 
 namespace gb {
 
@@ -46,9 +47,9 @@ public:
     std::string TypeStr() const;
     MemSize RomSize() const;
     std::string RomStr() const;
-    unsigned int RomBanks() const;
+    uint RomBanks() const;
     MemSize RamSize() const;
-    unsigned int RamBanks() const;
+    uint RamBanks() const;
     std::string RamStr() const;
     bool Japanese() const;
     std::string Licensee() const;

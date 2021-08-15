@@ -1,5 +1,5 @@
 # List utility header and source files.
-set(utilHeaders bits.h)
+set(utilHeaders bits.h types.h)
 set(utilSources "")
 
 # Add utility sources to 'gb' target.

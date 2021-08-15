@@ -29,11 +29,11 @@ namespace gb {
 
 Sprite::Sprite() : data{} {}
 
-std::uint8_t Sprite::Read(const unsigned int index) const {
+std::uint8_t Sprite::Read(const uint index) const {
     return this->data[index];
 }
 
-void Sprite::Write(const unsigned int index, const std::uint8_t byte) {
+void Sprite::Write(const uint index, const std::uint8_t byte) {
     this->data[index] = byte;
 }
 
@@ -61,7 +61,7 @@ SpritePalette Sprite::Palette() const {
     return BitSet(4) ? SpritePalette::One : SpritePalette::Zero;
 }
 
-bool Sprite::BitSet(const unsigned int bit) const {
+bool Sprite::BitSet(const uint bit) const {
     const auto flags{this->data[3]};
     return bit::IsSet(flags, bit);
 }
@@ -93,7 +93,7 @@ void SpriteTable_::Write(const std::uint16_t address, const std::uint8_t byte) {
 }
 
 std::vector<const Sprite*>
-SpriteTable_::GetSpritesToRender(const unsigned int line,
+SpriteTable_::GetSpritesToRender(const uint line,
                                  const SpriteSize size) const {
     if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"SpriteTable - invalid scanline."};

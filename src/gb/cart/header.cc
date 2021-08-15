@@ -41,7 +41,7 @@ constexpr const char* MemSizeToStr(const gb::MemSize sz) {
     }
 }
 
-constexpr unsigned int MemSizeToRomBanks(const gb::MemSize sz) {
+constexpr uint MemSizeToRomBanks(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
         case MemSize::KB32:
@@ -70,7 +70,7 @@ constexpr unsigned int MemSizeToRomBanks(const gb::MemSize sz) {
     }
 }
 
-constexpr unsigned int MemSizeToRamBanks(const gb::MemSize sz) {
+constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
         case MemSize::KB8:
@@ -233,7 +233,7 @@ std::string Header::RomStr() const {
     return MemSizeToStr(RomSize());
 }
 
-unsigned int Header::RomBanks() const {
+uint Header::RomBanks() const {
     return MemSizeToRomBanks(RomSize());
 }
 
@@ -255,7 +255,7 @@ MemSize Header::RamSize() const {
     }
 }
 
-unsigned int Header::RamBanks() const {
+uint Header::RamBanks() const {
     return MemSizeToRamBanks(RamSize());
 }
 

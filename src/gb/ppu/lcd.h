@@ -11,6 +11,7 @@
 #include "sprite_table.h"
 #include "tile_banks.h"
 #include "tile_maps.h"
+#include "types.h"
 #include "window.h"
 
 namespace gb {
@@ -24,7 +25,7 @@ public:
     static Lcd Create(InterruptManager interrupts, const FrameHandler& frameHandler);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
-    void Tick(unsigned int cycles);
+    void Tick(uint cycles);
 private:
     using Scanline = Framebuffer::Scanline;
     Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler);
@@ -49,7 +50,7 @@ private:
     LcdStat stat;
     LcdControl lcdc;
     Framebuffer frame;
-    unsigned int cycleCount;
+    uint cycleCount;
 };
 
 }

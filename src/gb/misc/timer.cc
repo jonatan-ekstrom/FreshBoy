@@ -71,7 +71,7 @@ void Timer_::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"Timer - invalid write address."};
 }
 
-void Timer_::Tick(const unsigned int cycles) {
+void Timer_::Tick(const uint cycles) {
     for (auto i{0u}; i < cycles; ++i) {
         Tick();
     }
@@ -82,7 +82,7 @@ bool Timer_::Output() const {
     if (!enabled) return false;
 
     const auto freq{this->tac & 0x03};
-    unsigned int bit;
+    uint bit;
     switch (freq) {
         case 0:
             bit = 9;

@@ -23,7 +23,7 @@ namespace gb {
 Background::Background(TileBanks banks, TileMaps maps, Palette palette)
     : BgBase{std::move(banks), std::move(maps), std::move(palette), Address} {}
 
-std::vector<Dot> Background::RenderScanline(const unsigned int line) const {
+std::vector<Dot> Background::RenderScanline(const uint line) const {
     if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"Background - invalid scanline."};
     }

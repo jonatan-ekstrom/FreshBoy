@@ -66,11 +66,11 @@ void InterruptManager_::DisableInterrupts() {
 }
 
 void InterruptManager_::RequestInterrupt(const Interrupt intr) {
-    bit::Set(this->flags, static_cast<unsigned int>(intr));
+    bit::Set(this->flags, static_cast<uint>(intr));
 }
 
 void InterruptManager_::AcknowledgeInterrupt(const Interrupt intr) {
-    bit::Clear(this->flags, static_cast<unsigned int>(intr));
+    bit::Clear(this->flags, static_cast<uint>(intr));
 }
 
 }

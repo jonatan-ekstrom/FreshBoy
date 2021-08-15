@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <memory>
 #include "interrupt.h"
+#include "types.h"
 
 namespace gb {
 
@@ -19,7 +20,7 @@ public:
     static Timer Create(InterruptManager interrupts);
     std::uint8_t Read(std::uint16_t address) const;
     void Write(std::uint16_t address, std::uint8_t byte);
-    void Tick(unsigned int cycles);
+    void Tick(uint cycles);
 private:
     explicit Timer_(InterruptManager&& interrupts);
     bool Output() const;
@@ -41,7 +42,7 @@ private:
     std::uint8_t tma;
     std::uint8_t tac;
     TimerState state;
-    unsigned int stateCounter;
+    uint stateCounter;
 };
 
 }

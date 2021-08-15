@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "header.h"
+#include "types.h"
 
 namespace gb {
 
@@ -49,9 +50,9 @@ public:
     void Write(std::uint16_t address, std::uint8_t byte) override;
 private:
     bool RamEnabled() const;
-    unsigned int RomBankLow() const;
-    unsigned int RomBankHigh() const;
-    unsigned int RamBank() const;
+    uint RomBankLow() const;
+    uint RomBankHigh() const;
+    uint RamBank() const;
     bool AdvancedMode() const;
     uint16_t Checksum() const override;
     std::uint8_t ramEnable;

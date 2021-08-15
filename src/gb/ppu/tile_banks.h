@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "color.h"
+#include "types.h"
 
 namespace gb {
 
@@ -15,9 +16,9 @@ enum class TileBank {
 class Tile {
 public:
     Tile();
-    std::uint8_t Read(unsigned int index) const;
-    void Write(unsigned int index, std::uint8_t byte);
-    ColorIndex Color(unsigned int dotX, unsigned int dotY) const;
+    std::uint8_t Read(uint index) const;
+    void Write(uint index, std::uint8_t byte);
+    ColorIndex Color(uint dotX, uint dotY) const;
 private:
     std::array<std::uint8_t, 16> data;
 };

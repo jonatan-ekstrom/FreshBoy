@@ -13,14 +13,14 @@ auto GetLine() {
                                         gb::Layer::Object}};
 }
 
-bool OverlapX(const gb::Sprite& sprite, const unsigned int displayX) {
+bool OverlapX(const gb::Sprite& sprite, const uint displayX) {
     const auto x{static_cast<int>(displayX)};
     const auto low{sprite.X()};
     const auto high{low + Size};
     return (x >= low && x < high);
 }
 
-bool OverlapY(const gb::Sprite& sprite, const unsigned int displayY, const bool small) {
+bool OverlapY(const gb::Sprite& sprite, const uint displayY, const bool small) {
     const auto y{static_cast<int>(displayY)};
     const auto height{small ? Size : 2 * Size};
     const auto low{sprite.Y()};
@@ -44,7 +44,7 @@ void SpriteRenderer::SetSize(const SpriteSize size) {
     this->spriteSize = size;
 }
 
-std::vector<Dot> SpriteRenderer::RenderScanline(const unsigned int line) const {
+std::vector<Dot> SpriteRenderer::RenderScanline(const uint line) const {
     if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"SpriteRenderer - invalid scanline."};
     }
@@ -61,8 +61,8 @@ std::vector<Dot> SpriteRenderer::RenderScanline(const unsigned int line) const {
 }
 
 Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
-                           unsigned int displayX,
-                           unsigned int displayY) const {
+                           uint displayX,
+                           uint displayY) const {
     Dot dot{Shade::Transparent, Layer::Object};
     for (const auto s : sprites) {
         // If the current pixel does not overlap this sprite, move to the next.
@@ -86,8 +86,8 @@ Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
     return dot;
 }
 
-unsigned int SpriteRenderer::DotX(const Sprite& sprite,
-                                  const unsigned int displayX) {
+uint SpriteRenderer::DotX(const Sprite& sprite,
+                                  const uint displayX) {
     if (!OverlapX(sprite, displayX)) {
         throw std::runtime_error{"DisplayX outside sprite."};
     }
@@ -96,11 +96,11 @@ unsigned int SpriteRenderer::DotX(const Sprite& sprite,
     if (sprite.FlipX()) {
         dotX = Size - 1 - dotX;
     }
-    return static_cast<unsigned int>(dotX);
+    return static_cast<uint>(dotX);
 }
 
-unsigned int SpriteRenderer::DotY(const Sprite& sprite,
-                                  const unsigned int displayY) const {
+uint SpriteRenderer::DotY(const Sprite& sprite,
+                                  const uint displayY) const {
     const bool small{this->spriteSize == SpriteSize::Small};
     if (!OverlapY(sprite, displayY, small)) {
         throw std::runtime_error{"DisplayY outside sprite."};
@@ -111,11 +111,11 @@ unsigned int SpriteRenderer::DotY(const Sprite& sprite,
     if (sprite.FlipY()) {
         dotY = height - 1 - dotY;
     }
-    return static_cast<unsigned int>(dotY);
+    return static_cast<uint>(dotY);
 }
 
 const Tile& SpriteRenderer::GetTile(const Sprite& sprite,
-                                    const unsigned int dotY) const {
+                                    const uint dotY) const {
     if (this->spriteSize == SpriteSize::Small) {
         return this->banks->GetTileLow(sprite.TileIndex());
     }

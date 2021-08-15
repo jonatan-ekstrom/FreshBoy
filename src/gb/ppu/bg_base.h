@@ -5,6 +5,7 @@
 #include "palettes.h"
 #include "tile_banks.h"
 #include "tile_maps.h"
+#include "types.h"
 
 namespace gb {
 
@@ -16,11 +17,11 @@ public:
     void Write(std::uint16_t address, std::uint8_t byte);
 protected:
     BgBase(TileBanks banks, TileMaps maps, Palette palette, std::uint16_t address);
-    Shade Map(unsigned int mapX, unsigned int mapY) const;
+    Shade Map(uint mapX, uint mapY) const;
     std::uint8_t X() const;
     std::uint8_t Y() const;
 private:
-    ColorIndex GetColorIndex(unsigned int mapX, unsigned int mapY) const;
+    ColorIndex GetColorIndex(uint mapX, uint mapY) const;
     std::uint16_t XAddr() const;
     std::uint16_t YAddr() const;
     TileBanks banks;

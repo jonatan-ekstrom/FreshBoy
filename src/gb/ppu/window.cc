@@ -23,7 +23,7 @@ namespace gb {
 Window::Window(TileBanks banks, TileMaps maps, Palette palette)
     : BgBase{std::move(banks), std::move(maps), std::move(palette), Address} {}
 
-std::vector<Dot> Window::RenderScanline(const unsigned int line) const {
+std::vector<Dot> Window::RenderScanline(const uint line) const {
     if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"Window - invalid scanline."};
     }

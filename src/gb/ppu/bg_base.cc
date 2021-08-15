@@ -57,12 +57,12 @@ std::uint8_t BgBase::Y() const {
     return this->yReg;
 }
 
-Shade BgBase::Map(const unsigned int mapX, const unsigned int mapY) const {
+Shade BgBase::Map(const uint mapX, const uint mapY) const {
     return this->palette->Map(GetColorIndex(mapX, mapY));
 }
 
-ColorIndex BgBase::GetColorIndex(const unsigned int mapX,
-                                 const unsigned int mapY) const {
+ColorIndex BgBase::GetColorIndex(const uint mapX,
+                                 const uint mapY) const {
     constexpr auto tileSize{8};
     constexpr auto tilesPerLine{32};
     const auto tileX{mapX / tileSize};

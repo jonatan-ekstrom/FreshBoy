@@ -43,7 +43,7 @@ void Serial_::Write(const std::uint16_t address, const std::uint8_t byte) {
     throw std::runtime_error{"Serial - invalid write address."};
 }
 
-void Serial_::Tick(const unsigned int cycles) {
+void Serial_::Tick(const uint cycles) {
     constexpr auto divider{512};
     this->cycleCount += cycles;
     const auto numShifts{this->cycleCount / divider};
