@@ -72,7 +72,7 @@ const Tile& TileBanks_::GetTileLow(const u8 index) const {
 
 const Tile& TileBanks_::GetTileHigh(const u8 index) const {
     constexpr auto base{256};
-    const auto sign{static_cast<std::int8_t>(index)};
+    const auto sign{static_cast<s8>(index)};
     const auto offset{static_cast<uint>(base + sign)};
     return this->tiles[offset];
 }
