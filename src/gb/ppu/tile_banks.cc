@@ -1,6 +1,7 @@
 #include "tile_banks.h"
 #include <stdexcept>
 #include <tuple>
+#include "bits.h"
 
 namespace {
 
@@ -8,11 +9,6 @@ constexpr auto BaseAddress{0x8000u};
 constexpr auto HighAddress{0x97FFu};
 constexpr auto NumTiles{384u};
 constexpr auto TileSize{16u};
-
-constexpr unsigned int GetBit(const std::uint8_t byte, const unsigned int bit) {
-    const auto mask{1 << bit};
-    return (byte & mask) != 0 ? 1 : 0;
-}
 
 constexpr bool ValidAddress(const std::uint16_t address) {
     return address >= BaseAddress && address <= HighAddress;
@@ -42,8 +38,8 @@ void Tile::Write(const unsigned int index, const std::uint8_t byte) {
 ColorIndex Tile::Color(const unsigned int dotX, const unsigned int dotY) const {
     const auto lowByte{this->data[dotY * 2]};
     const auto highByte{this->data[dotY * 2 + 1]};
-    const auto highBit{GetBit(highByte, dotX)};
-    const auto lowBit{GetBit(lowByte, dotX)};
+    const auto highBit{bit::Get(highByte, dotX)};
+    const auto lowBit{bit::Get(lowByte, dotX)};
     const auto color{highBit << 1 | lowBit};
     return static_cast<ColorIndex>(color);
 }

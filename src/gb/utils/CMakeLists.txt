@@ -2,7 +2,7 @@
 set(utilHeaders bits.h)
 set(utilSources "")
 
-# Add cartridge sources to 'gb' target.
+# Add utility sources to 'gb' target.
 target_sources(gb PRIVATE ${utilSources})
 
 # Setup include directories.

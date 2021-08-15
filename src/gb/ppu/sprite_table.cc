@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <tuple>
 #include <stdexcept>
+#include "bits.h"
 #include "display.h"
 
 namespace {
@@ -62,7 +63,7 @@ SpritePalette Sprite::Palette() const {
 
 bool Sprite::BitSet(const unsigned int bit) const {
     const auto flags{this->data[3]};
-    return (flags & (1 << bit)) != 0;
+    return bit::IsSet(flags, bit);
 }
 
 bool Sprite::Hidden() const {

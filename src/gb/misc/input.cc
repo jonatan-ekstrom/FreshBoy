@@ -1,23 +1,13 @@
 #include "input.h"
 #include <utility>
+#include "bits.h"
 
 namespace {
 
-constexpr bool BitSet(const std::uint8_t reg, const unsigned int bit) {
-    return (reg & (1 << bit)) != 0;
-}
-
-constexpr bool BitReset(const std::uint8_t reg, const unsigned int bit) {
-    return (reg & (1 << bit)) == 0;
-}
-
-constexpr void ClearBit(std::uint8_t& reg, const unsigned int bit) {
-    reg = static_cast<uint8_t>(reg & ~(1 << bit));
-}
-
 constexpr bool ShouldFire(const std::uint8_t prev, const std::uint8_t curr) {
+    using namespace gb;
     for (auto i{0u}; i < 4; ++i) {
-        if (BitSet(prev, i) && BitReset(curr, i)) {
+        if (bit::IsSet(prev, i) && bit::IsClear(curr, i)) {
             return true;
         }
     }
@@ -44,19 +34,19 @@ std::uint8_t Input_::Read() const {
     }
 
     if (this->action) {
-        ClearBit(res, 5);
-        if (Pressed(Button::A)) ClearBit(res, 0);
-        if (Pressed(Button::B)) ClearBit(res, 1);
-        if (Pressed(Button::Select)) ClearBit(res, 2);
-        if (Pressed(Button::Start)) ClearBit(res, 3);
+        bit::Clear(res, 5);
+        if (Pressed(Button::A)) bit::Clear(res, 0);
+        if (Pressed(Button::B)) bit::Clear(res, 1);
+        if (Pressed(Button::Select)) bit::Clear(res, 2);
+        if (Pressed(Button::Start)) bit::Clear(res, 3);
     }
 
     if (this->direction) {
-        ClearBit(res, 4);
-        if (Pressed(Button::Right)) ClearBit(res, 0);
-        if (Pressed(Button::Left)) ClearBit(res, 1);
-        if (Pressed(Button::Up)) ClearBit(res, 2);
-        if (Pressed(Button::Down)) ClearBit(res, 3);
+        bit::Clear(res, 4);
+        if (Pressed(Button::Right)) bit::Clear(res, 0);
+        if (Pressed(Button::Left)) bit::Clear(res, 1);
+        if (Pressed(Button::Up)) bit::Clear(res, 2);
+        if (Pressed(Button::Down)) bit::Clear(res, 3);
     }
 
     return res;
@@ -64,8 +54,8 @@ std::uint8_t Input_::Read() const {
 
 void Input_::Write(const std::uint8_t byte) {
     const auto prev{Read()};
-    this->action = BitReset(byte, 5);
-    this->direction = BitReset(byte, 4);
+    this->action = bit::IsClear(byte, 5);
+    this->direction = bit::IsClear(byte, 4);
     const auto curr{Read()};
     if (ShouldFire(prev, curr)) {
         FireInterrupt();

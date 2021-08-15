@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <sstream>
 #include <stdexcept>
+#include "bits.h"
 #include "file.h"
 
 namespace {
@@ -41,51 +42,53 @@ constexpr const char* MemSizeToStr(const gb::MemSize sz) {
 }
 
 constexpr unsigned int MemSizeToRomBanks(const gb::MemSize sz) {
+    using gb::MemSize;
     switch (sz) {
-        case gb::MemSize::KB32:
+        case MemSize::KB32:
             return 2;
-        case gb::MemSize::KB64:
+        case MemSize::KB64:
             return 4;
-        case gb::MemSize::KB128:
+        case MemSize::KB128:
             return 8;
-        case gb::MemSize::KB256:
+        case MemSize::KB256:
             return 16;
-        case gb::MemSize::KB512:
+        case MemSize::KB512:
             return 32;
-        case gb::MemSize::MB1:
+        case MemSize::MB1:
             return 64;
-        case gb::MemSize::MB2:
+        case MemSize::MB2:
             return 128;
-        case gb::MemSize::MB4:
+        case MemSize::MB4:
             return 256;
-        case gb::MemSize::MB8:
+        case MemSize::MB8:
             return 512;
-        case gb::MemSize::Zero:
-        case gb::MemSize::KB8:
-        case gb::MemSize::Unknown:
+        case MemSize::Zero:
+        case MemSize::KB8:
+        case MemSize::Unknown:
         default:
             throw std::runtime_error{"Invalid memsize for rom bank calculation."};
     }
 }
 
 constexpr unsigned int MemSizeToRamBanks(const gb::MemSize sz) {
+    using gb::MemSize;
     switch (sz) {
-        case gb::MemSize::KB8:
+        case MemSize::KB8:
             return 1;
-        case gb::MemSize::KB32:
+        case MemSize::KB32:
             return 4;
-        case gb::MemSize::KB64:
+        case MemSize::KB64:
             return 8;
-        case gb::MemSize::KB128:
+        case MemSize::KB128:
             return 16;
-        case gb::MemSize::Zero:
-        case gb::MemSize::KB256:
-        case gb::MemSize::KB512:
-        case gb::MemSize::MB1:
-        case gb::MemSize::MB2:
-        case gb::MemSize::MB4:
-        case gb::MemSize::MB8:
-        case gb::MemSize::Unknown:
+        case MemSize::Zero:
+        case MemSize::KB256:
+        case MemSize::KB512:
+        case MemSize::MB1:
+        case MemSize::MB2:
+        case MemSize::MB4:
+        case MemSize::MB8:
+        case MemSize::Unknown:
         default:
             throw std::runtime_error{"Invalid memsize for ram bank calculation."};
     }
@@ -277,9 +280,9 @@ std::uint8_t Header::Checksum() const {
 }
 
 std::uint16_t Header::CartridgeChecksum() const {
-    const auto upper{this->bytes[0x14E - HeaderOffset]};
-    const auto lower{this->bytes[0x14F - HeaderOffset]};
-    return static_cast<uint16_t>(upper << 8 | lower);
+    const auto high{this->bytes[0x14E - HeaderOffset]};
+    const auto low{this->bytes[0x14F - HeaderOffset]};
+    return bit::Merge(high, low);
 }
 
 std::string Header::PrettyPrint() const {
@@ -321,10 +324,8 @@ std::string Header::Hexdump(const std::uint16_t begin, const std::uint16_t end) 
     int count{0};
     for (auto p{start}; p != stop; ++p) {
         const auto byte{*p};
-        const auto upper{(byte & 0xF0) >> 4};
-        const auto lower{byte & 0x0F};
-        result.push_back(characters[upper]);
-        result.push_back(characters[lower]);
+        result.push_back(characters[bit::HighNibble(byte)]);
+        result.push_back(characters[bit::LowNibble(byte)]);
         if (++count == 16) {
             result.push_back('\n');
             count = 0;

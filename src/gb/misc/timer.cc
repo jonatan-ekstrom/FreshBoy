@@ -1,6 +1,7 @@
 #include "timer.h"
 #include <stdexcept>
 #include <utility>
+#include "bits.h"
 
 namespace {
 
@@ -8,11 +9,6 @@ constexpr auto DivAddress{0xFF04};
 constexpr auto TimaAddress{0xFF05};
 constexpr auto TmaAddress{0xFF06};
 constexpr auto TacAddress{0xFF07};
-
-template<typename T>
-constexpr bool BitSet(const T reg, const unsigned int bit) {
-    return (reg & (1 << bit)) != 0;
-}
 
 }
 
@@ -82,7 +78,7 @@ void Timer_::Tick(const unsigned int cycles) {
 }
 
 bool Timer_::Output() const {
-    const auto enabled{BitSet(this->tac, 2)};
+    const auto enabled{bit::IsSet(this->tac, 2)};
     if (!enabled) return false;
 
     const auto freq{this->tac & 0x03};
@@ -104,11 +100,11 @@ bool Timer_::Output() const {
             throw std::runtime_error{"Timer - invalid frequency."};
     }
 
-    return BitSet(this->ticks, bit);
+    return bit::IsSet(this->ticks, bit);
 }
 
 std::uint8_t Timer_::Div() const {
-    return static_cast<std::uint8_t>((this->ticks >> 8) & 0xFF);
+    return bit::HighByte(this->ticks);
 }
 
 void Timer_::FireInterrupt() const {

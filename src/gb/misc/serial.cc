@@ -1,15 +1,12 @@
 #include "serial.h"
 #include <stdexcept>
 #include <utility>
+#include "bits.h"
 
 namespace {
 
 constexpr auto SbAddress{0xFF01};
 constexpr auto ScAddress{0xFF02};
-
-constexpr void ClearBit(std::uint8_t& reg, const unsigned int bit) {
-    reg = static_cast<std::uint8_t>(reg & ~(1 << bit));
-}
 
 }
 
@@ -79,7 +76,7 @@ void Serial_::Shift() {
 }
 
 void Serial_::TransferDone() {
-    ClearBit(this->sc, 7);
+    bit::Clear(this->sc, 7);
     this->shifts = 0;
     this->interrupts->RequestInterrupt(Interrupt::Serial);
 }

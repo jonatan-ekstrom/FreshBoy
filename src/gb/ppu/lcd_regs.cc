@@ -1,24 +1,9 @@
 #include "lcd_regs.h"
 #include <stdexcept>
 #include <utility>
+#include "bits.h"
 
 namespace {
-
-constexpr bool BitSet(const std::uint8_t byte, const unsigned int bit) {
-    return (byte & (1 << bit)) != 0;
-}
-
-constexpr void AssignBits(std::uint8_t& to,
-                          const std::uint8_t from,
-                          const std::uint8_t mask) {
-    to = static_cast<std::uint8_t>((to & ~mask) | (from & mask));
-}
-
-constexpr void UpdateBit(std::uint8_t& byte, const unsigned int bit, const bool set) {
-    const auto mask{1 << bit};
-    const auto updated{(byte & ~mask) | (set ? mask : 0)};
-    byte = static_cast<std::uint8_t>(updated);
-}
 
 constexpr auto StatAddress{0xFF41u};
 constexpr auto LyAddress{0xFF44u};
@@ -39,35 +24,35 @@ void LcdControl::Write(const std::uint8_t byte) {
 }
 
 bool LcdControl::LcdEnabled() const {
-    return BitSet(this->lcdc, 7);
+    return bit::IsSet(this->lcdc, 7);
 }
 
 TileMap LcdControl::WindowMap() const {
-    return BitSet(this->lcdc, 6) ? TileMap::Low : TileMap::High;
+    return bit::IsSet(this->lcdc, 6) ? TileMap::Low : TileMap::High;
 }
 
 bool LcdControl::WindowEnabled() const {
-    return BitSet(this->lcdc, 5);
+    return bit::IsSet(this->lcdc, 5);
 }
 
 TileBank LcdControl::BackgroundBank() const {
-    return BitSet(this->lcdc, 4) ? TileBank::High : TileBank::Low;
+    return bit::IsSet(this->lcdc, 4) ? TileBank::High : TileBank::Low;
 }
 
 TileMap LcdControl::BackgroundMap() const {
-    return BitSet(this->lcdc, 3) ? TileMap::Low : TileMap::High;
+    return bit::IsSet(this->lcdc, 3) ? TileMap::Low : TileMap::High;
 }
 
 SpriteSize LcdControl::ObjectSize() const {
-    return BitSet(this->lcdc, 2) ? SpriteSize::Large : SpriteSize::Small;
+    return bit::IsSet(this->lcdc, 2) ? SpriteSize::Large : SpriteSize::Small;
 }
 
 bool LcdControl::ObjectsEnabled() const {
-    return BitSet(this->lcdc, 1);
+    return bit::IsSet(this->lcdc, 1);
 }
 
 bool LcdControl::BackgroundEnabled() const {
-    return BitSet(this->lcdc, 0);
+    return bit::IsSet(this->lcdc, 0);
 }
 
 LcdStat::LcdStat(InterruptManager&& interrupts)
@@ -95,7 +80,8 @@ std::uint8_t LcdStat::Read(const std::uint16_t address) const {
 
 void LcdStat::Write(const std::uint16_t address, const std::uint8_t byte) {
     if (address == StatAddress) {
-        AssignBits(this->stat, byte, 0x78); // 0111 1000
+        const std::uint8_t mask{0x78}; // 0111 1000
+        bit::Assign(this->stat, byte, mask);
         Refresh();
         return;
     }
@@ -110,7 +96,8 @@ void LcdStat::Write(const std::uint16_t address, const std::uint8_t byte) {
 }
 
 void LcdStat::SetMode(const LcdMode mode) {
-    AssignBits(this->stat, static_cast<std::uint8_t>(mode), 0x03);
+    const std::uint8_t mask{0x03};
+    bit::Assign(this->stat, static_cast<std::uint8_t>(mode), mask);
     Refresh();
 }
 
@@ -133,7 +120,7 @@ void LcdStat::Refresh() {
 }
 
 void LcdStat::SetLyFlag(const bool flag) {
-    UpdateBit(this->stat, 2, flag);
+    bit::Update(this->stat, 2, flag);
 }
 
 bool LcdStat::UpdateBlankLine() {
@@ -147,10 +134,10 @@ bool LcdStat::UpdateStatLine() {
     const auto prevLine{this->statLine};
 
     bool newLine{false};
-    newLine = newLine || (BitSet(this->stat, 6) && (this->ly == this->lyc));
-    newLine = newLine || (BitSet(this->stat, 5) && Mode() == LcdMode::Oam);
-    newLine = newLine || (BitSet(this->stat, 4) && Mode() == LcdMode::VBlank);
-    newLine = newLine || (BitSet(this->stat, 3) && Mode() == LcdMode::HBlank);
+    newLine = newLine || (bit::IsSet(this->stat, 6) && (this->ly == this->lyc));
+    newLine = newLine || (bit::IsSet(this->stat, 5) && Mode() == LcdMode::Oam);
+    newLine = newLine || (bit::IsSet(this->stat, 4) && Mode() == LcdMode::VBlank);
+    newLine = newLine || (bit::IsSet(this->stat, 3) && Mode() == LcdMode::HBlank);
     this->statLine = newLine;
 
     return newLine && !prevLine;
