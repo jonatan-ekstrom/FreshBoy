@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 #include "event_manager.h"
 #include "instance.h"
 #include "renderer.h"

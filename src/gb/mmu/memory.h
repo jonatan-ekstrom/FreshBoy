@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 #include <vector>
 #include "cartridge.h"
 #include "input.h"

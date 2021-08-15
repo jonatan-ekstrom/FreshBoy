@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 #include "interrupt.h"
 #include "sprite_table.h"
 #include "tile_banks.h"
