@@ -6,12 +6,12 @@
 
 namespace {
 
-std::uint32_t ShadeToPixel(const gb::Shade shade) {
+gb::u32 ShadeToPixel(const gb::Shade shade) {
     const auto [r, g, b, a] = gb::Color{shade};
     return sdl::Texture::Pixel(r, g, b, a);
 }
 
-std::uint32_t DotToPixel(const gb::Dot& dot) {
+gb::u32 DotToPixel(const gb::Dot& dot) {
     return ShadeToPixel(dot.Tone);
 }
 

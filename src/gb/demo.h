@@ -4,6 +4,7 @@
 #include "instance.h"
 #include "renderer.h"
 #include "texture.h"
+#include "types.h"
 #include "window.h"
 
 namespace sdl { class Key; }
@@ -17,7 +18,7 @@ public:
 private:
     void KeyHandler(const sdl::Key& key);
     void QuitHandler();
-    void Draw(std::uint32_t color);
+    void Draw(u32 color);
     bool running;
     sdl::Instance instance;
     sdl::EventManager eventManager;

@@ -59,7 +59,7 @@ void Demo::QuitHandler() {
     this->running = false;
 }
 
-void Demo::Draw(const std::uint32_t color) {
+void Demo::Draw(const u32 color) {
     const auto pixels{this->texture.Lock()};
     const auto size{texture.Width() * texture.Height()};
     std::fill(pixels, pixels + size, color);
