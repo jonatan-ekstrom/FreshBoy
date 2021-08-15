@@ -60,19 +60,19 @@ RomOnly::RomOnly(const std::string& filePath, Header&& header)
     this->rom = file.ReadBytes(0, 0x7FFF);
 }
 
-u8 RomOnly::Read(const std::uint16_t address) const {
+u8 RomOnly::Read(const u16 address) const {
     if (address > 0x7FFF) {
         throw std::runtime_error{"RomOnly - Invalid address."};
     }
     return rom[address];
 }
 
-void RomOnly::Write(std::uint16_t, u8) {
+void RomOnly::Write(u16, u8) {
     throw std::runtime_error{"RomOnly - Write to ROM area."};
 }
 
-uint16_t RomOnly::Checksum() const {
-    std::uint16_t sum{0};
+u16 RomOnly::Checksum() const {
+    u16 sum{0};
     for (auto i{0u}; i < this->rom.size(); ++i) {
         if (i != 0x14E && i != 0x14F) {
             sum += this->rom[i];
@@ -110,7 +110,7 @@ MBC1::MBC1(const std::string& filePath, Header&& header)
     this->romBitMask = GetRomBitMask(numRomBanks);
 }
 
-u8 MBC1::Read(const std::uint16_t address) const {
+u8 MBC1::Read(const u16 address) const {
     if (address <= 0x3FFF) {
         return this->romBanks[RomBankLow()][address];
     }
@@ -129,7 +129,7 @@ u8 MBC1::Read(const std::uint16_t address) const {
     throw std::runtime_error{"MBC1 - invalid memory address read."};
 }
 
-void MBC1::Write(const std::uint16_t address, const u8 byte) {
+void MBC1::Write(const u16 address, const u8 byte) {
     if (address <= 0x1FFF) {
         this->ramEnable = byte;
         return;
@@ -193,8 +193,8 @@ bool MBC1::AdvancedMode() const {
     return (this->modeSelect & 0x01) != 0;
 }
 
-uint16_t MBC1::Checksum() const {
-    std::uint16_t sum{0};
+u16 MBC1::Checksum() const {
+    u16 sum{0};
     const auto& bank0{this->romBanks[0]};
     for (auto i{0u}; i < bank0.size(); ++i) {
         if (i != 0x14E && i != 0x14F) {

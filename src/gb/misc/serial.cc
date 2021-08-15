@@ -23,13 +23,13 @@ Serial Serial_::Create(InterruptManager interrupts) {
     return Serial{new Serial_{std::move(interrupts)}};
 }
 
-u8 Serial_::Read(const std::uint16_t address) const {
+u8 Serial_::Read(const u16 address) const {
     if (address == SbAddress) return this->sb;
     if (address == ScAddress) return this->sc;
     throw std::runtime_error{"Serial - invalid read address."};
 }
 
-void Serial_::Write(const std::uint16_t address, const u8 byte) {
+void Serial_::Write(const u16 address, const u8 byte) {
     if (address == SbAddress) {
         this->sb = byte;
         return;

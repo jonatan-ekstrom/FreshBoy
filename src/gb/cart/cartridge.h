@@ -16,23 +16,23 @@ public:
     static Cartridge Create(const std::string& filePath);
     virtual ~Cartridge_() = default;
     std::string HeaderInfo() const;
-    virtual u8 Read(std::uint16_t address) const = 0;
-    virtual void Write(std::uint16_t address, u8 byte) = 0;
+    virtual u8 Read(u16 address) const = 0;
+    virtual void Write(u16 address, u8 byte) = 0;
 protected:
     using MemBlock = std::vector<u8>;
     explicit Cartridge_(Header&& header);
     Header header;
 private:
-    virtual std::uint16_t Checksum() const = 0;
+    virtual u16 Checksum() const = 0;
 };
 
 class RomOnly final : public Cartridge_ {
 public:
     RomOnly(const std::string& filePath, Header&& header);
-    u8 Read(std::uint16_t address) const override;
-    void Write(std::uint16_t address, u8 byte) override;
+    u8 Read(u16 address) const override;
+    void Write(u16 address, u8 byte) override;
 private:
-    uint16_t Checksum() const override;
+    u16 Checksum() const override;
     MemBlock rom;
 };
 
@@ -46,15 +46,15 @@ protected:
 class MBC1 final : public MBC {
 public:
     MBC1(const std::string& filePath, Header&& header);
-    u8 Read(std::uint16_t address) const override;
-    void Write(std::uint16_t address, u8 byte) override;
+    u8 Read(u16 address) const override;
+    void Write(u16 address, u8 byte) override;
 private:
     bool RamEnabled() const;
     uint RomBankLow() const;
     uint RomBankHigh() const;
     uint RamBank() const;
     bool AdvancedMode() const;
-    uint16_t Checksum() const override;
+    u16 Checksum() const override;
     u8 ramEnable;
     u8 bankLow;
     u8 bankHigh;

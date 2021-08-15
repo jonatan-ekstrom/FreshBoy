@@ -10,11 +10,11 @@ constexpr auto HighAddress{0x97FFu};
 constexpr auto NumTiles{384u};
 constexpr auto TileSize{16u};
 
-constexpr bool ValidAddress(const std::uint16_t address) {
+constexpr bool ValidAddress(const gb::u16 address) {
     return address >= BaseAddress && address <= HighAddress;
 }
 
-constexpr auto GetTileAndIndex(const std::uint16_t address) {
+constexpr auto GetTileAndIndex(const gb::u16 address) {
     const auto adjusted{address - BaseAddress};
     const auto tile{adjusted / TileSize};
     const auto index{adjusted % TileSize};
@@ -50,7 +50,7 @@ TileBanks TileBanks_::Create() {
 
 TileBanks_::TileBanks_() : tiles(NumTiles) {}
 
-u8 TileBanks_::Read(const std::uint16_t address) const {
+u8 TileBanks_::Read(const u16 address) const {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileBanks - Invalid read access."};
     }
@@ -58,7 +58,7 @@ u8 TileBanks_::Read(const std::uint16_t address) const {
     return this->tiles[tile].Read(index);
 }
 
-void TileBanks_::Write(const std::uint16_t address, const u8 byte) {
+void TileBanks_::Write(const u16 address, const u8 byte) {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileBanks - Invalid write access."};
     }

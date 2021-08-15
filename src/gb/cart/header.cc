@@ -279,7 +279,7 @@ u8 Header::Checksum() const {
     return this->bytes[0x14D - HeaderOffset];
 }
 
-std::uint16_t Header::CartridgeChecksum() const {
+u16 Header::CartridgeChecksum() const {
     const auto high{this->bytes[0x14E - HeaderOffset]};
     const auto low{this->bytes[0x14F - HeaderOffset]};
     return bit::Merge(high, low);
@@ -308,7 +308,7 @@ std::string Header::PrettyPrint() const {
     return ss.str();
 }
 
-std::string Header::Stringify(const std::uint16_t begin, const std::uint16_t end) const {
+std::string Header::Stringify(const u16 begin, const u16 end) const {
     const auto start{this->bytes.cbegin() + begin - HeaderOffset};
     const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};
     std::vector<char> characters{start, stop};
@@ -316,7 +316,7 @@ std::string Header::Stringify(const std::uint16_t begin, const std::uint16_t end
     return std::string(characters.data());
 }
 
-std::string Header::Hexdump(const std::uint16_t begin, const std::uint16_t end) const {
+std::string Header::Hexdump(const u16 begin, const u16 end) const {
     const char characters[]{"0123456789ABCDEF"};
     const auto start{this->bytes.cbegin() + begin - HeaderOffset};
     const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};

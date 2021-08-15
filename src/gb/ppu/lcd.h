@@ -23,13 +23,13 @@ class Lcd_ {
 public:
     using FrameHandler = std::function<void(const Framebuffer::Pixels&)>;
     static Lcd Create(InterruptManager interrupts, const FrameHandler& frameHandler);
-    u8 Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, u8 byte);
+    u8 Read(u16 address) const;
+    void Write(u16 address, u8 byte);
     void Tick(uint cycles);
 private:
     using Scanline = Framebuffer::Scanline;
     Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler);
-    bool Accessible(std::uint16_t address) const;
+    bool Accessible(u16 address) const;
     void FrameReady() const;
     void HandleOam();
     void HandleTransfer();

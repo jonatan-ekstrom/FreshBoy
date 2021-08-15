@@ -43,7 +43,7 @@ Lcd_::Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler)
       frame{},
       cycleCount{0} {}
 
-u8 Lcd_::Read(const std::uint16_t address) const {
+u8 Lcd_::Read(const u16 address) const {
     if (!Accessible(address)) {
         return 0xFF;
     }
@@ -96,7 +96,7 @@ u8 Lcd_::Read(const std::uint16_t address) const {
     throw std::runtime_error{"LCD - Invalid read address."};
 }
 
-void Lcd_::Write(const std::uint16_t address, const u8 byte) {
+void Lcd_::Write(const u16 address, const u8 byte) {
     if (!Accessible(address)) {
         return;
     }
@@ -178,7 +178,7 @@ void Lcd_::Tick(const uint cycles) {
     }
 }
 
-bool Lcd_::Accessible(const std::uint16_t address) const {
+bool Lcd_::Accessible(const u16 address) const {
     const auto mode{this->stat.Mode()};
 
     // VRAM

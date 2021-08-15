@@ -17,7 +17,7 @@ InterruptManager InterruptManager_::Create() {
     return InterruptManager{new InterruptManager_{}};
 }
 
-u8 InterruptManager_::Read(const std::uint16_t address) const {
+u8 InterruptManager_::Read(const u16 address) const {
     if (address == FlagsAddress) {
         return this->flags;
     }
@@ -29,7 +29,7 @@ u8 InterruptManager_::Read(const std::uint16_t address) const {
     throw std::runtime_error{"InterruptManager - invalid read address."};
 }
 
-void InterruptManager_::Write(const std::uint16_t address, const u8 byte) {
+void InterruptManager_::Write(const u16 address, const u8 byte) {
     if (address == FlagsAddress) {
         this->flags = byte & 0x1F;
     }

@@ -36,8 +36,8 @@ using SpriteTable = std::shared_ptr<SpriteTable_>;
 class SpriteTable_ {
 public:
     static SpriteTable Create();
-    u8 Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, u8 byte);
+    u8 Read(u16 address) const;
+    void Write(u16 address, u8 byte);
     std::vector<const Sprite*> GetSpritesToRender(uint line,
                                                   SpriteSize size) const;
 private:

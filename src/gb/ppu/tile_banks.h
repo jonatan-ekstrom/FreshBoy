@@ -29,8 +29,8 @@ using TileBanks = std::shared_ptr<TileBanks_>;
 class TileBanks_ {
 public:
     static TileBanks Create();
-    u8 Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, u8 byte);
+    u8 Read(u16 address) const;
+    void Write(u16 address, u8 byte);
     const Tile& GetTileLow(u8 index) const;
     const Tile& GetTileHigh(u8 index) const;
 private:

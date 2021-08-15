@@ -5,7 +5,7 @@
 namespace gb {
 
 BgBase::BgBase(TileBanks banks, TileMaps maps, Palette palette,
-               const std::uint16_t address)
+               const u16 address)
     : banks{std::move(banks)},
       maps{std::move(maps)},
       palette{std::move(palette)},
@@ -23,7 +23,7 @@ void BgBase::UseMap(const TileMap map) {
     this->activeMap = map;
 }
 
-u8 BgBase::Read(const std::uint16_t address) const {
+u8 BgBase::Read(const u16 address) const {
     if (address == XAddr()) {
         return this->xReg;
     }
@@ -35,7 +35,7 @@ u8 BgBase::Read(const std::uint16_t address) const {
     throw std::runtime_error{"BgBase - invalid read address."};
 }
 
-void BgBase::Write(const std::uint16_t address, const u8 byte) {
+void BgBase::Write(const u16 address, const u8 byte) {
     if (address == XAddr()) {
         this->xReg = byte;
         return;
@@ -83,11 +83,11 @@ ColorIndex BgBase::GetColorIndex(const uint mapX,
     return tile.Color(dotX, dotY);
 }
 
-std::uint16_t BgBase::XAddr() const {
+u16 BgBase::XAddr() const {
     return YAddr() + 1;
 }
 
-std::uint16_t BgBase::YAddr() const {
+u16 BgBase::YAddr() const {
     return this->baseAddress;
 }
 

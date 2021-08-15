@@ -61,7 +61,7 @@ Palettes::Palettes()
       obj0{Palette_::Create(true)},
       obj1{Palette_::Create(true)} {}
 
-u8 Palettes::Read(const std::uint16_t address) const {
+u8 Palettes::Read(const u16 address) const {
     if (address == BgAddr) {
         return this->bg->Read();
     }
@@ -77,7 +77,7 @@ u8 Palettes::Read(const std::uint16_t address) const {
     throw std::runtime_error{"Palettes - Invalid read address."};
 }
 
-void Palettes::Write(const std::uint16_t address, const u8 byte) {
+void Palettes::Write(const u16 address, const u8 byte) {
     if (address == BgAddr) {
         this->bg->Write(byte);
         return;

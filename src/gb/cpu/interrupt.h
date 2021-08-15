@@ -20,8 +20,8 @@ using InterruptManager = std::shared_ptr<InterruptManager_>;
 class InterruptManager_ {
 public:
     static InterruptManager Create();
-    u8 Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, u8 byte);
+    u8 Read(u16 address) const;
+    void Write(u16 address, u8 byte);
     std::vector<Interrupt> PendingInterrupts() const;
     void EnableInterrupts();
     void DisableInterrupts();

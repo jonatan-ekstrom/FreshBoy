@@ -13,21 +13,21 @@ class BgBase {
 public:
     void UseBank(TileBank bank);
     void UseMap(TileMap map);
-    u8 Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, u8 byte);
+    u8 Read(u16 address) const;
+    void Write(u16 address, u8 byte);
 protected:
-    BgBase(TileBanks banks, TileMaps maps, Palette palette, std::uint16_t address);
+    BgBase(TileBanks banks, TileMaps maps, Palette palette, u16 address);
     Shade Map(uint mapX, uint mapY) const;
     u8 X() const;
     u8 Y() const;
 private:
     ColorIndex GetColorIndex(uint mapX, uint mapY) const;
-    std::uint16_t XAddr() const;
-    std::uint16_t YAddr() const;
+    u16 XAddr() const;
+    u16 YAddr() const;
     TileBanks banks;
     TileMaps maps;
     Palette palette;
-    std::uint16_t baseAddress;
+    u16 baseAddress;
     u8 xReg;
     u8 yReg;
     TileBank activeBank;

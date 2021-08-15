@@ -31,8 +31,8 @@ private:
 class Palettes {
 public:
     Palettes();
-    u8 Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, u8 byte);
+    u8 Read(u16 address) const;
+    void Write(u16 address, u8 byte);
     Palette Background() const;
     Palette Object0() const;
     Palette Object1() const;

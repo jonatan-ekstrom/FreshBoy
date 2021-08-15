@@ -37,8 +37,8 @@ public:
     explicit LcdStat(InterruptManager&& interrupts);
     LcdMode Mode() const;
     u8 Ly() const;
-    u8 Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, u8 byte);
+    u8 Read(u16 address) const;
+    void Write(u16 address, u8 byte);
     void SetMode(LcdMode mode);
     void SetLy(u8 newLy);
 private:

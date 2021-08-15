@@ -15,13 +15,13 @@ class Memory {
 public:
     Memory(Cartridge cart, Input input, InterruptManager interrupts,
            Lcd lcd, Serial serial, Timer timer);
-    u8 Read(std::uint16_t address) const;
-    void Write(std::uint16_t address, u8 byte);
+    u8 Read(u16 address) const;
+    void Write(u16 address, u8 byte);
 private:
     using MemBlock = std::vector<u8>;
     bool BootRomEnabled() const;
-    u8 ReadIo(std::uint16_t address) const;
-    void WriteIo(std::uint16_t address, u8 byte);
+    u8 ReadIo(u16 address) const;
+    void WriteIo(u16 address, u8 byte);
     void DmaTransfer(u8 byte);
     Cartridge cart;
     Input input;

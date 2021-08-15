@@ -55,11 +55,11 @@ public:
     std::string Licensee() const;
     u8 VersionNumber() const;
     u8 Checksum() const;
-    std::uint16_t CartridgeChecksum() const;
+    u16 CartridgeChecksum() const;
     std::string PrettyPrint() const;
 private:
-    std::string Stringify(std::uint16_t begin, std::uint16_t end) const;
-    std::string Hexdump(std::uint16_t begin, std::uint16_t end) const;
+    std::string Stringify(u16 begin, u16 end) const;
+    std::string Hexdump(u16 begin, u16 end) const;
     u8 ComputedChecksum() const;
     std::vector<u8> bytes;
 };

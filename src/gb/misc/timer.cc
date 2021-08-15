@@ -27,7 +27,7 @@ Timer Timer_::Create(InterruptManager interrupts) {
     return Timer{new Timer_{std::move(interrupts)}};
 }
 
-u8 Timer_::Read(const std::uint16_t address) const {
+u8 Timer_::Read(const u16 address) const {
     if (address == DivAddress) {
         return Div();
     }
@@ -47,7 +47,7 @@ u8 Timer_::Read(const std::uint16_t address) const {
     throw std::runtime_error{"Timer - invalid read address."};
 }
 
-void Timer_::Write(const std::uint16_t address, const u8 byte) {
+void Timer_::Write(const u16 address, const u8 byte) {
     if (address == DivAddress) {
         Reset();
         return;

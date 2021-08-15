@@ -12,11 +12,11 @@ constexpr auto HighAddress{0xFE9Fu};
 constexpr auto NumSprites{40u};
 constexpr auto SpriteSize{4u};
 
-constexpr bool ValidAddress(const std::uint16_t address) {
+constexpr bool ValidAddress(const gb::u16 address) {
     return (address >= BaseAddress && address <= HighAddress);
 }
 
-constexpr auto GetSpriteAndIndex(const std::uint16_t address) {
+constexpr auto GetSpriteAndIndex(const gb::u16 address) {
     const auto adjusted{address - BaseAddress};
     const auto sprite{adjusted / SpriteSize};
     const auto index{adjusted % SpriteSize};
@@ -76,7 +76,7 @@ SpriteTable SpriteTable_::Create() {
     return SpriteTable{new SpriteTable_{}};
 }
 
-u8 SpriteTable_::Read(const std::uint16_t address) const {
+u8 SpriteTable_::Read(const u16 address) const {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"SpriteTable - invalid read address."};
     }
@@ -84,7 +84,7 @@ u8 SpriteTable_::Read(const std::uint16_t address) const {
     return this->sprites[sprite].Read(index);
 }
 
-void SpriteTable_::Write(const std::uint16_t address, const u8 byte) {
+void SpriteTable_::Write(const u16 address, const u8 byte) {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"SpriteTable - invalid write address."};
     }

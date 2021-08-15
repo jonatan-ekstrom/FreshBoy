@@ -9,7 +9,7 @@ constexpr auto TilesPerMap{1024u};
 constexpr auto Map0Offset{0x9800u};
 constexpr auto Map1Offset{0x9C00u};
 
-constexpr bool ValidAddress(const std::uint16_t address) {
+constexpr bool ValidAddress(const gb::u16 address) {
     return address >= BaseAddress && address <= HighAddress;
 }
 
@@ -23,7 +23,7 @@ TileMaps TileMaps_::Create() {
 
 TileMaps_::TileMaps_() : map0(TilesPerMap), map1(TilesPerMap) {}
 
-u8 TileMaps_::Read(const std::uint16_t address) const {
+u8 TileMaps_::Read(const u16 address) const {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileMaps - Invalid read address."};
     }
@@ -33,7 +33,7 @@ u8 TileMaps_::Read(const std::uint16_t address) const {
     return map[address - offset];
 }
 
-void TileMaps_::Write(const std::uint16_t address, const u8 byte) {
+void TileMaps_::Write(const u16 address, const u8 byte) {
     if (!ValidAddress(address)) {
         throw std::runtime_error{"TileMaps - Invalid write address."};
     }

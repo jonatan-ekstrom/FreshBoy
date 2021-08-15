@@ -71,14 +71,14 @@ u8 LcdStat::Ly() const {
     return this->ly;
 }
 
-u8 LcdStat::Read(const std::uint16_t address) const {
+u8 LcdStat::Read(const u16 address) const {
     if (address == StatAddress) return this->stat;
     if (address == LyAddress) return this->ly;
     if (address == LycAddress) return this->lyc;
     throw std::runtime_error{"LcdStat - invalid read address."};
 }
 
-void LcdStat::Write(const std::uint16_t address, const u8 byte) {
+void LcdStat::Write(const u16 address, const u8 byte) {
     if (address == StatAddress) {
         const u8 mask{0x78}; // 0111 1000
         bit::Assign(this->stat, byte, mask);
