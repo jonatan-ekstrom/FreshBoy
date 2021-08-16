@@ -8,7 +8,7 @@ namespace {
 
 gb::u32 ShadeToPixel(const gb::Shade shade) {
     const auto [r, g, b, a] = gb::Color{shade};
-    return sdl::Texture::Pixel(r, g, b, a);
+    return static_cast<gb::u32>(r << 24 | g << 16 | b << 8 | a);
 }
 
 gb::u32 DotToPixel(const gb::Dot& dot) {
