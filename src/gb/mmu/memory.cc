@@ -6,12 +6,13 @@
 namespace gb {
 
 Memory::Memory(Cartridge cart, Input input, InterruptManager interrupts,
-               Lcd lcd, Serial serial, Timer timer)
+               Lcd lcd, Serial serial, Sound sound, Timer timer)
     : cart{std::move(cart)},
       input{std::move(input)},
       interrupts{std::move(interrupts)},
       lcd{std::move(lcd)},
       serial{std::move(serial)},
+      sound{std::move(sound)},
       timer{std::move(timer)},
       boot{dmg::BootRom.cbegin(), dmg::BootRom.cend()},
       wram(0x2000),
@@ -180,8 +181,8 @@ u8 Memory::ReadIo(const u16 address) const {
     }
 
     // APU
-    if (address >= 0xFF10 && address <= 0xFF26) {
-        return 0; // TODO - APU
+    if (address >= 0xFF10 && address <= 0xFF3F) {
+        return this->sound->Read(address);
     }
 
     // LCD
@@ -233,8 +234,9 @@ void Memory::WriteIo(const u16 address, const u8 byte) {
     }
 
     // APU
-    if (address >= 0xFF10 && address <= 0xFF26) {
-        return; // TODO - APU
+    if (address >= 0xFF10 && address <= 0xFF3F) {
+        this->sound->Write(address, byte);
+        return;
     }
 
     // LCD

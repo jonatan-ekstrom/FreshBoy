@@ -5,6 +5,7 @@
 #include "interrupt.h"
 #include "lcd.h"
 #include "serial.h"
+#include "sound.h"
 #include "timer.h"
 #include "types.h"
 
@@ -13,7 +14,7 @@ namespace gb {
 class Memory {
 public:
     Memory(Cartridge cart, Input input, InterruptManager interrupts,
-           Lcd lcd, Serial serial, Timer timer);
+           Lcd lcd, Serial serial, Sound sound, Timer timer);
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
 private:
@@ -27,6 +28,7 @@ private:
     InterruptManager interrupts;
     Lcd lcd;
     Serial serial;
+    Sound sound;
     Timer timer;
     MemBlock boot;
     MemBlock wram;
