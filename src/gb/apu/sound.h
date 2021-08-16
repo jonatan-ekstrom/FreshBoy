@@ -13,6 +13,9 @@ public:
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
 private:
+    bool Enabled() const;
+    void Write52(u8 byte);
+    void Reset();
     Channel1 ch1;
     Channel2 ch2;
     Channel3 ch3;
