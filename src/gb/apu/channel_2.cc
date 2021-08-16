@@ -58,4 +58,11 @@ void Channel2::Write(const u16 address, const u8 byte) {
     throw std::runtime_error{"Channel2 - invalid write address."};
 }
 
+void Channel2::Reset() {
+    this->nr21 = 0;
+    this->nr22 = 0;
+    this->nr23 = 0;
+    this->nr24 = 0;
+}
+
 }

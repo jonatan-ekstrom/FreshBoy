@@ -1,4 +1,5 @@
 #include "channel_3.h"
+#include <algorithm>
 #include <stdexcept>
 
 namespace {
@@ -77,6 +78,15 @@ void Channel3::Write(const u16 address, const u8 byte) {
     }
 
     throw std::runtime_error{"Channel3 - invalid write address."};
+}
+
+void Channel3::Reset() {
+    this->nr30 = 0;
+    this->nr31 = 0;
+    this->nr32 = 0;
+    this->nr33 = 0;
+    this->nr34 = 0;
+    std::fill(this->wave.begin(), this->wave.end(), 0);
 }
 
 }
