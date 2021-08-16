@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <stdexcept>
 #include "display.h"
-#include "texture.h"
 
 namespace {
 
