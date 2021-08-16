@@ -5,8 +5,8 @@
 
 namespace gb {
 
-Memory::Memory(Cartridge cart, Input input, InterruptManager interrupts,
-               Lcd lcd, Serial serial, Sound sound, Timer timer)
+Memory_::Memory_(Cartridge cart, Input input, InterruptManager interrupts,
+                 Lcd lcd, Serial serial, Sound sound, Timer timer)
     : cart{std::move(cart)},
       input{std::move(input)},
       interrupts{std::move(interrupts)},
@@ -20,7 +20,12 @@ Memory::Memory(Cartridge cart, Input input, InterruptManager interrupts,
       dma{0},
       bank{0} {}
 
-u8 Memory::Read(const u16 address) const {
+Memory Memory_::Create(Cartridge cart, Input input, InterruptManager interrupts,
+                      Lcd lcd, Serial serial, Sound sound, Timer timer) {
+    return Memory{new Memory_{cart, input, interrupts, lcd, serial, sound, timer}};
+}
+
+u8 Memory_::Read(const u16 address) const {
     // Boot ROM / Cartridge
     if (address <= 0xFF) {
         if (BootRomEnabled()) {
@@ -83,7 +88,7 @@ u8 Memory::Read(const u16 address) const {
     throw std::runtime_error{"MMU - invalid read address."};
 }
 
-void Memory::Write(const u16 address, const u8 byte) {
+void Memory_::Write(const u16 address, const u8 byte) {
     // Boot ROM / Cartridge
     if (address <= 0xFF) {
         if (BootRomEnabled()) {
@@ -155,11 +160,11 @@ void Memory::Write(const u16 address, const u8 byte) {
     throw std::runtime_error{"MMU - invalid write address."};
 }
 
-bool Memory::BootRomEnabled() const {
+bool Memory_::BootRomEnabled() const {
     return this->bank == 0;
 }
 
-u8 Memory::ReadIo(const u16 address) const {
+u8 Memory_::ReadIo(const u16 address) const {
     // Input
     if (address == 0xFF00) {
         return this->input->Read();
@@ -208,7 +213,7 @@ u8 Memory::ReadIo(const u16 address) const {
     throw std::runtime_error{"MMU - invalid read address"};
 }
 
-void Memory::WriteIo(const u16 address, const u8 byte) {
+void Memory_::WriteIo(const u16 address, const u8 byte) {
     // Input
     if (address == 0xFF00) {
         this->input->Write(byte);
@@ -266,7 +271,7 @@ void Memory::WriteIo(const u16 address, const u8 byte) {
     throw std::runtime_error{"MMU - invalid write address"};
 }
 
-void Memory::DmaTransfer(const u8 byte) {
+void Memory_::DmaTransfer(const u8 byte) {
     constexpr auto numBytes{160};
     u16 src{static_cast<u16>(byte * 0x100)};
     u16 dst{0xFE00};
