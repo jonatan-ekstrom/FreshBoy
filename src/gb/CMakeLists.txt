@@ -1,6 +1,6 @@
 # List gb top level header and source files.
-set(gbHeaders demo.h)
-set(gbSources demo.cc)
+set(gbHeaders demo.h gb.h)
+set(gbSources demo.cc gb.cc)
 
 # Add the 'gb' static library.
 add_library(gb STATIC ${gbSources})

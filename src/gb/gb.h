@@ -1,0 +1,37 @@
+#pragma once
+#include <functional>
+#include <string>
+#include "cartridge.h"
+#include "input.h"
+#include "interrupt.h"
+#include "lcd.h"
+#include "memory.h"
+#include "serial.h"
+#include "sound.h"
+#include "timer.h"
+#include "types.h"
+
+namespace gb {
+
+class Gameboy {
+public:
+    using ContinueCallback = std::function<bool(void)>;
+    using RenderCallback = std::function<void(const std::vector<u32>&)>;
+    Gameboy(const std::string& filePath, const RenderCallback& render);
+    std::string Header() const;
+    void Run(const ContinueCallback& cont);
+    void ButtonPressed(Button button);
+    void ButtonReleased(Button button);
+private:
+    void Tick();
+    Cartridge cart;
+    InterruptManager interrupts;
+    Input input;
+    Serial serial;
+    Timer timer;
+    Lcd ppu;
+    Sound apu;
+    Memory mmu;
+};
+
+}
