@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <unordered_set>
-#include <vector>
 #include "interrupt.h"
 #include "types.h"
 
@@ -26,7 +25,8 @@ public:
     static Input Create(InterruptManager interrupts);
     u8 Read() const;
     void Write(u8 byte);
-    void PressButtons(const std::vector<Button>& buttons);
+    void PressButton(Button button);
+    void ReleaseButton(Button button);
 private:
     explicit Input_(InterruptManager&& interrupts);
     bool Pressed(Button button) const;

@@ -62,14 +62,17 @@ void Input_::Write(const u8 byte) {
     }
 }
 
-void Input_::PressButtons(const std::vector<Button>& buttons) {
+void Input_::PressButton(const Button button) {
     const auto prev{Read()};
-    this->pressed.clear();
-    this->pressed.insert(buttons.cbegin(), buttons.cend());
+    this->pressed.insert(button);
     const auto curr{Read()};
     if (ShouldFire(prev, curr)) {
         FireInterrupt();
     }
+}
+
+void Input_::ReleaseButton(const Button button) {
+    this->pressed.erase(button);
 }
 
 bool Input_::Pressed(const Button button) const {
