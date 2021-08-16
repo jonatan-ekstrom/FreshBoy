@@ -4,9 +4,10 @@
 #include "cartridge.h"
 #include "key.h"
 
+using namespace gb;
 using namespace sdl;
 
-namespace gb {
+namespace app {
 
 Demo::Demo()
     : running{false},
@@ -20,7 +21,7 @@ Demo::Demo()
 }
 
 void Demo::Run() {
-    const auto cart{gb::Cartridge_::Create("/home/jonatan/Desktop/zelda.gb")};
+    const auto cart{Cartridge_::Create("/home/jonatan/Desktop/zelda.gb")};
     std::cout << cart->HeaderInfo() << std::endl;
     this->running = true;
     this->window->Show();
@@ -59,7 +60,7 @@ void Demo::QuitHandler() {
     this->running = false;
 }
 
-void Demo::Draw(const u32 color) {
+void Demo::Draw(const std::uint32_t color) {
     const auto pixels{this->texture.Lock()};
     const auto size{texture.Width() * texture.Height()};
     std::fill(pixels, pixels + size, color);

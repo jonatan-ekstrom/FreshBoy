@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include "event_manager.h"
 #include "instance.h"
 #include "renderer.h"
@@ -8,7 +9,7 @@
 
 namespace sdl { class Key; }
 
-namespace gb {
+namespace app {
 
 class Demo {
 public:
@@ -17,7 +18,7 @@ public:
 private:
     void KeyHandler(const sdl::Key& key);
     void QuitHandler();
-    void Draw(u32 color);
+    void Draw(std::uint32_t color);
     bool running;
     sdl::Instance instance;
     sdl::EventManager eventManager;

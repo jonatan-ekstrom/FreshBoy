@@ -6,7 +6,7 @@
 int main() {
     int exitCode{EXIT_FAILURE};
     try {
-        gb::Demo demo;
+        app::Demo demo;
         demo.Run();
         exitCode = EXIT_SUCCESS;
     } catch (const std::exception& e) {
