@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "channel_1.h"
 #include "channel_2.h"
 #include "channel_3.h"
@@ -7,12 +8,16 @@
 
 namespace gb {
 
-class Sound {
+class Sound_;
+using Sound = std::shared_ptr<Sound_>;
+
+class Sound_ {
 public:
-    Sound();
+    static Sound Create();
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
 private:
+    Sound_();
     bool Enabled() const;
     void Write52(u8 byte);
     void Reset();

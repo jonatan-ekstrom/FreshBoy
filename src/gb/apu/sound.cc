@@ -12,9 +12,11 @@ constexpr auto Nr52Address{0xFF26};
 
 namespace gb {
 
-Sound::Sound() : ch1{}, ch2{}, ch3{}, ch4{}, nr50{0}, nr51{0}, nr52{0} {}
+Sound_::Sound_() : ch1{}, ch2{}, ch3{}, ch4{}, nr50{0}, nr51{0}, nr52{0} {}
 
-u8 Sound::Read(const u16 address) const {
+Sound Sound_::Create() { return Sound{new Sound_{}}; }
+
+u8 Sound_::Read(const u16 address) const {
     if (!Enabled() && address != Nr52Address) {
         return 0;
     }
@@ -54,7 +56,7 @@ u8 Sound::Read(const u16 address) const {
     throw std::runtime_error{"Sound - invalid read address."};
 }
 
-void Sound::Write(const u16 address, const u8 byte) {
+void Sound_::Write(const u16 address, const u8 byte) {
     if (!Enabled() && address != Nr52Address) {
         return;
     }
@@ -102,7 +104,7 @@ void Sound::Write(const u16 address, const u8 byte) {
     throw std::runtime_error{"Sound - invalid write address."};
 }
 
-void Sound::Write52(const u8 byte) {
+void Sound_::Write52(const u8 byte) {
     const u8 mask{0x80};
     bit::Assign(this->nr52, byte, mask);
     if (!Enabled()) {
@@ -110,11 +112,11 @@ void Sound::Write52(const u8 byte) {
     }
 }
 
-bool Sound::Enabled() const {
+bool Sound_::Enabled() const {
     return bit::IsSet(this->nr52, 7);
 }
 
-void Sound::Reset() {
+void Sound_::Reset() {
     this->ch1.Reset();
     this->ch2.Reset();
     this->ch3.Reset();
