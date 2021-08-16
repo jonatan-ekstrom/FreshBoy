@@ -23,7 +23,9 @@ u8 Channel2::Read(const u16 address) const {
         return this->nr22;
     }
 
-    // Nr23 is write-only.
+    if (address == Nr23Address) {
+        return 0; // Write-only.
+    }
 
     if (address == Nr24Address) {
         return this->nr24 & 0x40;

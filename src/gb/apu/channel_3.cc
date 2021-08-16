@@ -19,7 +19,7 @@ Channel3::Channel3() : nr30{0}, nr31{0}, nr32{0}, nr33{0}, nr34{0}, wave{} {}
 
 u8 Channel3::Read(const u16 address) const {
     if (address == Nr30Address) {
-        return this->nr30 & 0x80;
+        return this->nr30;
     }
 
     if (address == Nr31Address) {
@@ -27,10 +27,12 @@ u8 Channel3::Read(const u16 address) const {
     }
 
     if (address == Nr32Address) {
-        return this->nr32 & 0x60;
+        return this->nr32;
     }
 
-    // Nr33 is write-only.
+    if (address == Nr33Address) {
+        return 0; // Write-only.
+    }
 
     if (address == Nr34Address) {
         return this->nr34 & 0x40;

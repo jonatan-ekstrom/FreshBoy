@@ -16,7 +16,7 @@ Channel4::Channel4() : nr41{0}, nr42{0}, nr43{0}, nr44{0} {}
 
 u8 Channel4::Read(const u16 address) const {
     if (address == Nr41Address) {
-        return this->nr41 & 0x3F;
+        return this->nr41;
     }
 
     if (address == Nr42Address) {

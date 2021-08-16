@@ -17,7 +17,7 @@ Channel1::Channel1() : nr10{0}, nr11{0}, nr12{0}, nr13{0}, nr14{0} {}
 
 u8 Channel1::Read(const u16 address) const {
     if (address == Nr10Address) {
-        return this->nr10 & 0x7F;
+        return this->nr10;
     }
 
     if (address == Nr11Address) {
@@ -28,7 +28,9 @@ u8 Channel1::Read(const u16 address) const {
         return this->nr12;
     }
 
-    // Nr13 is write-only.
+    if (address == Nr13Address) {
+        return 0; // Write-only.
+    }
 
     if (address == Nr14Address) {
         return this->nr14 & 0x40;

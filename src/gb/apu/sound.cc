@@ -1,5 +1,6 @@
 #include "sound.h"
 #include <stdexcept>
+#include "bits.h"
 
 namespace {
 
@@ -43,7 +44,7 @@ u8 Sound::Read(const u16 address) const {
     }
 
     if (address == Nr52Address) {
-        return this->nr52 & 0x8F;
+        return this->nr52;
     }
 
     throw std::runtime_error{"Sound - invalid read address."};
@@ -86,7 +87,8 @@ void Sound::Write(const u16 address, const u8 byte) {
     }
 
     if (address == Nr52Address) {
-        this->nr52 = byte & 0x80;
+        const u8 mask{0x80};
+        bit::Assign(this->nr52, byte, mask);
         return;
     }
 
