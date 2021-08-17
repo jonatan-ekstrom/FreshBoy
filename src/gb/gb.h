@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <memory>
 #include <string>
 #include "cartridge.h"
 #include "input.h"
@@ -13,16 +14,20 @@
 
 namespace gb {
 
-class Gameboy {
+class Gameboy_;
+using Gameboy = std::unique_ptr<Gameboy_>;
+
+class Gameboy_ {
 public:
     using ContinueCallback = std::function<bool(void)>;
     using RenderCallback = std::function<void(const std::vector<u32>&)>;
-    Gameboy(const std::string& filePath, const RenderCallback& render);
+    static Gameboy Create(const std::string& filePath, const RenderCallback& render);
     std::string Header() const;
     void Run(const ContinueCallback& cont);
     void ButtonPressed(Button button);
     void ButtonReleased(Button button);
 private:
+    Gameboy_(const std::string& filePath, const RenderCallback& render);
     void Tick();
     Cartridge cart;
     InterruptManager interrupts;

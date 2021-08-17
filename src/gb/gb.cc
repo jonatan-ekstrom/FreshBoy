@@ -2,7 +2,7 @@
 
 namespace gb {
 
-Gameboy::Gameboy(const std::string& filePath, const RenderCallback& render)
+Gameboy_::Gameboy_(const std::string& filePath, const RenderCallback& render)
     : cart{Cartridge_::Create(filePath)},
       interrupts{InterruptManager_::Create()},
       input{Input_::Create(this->interrupts)},
@@ -13,25 +13,30 @@ Gameboy::Gameboy(const std::string& filePath, const RenderCallback& render)
       mmu{Memory_::Create(this->cart, this->input, this->interrupts,
                           this->ppu, this->serial, this->apu, this->timer)} {}
 
-std::string Gameboy::Header() const {
+Gameboy Gameboy_::Create(const std::string& filePath,
+                         const Gameboy_::RenderCallback& render) {
+    return Gameboy{new Gameboy_{filePath, render}};
+}
+
+std::string Gameboy_::Header() const {
     return std::string();
 }
 
-void Gameboy::Run(const Gameboy::ContinueCallback& cont) {
+void Gameboy_::Run(const Gameboy_::ContinueCallback& cont) {
     while (cont()) {
         Tick();
     }
 }
 
-void Gameboy::ButtonPressed(const Button button) {
+void Gameboy_::ButtonPressed(const Button button) {
     this->input->PressButton(button);
 }
 
-void Gameboy::ButtonReleased(const Button button) {
+void Gameboy_::ButtonReleased(const Button button) {
     this->input->ReleaseButton(button);
 }
 
-void Gameboy::Tick() {
+void Gameboy_::Tick() {
     constexpr auto cycles{4};
 
     // TODO - implement CPU.
