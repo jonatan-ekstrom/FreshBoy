@@ -95,6 +95,7 @@ void Emulator::Render(const Framebuffer::Pixels& pixels) {
     }
     const auto tx{this->texture.Lock()};
     std::copy(pixels.cbegin(), pixels.cend(), tx);
+    this->texture.Unlock();
     this->renderer->Clear();
     this->renderer->Copy(this->texture);
     this->renderer->Present();
