@@ -14,7 +14,7 @@ public:
     static Cpu Create(InterruptManager interrupts, Memory mmu);
     uint Tick();
 private:
-    Cpu_(InterruptManager interrupts, Memory mmu);
+    Cpu_(InterruptManager&& interrupts, Memory&& mmu);
     InterruptManager interrupts;
     Memory mmu;
 };
