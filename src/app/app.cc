@@ -1,6 +1,7 @@
 #include "app.h"
 #include <algorithm>
 #include <iostream>
+#include <stdexcept>
 #include "display.h"
 #include "key.h"
 
@@ -100,11 +101,13 @@ void Emulator::Render(const Framebuffer::Pixels& pixels) {
 }
 
 void Emulator::KeyUp(const Key& key) {
+    if (key.Code == sdl::Key::Code::Unknown) return;
     const auto button{CodeToButton(key.Code)};
     this->gb->ButtonReleased(button);
 }
 
 void Emulator::KeyDown(const Key& key) {
+    if (key.Code == sdl::Key::Code::Unknown) return;
     const auto button{CodeToButton(key.Code)};
     this->gb->ButtonPressed(button);
 }
