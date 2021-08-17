@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include "cartridge.h"
+#include "framebuffer.h"
 #include "input.h"
 #include "interrupt.h"
 #include "lcd.h"
@@ -20,7 +21,7 @@ using Gameboy = std::unique_ptr<Gameboy_>;
 class Gameboy_ {
 public:
     using ContinueCallback = std::function<bool(void)>;
-    using RenderCallback = std::function<void(const std::vector<u32>&)>;
+    using RenderCallback = std::function<void(const Framebuffer::Pixels&)>;
     static Gameboy Create(const std::string& filePath, const RenderCallback& render);
     std::string Header() const;
     void Run(const ContinueCallback& cont);

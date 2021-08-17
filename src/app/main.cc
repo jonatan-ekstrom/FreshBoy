@@ -6,8 +6,8 @@
 int main() {
     int exitCode{EXIT_FAILURE};
     try {
-        app::Demo demo;
-        demo.Run();
+        app::Emulator emulator;
+        emulator.Run("/home/jonatan/Desktop/zelda.gb");
         exitCode = EXIT_SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

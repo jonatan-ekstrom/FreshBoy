@@ -1,73 +1,112 @@
 #include "app.h"
 #include <algorithm>
 #include <iostream>
-#include "cartridge.h"
+#include "display.h"
 #include "key.h"
 
 using namespace gb;
 using namespace sdl;
 
-namespace app {
+namespace {
 
-Demo::Demo()
-    : running{false},
-      instance{Instance_::Create()},
-      eventManager{this->instance},
-      window{Window_::Create(this->instance, "Demo Window", 600, 400)},
-      renderer{Renderer_::Create(this->instance, this->window)},
-      texture{this->instance, this->renderer, 160, 144} {
-    eventManager.RegisterKeyHandler([this] (const Key& key) { this->KeyHandler(key); });
-    eventManager.RegisterQuitHandler([this] { this->QuitHandler(); });
-}
+constexpr auto Title{"Gameboy"};
+constexpr auto WindowWidth{600};
+constexpr auto WindowHeight{400};
 
-void Demo::Run() {
-    const auto cart{Cartridge_::Create("/home/jonatan/Desktop/zelda.gb")};
-    std::cout << cart->HeaderInfo() << std::endl;
-    this->running = true;
-    this->window->Show();
-    while (this->running) {
-        this->eventManager.WaitForEvent();
-    }
-}
-
-void Demo::KeyHandler(const Key& key) {
-    if (key.Repeat) return;
-    if (key.Type != Key::Type::Down) return;
-    switch (key.Code) {
+constexpr Button CodeToButton(const enum Key::Code code) {
+    switch (code) {
         case Key::Code::Up:
-            Draw(Texture::Pixel(255, 0, 0, 255));
-            break;
+            return Button::Up;
         case Key::Code::Down:
-            Draw(Texture::Pixel(255, 255, 0, 255));
-            break;
+            return Button::Down;
         case Key::Code::Left:
-            Draw(Texture::Pixel(0, 255, 0, 255));
-            break;
+            return Button::Left;
         case Key::Code::Right:
-            Draw(Texture::Pixel(0, 0, 255, 255));
-            break;
+            return Button::Right;
         case Key::Code::Z:
+            return Button::B;
         case Key::Code::X:
+            return Button::A;
         case Key::Code::Backspace:
+            return Button::Select;
         case Key::Code::Return:
+            return Button::Start;
         case Key::Code::Unknown:
         default:
-            break;
+            throw std::runtime_error{"APP - Unknown keycode."};
     }
 }
 
-void Demo::QuitHandler() {
+}
+
+namespace app {
+
+Emulator::Emulator()
+    : gb{},
+      instance{Instance_::Create()},
+      window{Window_::Create(this->instance, Title, WindowWidth, WindowHeight)},
+      renderer{Renderer_::Create(this->instance, this->window)},
+      texture{this->instance, this->renderer, lcd::DisplayWidth, lcd::DisplayHeight},
+      eventManager{this->instance},
+      running{false} {
+    eventManager.RegisterKeyHandler([this] (const auto& key) { KeyHandler(key); });
+    eventManager.RegisterQuitHandler([this] { QuitHandler(); });
+}
+
+void Emulator::Run(const std::string& filePath) {
+    const auto renderCb{[this] (const auto& p) { Render(p); }};
+    const auto contCb{[this] { return Continue(); }};
+
+    gb = Gameboy_::Create(filePath, renderCb);
+    std::cout << gb->Header() << std::endl;
+
+    this->window->Show();
+    this->running = true;
+    gb->Run(contCb);
+}
+
+void Emulator::KeyHandler(const Key& key) {
+    if (key.Repeat) return;
+    if (key.Type == Key::Type::Down) {
+        KeyDown(key);
+        return;
+    }
+    if (key.Type == Key::Type::Up) {
+        KeyUp(key);
+        return;
+    }
+}
+
+void Emulator::QuitHandler() {
     this->running = false;
 }
 
-void Demo::Draw(const std::uint32_t color) {
-    const auto pixels{this->texture.Lock()};
-    const auto size{texture.Width() * texture.Height()};
-    std::fill(pixels, pixels + size, color);
-    this->texture.Unlock();
+bool Emulator::Continue() const {
+    return this->running;
+}
+
+void Emulator::Render(const Framebuffer::Pixels& pixels) {
+    this->eventManager.ProcessEvents();
+
+    const auto txSize{static_cast<uint>(this->texture.Width() * this->texture.Height())};
+    if (pixels.size() != txSize) {
+        throw std::runtime_error{"APP - framebuffer/texture size mismatch."};
+    }
+    const auto tx{this->texture.Lock()};
+    std::copy(pixels.cbegin(), pixels.cend(), tx);
     this->renderer->Clear();
     this->renderer->Copy(this->texture);
     this->renderer->Present();
+}
+
+void Emulator::KeyUp(const Key& key) {
+    const auto button{CodeToButton(key.Code)};
+    this->gb->ButtonReleased(button);
+}
+
+void Emulator::KeyDown(const Key& key) {
+    const auto button{CodeToButton(key.Code)};
+    this->gb->ButtonPressed(button);
 }
 
 }

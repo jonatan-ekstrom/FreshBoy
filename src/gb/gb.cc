@@ -19,7 +19,7 @@ Gameboy Gameboy_::Create(const std::string& filePath,
 }
 
 std::string Gameboy_::Header() const {
-    return std::string();
+    return this->cart->HeaderInfo();
 }
 
 void Gameboy_::Run(const ContinueCallback& cont) {

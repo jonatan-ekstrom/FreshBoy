@@ -1,30 +1,35 @@
 #pragma once
-#include <cstdint>
+#include <string>
 #include "event_manager.h"
+#include "framebuffer.h"
+#include "gb.h"
 #include "instance.h"
 #include "renderer.h"
 #include "texture.h"
-#include "types.h"
 #include "window.h"
 
 namespace sdl { class Key; }
 
 namespace app {
 
-class Demo {
+class Emulator {
 public:
-    Demo();
-    void Run();
+    Emulator();
+    void Run(const std::string& filePath);
 private:
+    bool Continue() const;
     void KeyHandler(const sdl::Key& key);
     void QuitHandler();
-    void Draw(std::uint32_t color);
-    bool running;
+    void Render(const gb::Framebuffer::Pixels& pixels);
+    void KeyUp(const sdl::Key& key);
+    void KeyDown(const sdl::Key& key);
+    gb::Gameboy gb;
     sdl::Instance instance;
-    sdl::EventManager eventManager;
     sdl::Window window;
     sdl::Renderer renderer;
     sdl::Texture texture;
+    sdl::EventManager eventManager;
+    bool running;
 };
 
 }
