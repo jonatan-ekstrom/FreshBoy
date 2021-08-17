@@ -1,5 +1,5 @@
 # List CPU source files.
-set(cpuSources cpu.cc interrupt.cc)
+set(cpuSources cpu.cc interrupt.cc ops.cc switches.cc)
 
 # Add CPU sources to 'gb' target.
 target_sources(gb PRIVATE ${cpuSources})

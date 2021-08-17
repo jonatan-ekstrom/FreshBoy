@@ -17,6 +17,9 @@ private:
     Cpu_(InterruptManager&& interrupts, Memory&& mmu);
     InterruptManager interrupts;
     Memory mmu;
+    uint Execute(u8 opcode);
+    uint ExecuteEx(u8 opcode);
+    #include "ops.h"
 };
 
 }
