@@ -274,6 +274,9 @@ void Memory_::WriteIo(const u16 address, const u8 byte) {
 void Memory_::DmaTransfer(const u8 byte) {
     constexpr auto numBytes{160};
     u16 src{static_cast<u16>(byte * 0x100)};
+    if (src < 0x8000 || src > 0xDFFF) {
+        throw std::runtime_error{"MMU - invalid DMA transfer source."};
+    }
     u16 dst{0xFE00};
     for (auto i{0}; i < numBytes; ++i) {
         this->lcd->Write(dst++, Read(src++));
