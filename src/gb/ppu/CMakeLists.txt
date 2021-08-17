@@ -1,19 +1,4 @@
-# List PPU header and source files.
-set(ppuHeaders
-    background.h
-    bg_base.h
-    color.h
-    display.h
-    framebuffer.h
-    lcd.h
-    lcd_regs.h
-    palettes.h
-    sprite_renderer.h
-    sprite_table.h
-    tile_banks.h
-    tile_maps.h
-    window.h)
-
+# List PPU source files.
 set(ppuSources
     background.cc
     bg_base.cc
@@ -32,7 +17,4 @@ set(ppuSources
 target_sources(gb PRIVATE ${ppuSources})
 
 # Setup include directories.
-target_include_directories(gb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
-# Tag headers for installation.
-install(FILES ${ppuHeaders} DESTINATION include/gb/ppu)
+target_include_directories(gb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
-#include "display.h"
 #include "key.h"
 
 using namespace gb;
@@ -13,8 +12,11 @@ namespace {
 constexpr auto Title{"Gameboy"};
 constexpr auto WindowWidth{600};
 constexpr auto WindowHeight{400};
+constexpr auto DisplayWidth{160};
+constexpr auto DisplayHeight{144};
 
-constexpr Button CodeToButton(const enum Key::Code code) {
+constexpr api::Button CodeToButton(const enum Key::Code code) {
+    using api::Button;
     switch (code) {
         case Key::Code::Up:
             return Button::Up;
@@ -47,7 +49,7 @@ Emulator::Emulator()
       instance{Instance_::Create()},
       window{Window_::Create(this->instance, Title, WindowWidth, WindowHeight)},
       renderer{Renderer_::Create(this->instance, this->window)},
-      texture{this->instance, this->renderer, lcd::DisplayWidth, lcd::DisplayHeight},
+      texture{this->instance, this->renderer, DisplayWidth, DisplayHeight},
       eventManager{this->instance},
       running{false} {
     eventManager.RegisterKeyHandler([this] (const auto& key) { KeyHandler(key); });
@@ -58,12 +60,12 @@ void Emulator::Run(const std::string& filePath) {
     const auto renderCb{[this] (const auto& p) { Render(p); }};
     const auto contCb{[this] { return Continue(); }};
 
-    gb = Gameboy_::Create(filePath, renderCb);
-    std::cout << gb->Header() << std::endl;
+    gb = api::Create(filePath, renderCb);
+    std::cout << api::Header(gb) << std::endl;
 
     this->window->Show();
     this->running = true;
-    gb->Run(contCb);
+    api::Run(gb, contCb);
 }
 
 void Emulator::KeyHandler(const Key& key) {
@@ -86,7 +88,7 @@ bool Emulator::Continue() const {
     return this->running;
 }
 
-void Emulator::Render(const Framebuffer::Pixels& pixels) {
+void Emulator::Render(const api::Pixels& pixels) {
     this->eventManager.ProcessEvents();
 
     const auto txSize{static_cast<uint>(this->texture.Width() * this->texture.Height())};
@@ -104,13 +106,13 @@ void Emulator::Render(const Framebuffer::Pixels& pixels) {
 void Emulator::KeyUp(const Key& key) {
     if (key.Code == sdl::Key::Code::Unknown) return;
     const auto button{CodeToButton(key.Code)};
-    this->gb->ButtonReleased(button);
+    api::ButtonReleased(gb, button);
 }
 
 void Emulator::KeyDown(const Key& key) {
     if (key.Code == sdl::Key::Code::Unknown) return;
     const auto button{CodeToButton(key.Code)};
-    this->gb->ButtonPressed(button);
+    api::ButtonPressed(gb, button);
 }
 
 }

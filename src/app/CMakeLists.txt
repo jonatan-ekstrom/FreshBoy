@@ -4,8 +4,9 @@ set(appSources app.cc main.cc)
 # Add main executable target.
 add_executable(app ${appSources})
 
-# Add dependency on the 'gb' library.
+# Add dependency on the 'gb' library and its public API.
 target_link_libraries(app PRIVATE gb)
+target_link_libraries(app PRIVATE api)
 
 # Add dependency on the 'media' library
 target_link_libraries(app PRIVATE media)
