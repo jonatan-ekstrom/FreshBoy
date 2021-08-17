@@ -178,7 +178,11 @@ void Lcd_::Tick(const uint cycles) {
     }
 }
 
+
+
 bool Lcd_::Accessible(const u16 address) const {
+    if (!Enabled()) return true;
+
     const auto mode{this->stat.Mode()};
 
     // VRAM
@@ -192,6 +196,10 @@ bool Lcd_::Accessible(const u16 address) const {
     }
 
     return true;
+}
+
+bool Lcd_::Enabled() const {
+    return this->lcdc.LcdEnabled();
 }
 
 void Lcd_::FrameReady() const {
@@ -258,7 +266,7 @@ void Lcd_::WriteScanline() {
     const auto ly{this->stat.Ly()};
     auto scanline{Framebuffer::GetScreenLine()};
 
-    if (!this->lcdc.LcdEnabled()) {
+    if (!Enabled()) {
         this->frame.WriteLine(scanline, ly);
         return;
     }
