@@ -1,6 +1,6 @@
 # List CPU header and source files.
-set(cpuHeaders interrupt.h)
-set(cpuSources interrupt.cc)
+set(cpuHeaders cpu.h interrupt.h)
+set(cpuSources cpu.cc interrupt.cc)
 
 # Add cartridge sources to 'gb' target.
 target_sources(gb PRIVATE ${cpuSources})

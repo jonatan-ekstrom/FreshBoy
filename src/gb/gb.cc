@@ -11,7 +11,8 @@ Gameboy_::Gameboy_(const std::string& filePath, const RenderCallback& render)
       ppu{Lcd_::Create(this->interrupts, render)},
       apu{Sound_::Create()},
       mmu{Memory_::Create(this->cart, this->input, this->interrupts,
-                          this->ppu, this->serial, this->apu, this->timer)} {}
+                          this->ppu, this->serial, this->apu, this->timer)},
+      cpu{Cpu_::Create(this->interrupts, this->mmu)} {}
 
 Gameboy Gameboy_::Create(const std::string& filePath,
                          const Gameboy_::RenderCallback& render) {
@@ -37,10 +38,7 @@ void Gameboy_::ButtonReleased(const Button button) {
 }
 
 void Gameboy_::Tick() {
-    constexpr auto cycles{4};
-
-    // TODO - implement CPU.
-
+    const auto cycles{this->cpu->Tick()};
     this->timer->Tick(cycles);
     this->serial->Tick(cycles);
     this->ppu->Tick(cycles);

@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include "cartridge.h"
+#include "cpu.h"
 #include "framebuffer.h"
 #include "input.h"
 #include "interrupt.h"
@@ -38,6 +39,7 @@ private:
     Lcd ppu;
     Sound apu;
     Memory mmu;
+    Cpu cpu;
 };
 
 }
