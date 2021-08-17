@@ -1,5 +1,5 @@
 # List application sources.
-set(appSources demo.cc main.cc)
+set(appSources app.cc main.cc)
 
 # Add main executable target.
 add_executable(app ${appSources})

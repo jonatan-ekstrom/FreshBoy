@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <exception>
 #include <iostream>
-#include "demo.h"
+#include "app.h"
 
 int main() {
     int exitCode{EXIT_FAILURE};

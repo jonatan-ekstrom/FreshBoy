@@ -1,4 +1,4 @@
-#include "demo.h"
+#include "app.h"
 #include <algorithm>
 #include <iostream>
 #include "cartridge.h"
