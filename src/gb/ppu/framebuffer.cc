@@ -20,7 +20,7 @@ namespace gb {
 
 constexpr auto Size{lcd::DisplayWidth * lcd::DisplayHeight};
 
-Framebuffer::Framebuffer() : buffer{Size, ShadeToPixel(Shade::Screen)} {}
+Framebuffer::Framebuffer() : buffer(Size, ShadeToPixel(Shade::Screen)) {}
 
 const Framebuffer::Pixels& Framebuffer::Buffer() const {
     return this->buffer;
