@@ -22,7 +22,7 @@ std::string Gameboy_::Header() const {
     return std::string();
 }
 
-void Gameboy_::Run(const Gameboy_::ContinueCallback& cont) {
+void Gameboy_::Run(const ContinueCallback& cont) {
     while (cont()) {
         Tick();
     }
