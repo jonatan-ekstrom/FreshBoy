@@ -5,8 +5,8 @@
 
 namespace gb {
 
-Memory_::Memory_(Cartridge cart, Input input, InterruptManager interrupts,
-                 Lcd lcd, Serial serial, Sound sound, Timer timer)
+Memory_::Memory_(Cartridge&& cart, Input&& input, InterruptManager&& interrupts,
+                 Lcd&& lcd, Serial&& serial, Sound&& sound, Timer&& timer)
     : cart{std::move(cart)},
       input{std::move(input)},
       interrupts{std::move(interrupts)},
@@ -22,7 +22,10 @@ Memory_::Memory_(Cartridge cart, Input input, InterruptManager interrupts,
 
 Memory Memory_::Create(Cartridge cart, Input input, InterruptManager interrupts,
                       Lcd lcd, Serial serial, Sound sound, Timer timer) {
-    return Memory{new Memory_{cart, input, interrupts, lcd, serial, sound, timer}};
+    return Memory{new Memory_{std::move(cart), std::move(input),
+                              std::move(interrupts), std::move(lcd),
+                              std::move(serial), std::move(sound),
+                              std::move(timer)}};
 }
 
 u8 Memory_::Read(const u16 address) const {
