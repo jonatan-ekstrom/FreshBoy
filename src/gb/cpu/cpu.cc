@@ -1,11 +1,31 @@
 #include "cpu.h"
+#include <stdexcept>
 #include <utility>
 #include "bits.h"
 
 namespace {
 
 constexpr auto mCycle{4};
+constexpr auto intCycles{5 * mCycle};
 constexpr auto exPrefix{0xCB};
+
+constexpr gb::u16 Vector(const gb::Interrupt interrupt) {
+    using gb::Interrupt;
+    switch (interrupt) {
+        case Interrupt::VBlank:
+            return 0x40;
+        case Interrupt::Stat:
+            return 0x48;
+        case Interrupt::Timer:
+            return 0x50;
+        case Interrupt::Serial:
+            return 0x58;
+        case Interrupt::Joypad:
+            return 0x60;
+        default:
+            throw std::runtime_error{"Unknown interrupt."};
+    }
+}
 
 }
 
@@ -23,14 +43,26 @@ Cpu Cpu_::Create(InterruptManager interrupts, Memory mmu) {
 }
 
 uint Cpu_::Tick() {
-    // TODO: Handle interrupts.
-
-    if (this->halted) {
-        return mCycle;
-    }
-
+    if (HandleInterrupts()) return intCycles;
+    if (this->halted) return mCycle;
     const auto [opcode, ex] = GetOpcode();
     return ex ? ExecuteEx(opcode) : Execute(opcode);
+}
+
+bool Cpu_::HandleInterrupts() {
+    const auto pending{this->interrupts->PendingInterrupts()};
+    if (pending.empty()) return false;
+
+    const auto requested{pending.front()};
+    this->interrupts->DisableInterrupts();
+    this->interrupts->AcknowledgeInterrupt(requested);
+
+    const auto vector{Vector(requested)};
+    Push(this->pc);
+    this->pc = vector;
+    this->halted = false;
+
+    return true;
 }
 
 std::tuple<u8, bool> Cpu_::GetOpcode() {

@@ -22,12 +22,12 @@ private:
     u16 pc, sp;
     bool halted;
 
+    bool HandleInterrupts();
     std::tuple<u8, bool> GetOpcode();
-    void Push(u16 reg);
-    u16 Pop();
-
     uint Execute(u8 opcode);
     uint ExecuteEx(u8 opcode);
+    void Push(u16 reg);
+    u16 Pop();
     #include "ops.h"
 };
 
