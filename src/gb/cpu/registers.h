@@ -28,12 +28,19 @@ struct RegPair {
     u8& l;
 };
 
-struct Flags {
-    Flags();
-    bool Z;
-    bool N;
-    bool H;
-    bool C;
+class Flags {
+public:
+    explicit Flags(ByteReg& f);
+    bool Z() const;
+    bool N() const;
+    bool H() const;
+    bool C() const;
+    void UpdateZ(bool set);
+    void UpdateN(bool set);
+    void UpdateH(bool set);
+    void UpdateC(bool set);
+private:
+    u8& f;
 };
 
 }

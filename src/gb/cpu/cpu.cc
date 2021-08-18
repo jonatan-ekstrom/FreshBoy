@@ -34,6 +34,8 @@ namespace gb {
 Cpu_::Cpu_(InterruptManager&& interrupts, Memory&& mmu)
     : interrupts{std::move(interrupts)},
       mmu{std::move(mmu)},
+      flags{this->f},
+      af{this->a, this->f},
       bc{this->b, this->c},
       de{this->d, this->e},
       hl{this->h, this->l},

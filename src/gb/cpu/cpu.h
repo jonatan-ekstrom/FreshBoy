@@ -19,10 +19,10 @@ private:
     Cpu_(InterruptManager&& interrupts, Memory&& mmu);
     InterruptManager interrupts;
     Memory mmu;
-    ByteReg a, b, c, d, e, h, l;
+    ByteReg a, b, c, d, e, h, l, f;
     WordReg pc, sp;
-    Flags f;
-    RegPair bc, de, hl;
+    Flags flags;
+    RegPair af, bc, de, hl;
     bool halted;
 
     bool HandleInterrupts();

@@ -29,6 +29,22 @@ void RegPair::Dec() {
     this->l = bit::LowByte(merged);
 }
 
-Flags::Flags() : Z{false}, N{false}, H{false}, C{false} {}
+Flags::Flags(ByteReg& f) : f{f.v} {}
+
+bool Flags::Z() const { return bit::IsSet(this->f, 7); }
+
+bool Flags::N() const { return bit::IsSet(this->f, 6); }
+
+bool Flags::H() const { return bit::IsSet(this->f, 5); }
+
+bool Flags::C() const { return bit::IsSet(this->f, 4); }
+
+void Flags::UpdateZ(const bool set) { bit::Update(this->f, 7, set); }
+
+void Flags::UpdateN(const bool set) { bit::Update(this->f, 6, set); }
+
+void Flags::UpdateH(const bool set) { bit::Update(this->f, 5, set); }
+
+void Flags::UpdateC(const bool set) { bit::Update(this->f, 4, set); }
 
 }
