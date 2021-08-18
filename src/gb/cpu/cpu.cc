@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <utility>
 #include "bits.h"
+#include "timing.h"
 
 namespace {
 
@@ -39,7 +40,10 @@ Cpu_::Cpu_(InterruptManager&& interrupts, Memory&& mmu)
       bc{this->b, this->c},
       de{this->d, this->e},
       hl{this->h, this->l},
-      halted{false} {}
+      halted{false},
+      cycles{ops::cycles.cbegin(), ops::cycles.cend()},
+      cyclesBranched{ops::cyclesBranched.cbegin(), ops::cyclesBranched.cend()},
+      cyclesEx{ops::cyclesEx.cbegin(), ops::cyclesEx.cend()} {}
 
 Cpu Cpu_::Create(InterruptManager interrupts, Memory mmu) {
     return Cpu{new Cpu_{std::move(interrupts), std::move(mmu)}};

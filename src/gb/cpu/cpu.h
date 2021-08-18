@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <tuple>
+#include <vector>
 #include "interrupt.h"
 #include "memory.h"
 #include "registers.h"
@@ -24,6 +25,9 @@ private:
     Flags flags;
     RegPair af, bc, de, hl;
     bool halted;
+    std::vector<uint> cycles;
+    std::vector<uint> cyclesBranched;
+    std::vector<uint> cyclesEx;
 
     bool HandleInterrupts();
     std::tuple<u8, bool> GetOpcode();
