@@ -3,6 +3,7 @@
 #include <tuple>
 #include "interrupt.h"
 #include "memory.h"
+#include "registers.h"
 #include "types.h"
 
 namespace gb {
@@ -18,16 +19,17 @@ private:
     Cpu_(InterruptManager&& interrupts, Memory&& mmu);
     InterruptManager interrupts;
     Memory mmu;
-    u8 a, b, c, d, e, h, l, flags;
-    u16 pc, sp;
+    ByteReg a, b, c, d, e, h, l;
+    WordReg pc, sp;
+    Flags f;
+    RegPair bc, de, hl;
     bool halted;
 
     bool HandleInterrupts();
     std::tuple<u8, bool> GetOpcode();
+    void PushPc();
     uint Execute(u8 opcode);
     uint ExecuteEx(u8 opcode);
-    void Push(u16 reg);
-    u16 Pop();
     #include "ops.h"
 };
 

@@ -34,9 +34,10 @@ namespace gb {
 Cpu_::Cpu_(InterruptManager&& interrupts, Memory&& mmu)
     : interrupts{std::move(interrupts)},
       mmu{std::move(mmu)},
-      a{0}, b{0}, c{0}, d{0},
-      e{0}, h{0}, l{0}, flags{0},
-      pc{0}, sp{0}, halted{false} {}
+      bc{this->b, this->c},
+      de{this->d, this->e},
+      hl{this->h, this->l},
+      halted{false} {}
 
 Cpu Cpu_::Create(InterruptManager interrupts, Memory mmu) {
     return Cpu{new Cpu_{std::move(interrupts), std::move(mmu)}};
@@ -58,8 +59,8 @@ bool Cpu_::HandleInterrupts() {
     this->interrupts->AcknowledgeInterrupt(requested);
 
     const auto vector{Vector(requested)};
-    Push(this->pc);
-    this->pc = vector;
+    PushPc();
+    this->pc.v = vector;
     this->halted = false;
 
     return true;
@@ -67,25 +68,19 @@ bool Cpu_::HandleInterrupts() {
 
 std::tuple<u8, bool> Cpu_::GetOpcode() {
     bool extended{false};
-    auto opcode{this->mmu->Read(this->pc++)};
+    auto opcode{this->mmu->Read(this->pc.v++)};
     if (opcode == exPrefix) {
         extended = true;
-        opcode = this->mmu->Read(this->pc++);
+        opcode = this->mmu->Read(this->pc.v++);
     }
     return {opcode, extended};
 }
 
-void Cpu_::Push(const u16 reg) {
-    const auto high{bit::HighByte(reg)};
-    const auto low{bit::LowByte(reg)};
-    this->mmu->Write(--this->sp, high);
-    this->mmu->Write(--this->sp, low);
-}
-
-u16 Cpu_::Pop() {
-    const auto low{this->mmu->Read(this->sp++)};
-    const auto high{this->mmu->Read(this->sp++)};
-    return bit::Merge(high, low);
+void Cpu_::PushPc() {
+    const auto high{bit::HighByte(this->pc.v)};
+    const auto low{bit::LowByte(this->pc.v)};
+    this->mmu->Write(--this->sp.v, high);
+    this->mmu->Write(--this->sp.v, low);
 }
 
 }
