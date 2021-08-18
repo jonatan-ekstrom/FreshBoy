@@ -21,7 +21,11 @@ private:
     u8 a, b, c, d, e, h, l, flags;
     u16 pc, sp;
     bool halted;
+
     std::tuple<u8, bool> GetOpcode();
+    void Push(u16 reg);
+    u16 Pop();
+
     uint Execute(u8 opcode);
     uint ExecuteEx(u8 opcode);
     #include "ops.h"

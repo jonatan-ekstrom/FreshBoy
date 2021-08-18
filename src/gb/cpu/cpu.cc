@@ -1,5 +1,6 @@
 #include "cpu.h"
 #include <utility>
+#include "bits.h"
 
 namespace {
 
@@ -40,6 +41,19 @@ std::tuple<u8, bool> Cpu_::GetOpcode() {
         opcode = this->mmu->Read(this->pc++);
     }
     return {opcode, extended};
+}
+
+void Cpu_::Push(const u16 reg) {
+    const auto high{bit::HighByte(reg)};
+    const auto low{bit::LowByte(reg)};
+    this->mmu->Write(--this->sp, high);
+    this->mmu->Write(--this->sp, low);
+}
+
+u16 Cpu_::Pop() {
+    const auto low{this->mmu->Read(this->sp++)};
+    const auto high{this->mmu->Read(this->sp++)};
+    return bit::Merge(high, low);
 }
 
 }
