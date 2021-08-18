@@ -9,11 +9,11 @@ Register<T>::Register() : v{0} {}
 template class Register<u8>;
 template class Register<u16>;
 
-Address::Address(const u16 a) : v{a} {}
+Address::Address(const u16 a) : a{a} {}
 
 RegPair::RegPair(ByteReg& h, ByteReg& l) : h{h.v}, l{l.v} {}
 
-Address RegPair::Addr() { return Address{bit::Merge(this->h, this->l)}; }
+u16 RegPair::Addr() { return bit::Merge(this->h, this->l); }
 
 void RegPair::Inc() {
     auto merged{bit::Merge(this->h, this->l)};

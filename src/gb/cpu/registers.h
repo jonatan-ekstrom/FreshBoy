@@ -16,12 +16,12 @@ using WordReg = Register<u16>;
 
 struct Address {
     explicit Address(u16 a);
-    u16 v;
+    u16 a;
 };
 
 struct RegPair {
     RegPair(ByteReg& h, ByteReg& l);
-    Address Addr();
+    u16 Addr();
     void Inc();
     void Dec();
     u8& h;

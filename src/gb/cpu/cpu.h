@@ -31,6 +31,7 @@ private:
     uint Execute(u8 opcode);
     uint ExecuteEx(u8 opcode);
     #include "ops.h"
+    #include "mem_ops.h"
 };
 
 }
