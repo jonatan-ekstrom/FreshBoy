@@ -31,6 +31,8 @@ private:
 
     bool HandleInterrupts();
     std::tuple<u8, bool> GetOpcode();
+    u8 GetByte();
+    u16 GetWord();
     void PushPc();
     bool Execute(u8 opcode);
     void ExecuteEx(u8 opcode);

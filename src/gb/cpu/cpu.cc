@@ -79,12 +79,22 @@ bool Cpu_::HandleInterrupts() {
 
 std::tuple<u8, bool> Cpu_::GetOpcode() {
     bool extended{false};
-    auto opcode{this->mmu->Read(this->pc.v++)};
+    auto opcode{GetByte()};
     if (opcode == exPrefix) {
         extended = true;
-        opcode = this->mmu->Read(this->pc.v++);
+        opcode = GetByte();
     }
     return {opcode, extended};
+}
+
+u8 Cpu_::GetByte() {
+    return this->mmu->Read(this->pc.v++);
+}
+
+u16 Cpu_::GetWord() {
+    const auto low{GetByte()};
+    const auto high{GetByte()};
+    return bit::Merge(high, low);
 }
 
 void Cpu_::PushPc() {
