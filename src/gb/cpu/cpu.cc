@@ -53,7 +53,12 @@ uint Cpu_::Tick() {
     if (HandleInterrupts()) return intCycles;
     if (this->halted) return mCycle;
     const auto [opcode, ex] = GetOpcode();
-    return ex ? ExecuteEx(opcode) : Execute(opcode);
+    if (ex) {
+        ExecuteEx(opcode);
+        return cyclesEx[opcode];
+    } else {
+        return Execute(opcode) ? cyclesBranched[opcode] : cycles[opcode];
+    }
 }
 
 bool Cpu_::HandleInterrupts() {

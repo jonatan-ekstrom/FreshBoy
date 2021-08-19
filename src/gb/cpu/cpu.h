@@ -32,8 +32,8 @@ private:
     bool HandleInterrupts();
     std::tuple<u8, bool> GetOpcode();
     void PushPc();
-    uint Execute(u8 opcode);
-    uint ExecuteEx(u8 opcode);
+    bool Execute(u8 opcode);
+    void ExecuteEx(u8 opcode);
     #include "ops.h"
     #include "mem_ops.h"
 };

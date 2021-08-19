@@ -2,7 +2,7 @@
 
 namespace gb {
 
-uint Cpu_::Execute(const u8 opcode) {
+bool Cpu_::Execute(const u8 opcode) {
     switch (opcode) {
         case 0x00: return Opcode_00();
         case 0x01: return Opcode_01();
@@ -260,11 +260,11 @@ uint Cpu_::Execute(const u8 opcode) {
         case 0xFD: return Opcode_FD();
         case 0xFE: return Opcode_FE();
         case 0xFF: return Opcode_FF();
-        default: return 0;
+        default: return false;
     }
 }
 
-uint Cpu_::ExecuteEx(const u8 opcode) {
+void Cpu_::ExecuteEx(const u8 opcode) {
     switch (opcode) {
         case 0x00: return Opcode_CB_00();
         case 0x01: return Opcode_CB_01();
@@ -522,7 +522,7 @@ uint Cpu_::ExecuteEx(const u8 opcode) {
         case 0xFD: return Opcode_CB_FD();
         case 0xFE: return Opcode_CB_FE();
         case 0xFF: return Opcode_CB_FF();
-        default: return 0;
+        default: return;
     }
 }
 
