@@ -64,6 +64,14 @@ constexpr u8 LowByte(const u16 reg) {
     return static_cast<u8>(reg & 0xFF);
 }
 
+template<typename T>
+constexpr bool Carry(const T lhs, const T rhs, const uint bit) {
+    const auto mask{(1u << (bit + 1)) - 1};
+    const auto l{static_cast<uint>(lhs)};
+    const auto r{static_cast<uint>(rhs)};
+    return ((l & mask) + (r & mask) > mask);
+}
+
 }
 
 }

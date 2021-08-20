@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "bits.h"
 
 namespace gb {
 
@@ -14,5 +15,33 @@ void Cpu_::LoadInc(ByteReg& dst, RegPair src) { dst.v = this->mmu->Read(src.Addr
 void Cpu_::LoadInc(RegPair dst, ByteReg src) { this->mmu->Write(dst.Addr(), src.v); dst.Inc(); }
 void Cpu_::LoadDec(ByteReg& dst, RegPair src) { dst.v = this->mmu->Read(src.Addr()); src.Dec(); }
 void Cpu_::LoadDec(RegPair dst, ByteReg& src) { this->mmu->Write(dst.Addr(), src.v); dst.Dec(); }
+
+//16-bit transfer
+void Cpu_::Load(RegPair dst, u16 imm) { dst.h = bit::HighByte(imm); dst.l = bit::LowByte(imm); }
+void Cpu_::Load(WordReg& dst, u16 imm) {
+    const auto high{bit::HighByte(imm)};
+    const auto low{bit::LowByte(imm)};
+    dst.v = bit::Merge(high, low);
+}
+void Cpu_::Load(RegPair dst, RegPair src) { dst.h = src.h; dst.l = src.l; }
+void Cpu_::Push(RegPair src) { this->mmu->Write(--this->sp.v, src.h); this->mmu->Write(--this->sp.v, src.l); }
+void Cpu_::Pop(RegPair dst) { dst.l = this->mmu->Read(this->sp.v++); dst.h = this->mmu->Read(this->sp.v++);  }
+void Cpu_::Load(RegPair dst, RegPair src, s8 imm) {
+    const auto lhs{static_cast<int>(src.Addr())};
+    const auto rhs{static_cast<int>(imm)};
+    const auto sum{static_cast<u16>(lhs + rhs)};
+    dst.h = bit::HighByte(sum);
+    dst.l = bit::LowByte(sum);
+
+    this->flags.UpdateZ(false);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(bit::Carry(lhs, rhs, 11));
+    this->flags.UpdateC(bit::Carry(lhs, rhs, 15));
+}
+
+void Cpu_::Load(Address dst, WordReg src) {
+    this->mmu->Write(dst.a, bit::LowByte(src.v));
+    this->mmu->Write(dst.a+1, bit::HighByte(src.v));
+}
 
 }
