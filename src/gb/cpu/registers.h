@@ -1,11 +1,17 @@
 #pragma once
+#include <type_traits>
 #include "types.h"
 
 namespace gb {
 
 template<typename T>
+using Addr = std::enable_if_t<std::is_same_v<T, u8>, u16>;
+
+template<typename T>
 struct Register {
     Register();
+    template<typename U = T>
+    Addr<U> IoAddr() const;
     T v;
 };
 
