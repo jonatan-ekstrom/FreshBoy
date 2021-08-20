@@ -25,6 +25,7 @@ private:
     Flags flags;
     RegPair af, bc, de, hl;
     bool halted;
+    bool branched;
     std::vector<uint> cycles;
     std::vector<uint> cyclesBranched;
     std::vector<uint> cyclesEx;
@@ -34,7 +35,7 @@ private:
     u8 GetByte();
     u16 GetWord();
     void PushPc();
-    bool Execute(u8 opcode);
+    void Execute(u8 opcode);
     void ExecuteEx(u8 opcode);
     #include "ops.h"
     #include "mem_ops.h"

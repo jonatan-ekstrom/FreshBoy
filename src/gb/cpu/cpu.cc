@@ -41,6 +41,7 @@ Cpu_::Cpu_(InterruptManager&& interrupts, Memory&& mmu)
       de{this->d, this->e},
       hl{this->h, this->l},
       halted{false},
+      branched{false},
       cycles{ops::cycles.cbegin(), ops::cycles.cend()},
       cyclesBranched{ops::cyclesBranched.cbegin(), ops::cyclesBranched.cend()},
       cyclesEx{ops::cyclesEx.cbegin(), ops::cyclesEx.cend()} {}
@@ -53,11 +54,13 @@ uint Cpu_::Tick() {
     if (HandleInterrupts()) return intCycles;
     if (this->halted) return mCycle;
     const auto [opcode, ex] = GetOpcode();
+    this->branched = false;
     if (ex) {
         ExecuteEx(opcode);
         return cyclesEx[opcode];
     } else {
-        return Execute(opcode) ? cyclesBranched[opcode] : cycles[opcode];
+        Execute(opcode);
+        return branched ? cyclesBranched[opcode] : cycles[opcode];
     }
 }
 
