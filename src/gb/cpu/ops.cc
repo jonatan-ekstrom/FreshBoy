@@ -3,133 +3,133 @@
 namespace gb {
 
 void Cpu_::Opcode_00() { }
-void Cpu_::Opcode_01() { }
-void Cpu_::Opcode_02() { }
+void Cpu_::Opcode_01() { Load(this->bc, GetWord()); }
+void Cpu_::Opcode_02() { Load(this->bc, this->a); }
 void Cpu_::Opcode_03() { }
 void Cpu_::Opcode_04() { }
 void Cpu_::Opcode_05() { }
-void Cpu_::Opcode_06() { }
+void Cpu_::Opcode_06() { Load(this->b, GetByte()); }
 void Cpu_::Opcode_07() { }
-void Cpu_::Opcode_08() { }
+void Cpu_::Opcode_08() { Load(Address{GetWord()}, this->sp); }
 void Cpu_::Opcode_09() { }
-void Cpu_::Opcode_0A() { }
+void Cpu_::Opcode_0A() { Load(this->a, this->bc); }
 void Cpu_::Opcode_0B() { }
 void Cpu_::Opcode_0C() { }
 void Cpu_::Opcode_0D() { }
-void Cpu_::Opcode_0E() { }
+void Cpu_::Opcode_0E() { Load(this->c, GetByte()); }
 void Cpu_::Opcode_0F() { }
 void Cpu_::Opcode_10() { }
-void Cpu_::Opcode_11() { }
-void Cpu_::Opcode_12() { }
+void Cpu_::Opcode_11() { Load(this->de, GetWord()); }
+void Cpu_::Opcode_12() { Load(this->de, this->a); }
 void Cpu_::Opcode_13() { }
 void Cpu_::Opcode_14() { }
 void Cpu_::Opcode_15() { }
-void Cpu_::Opcode_16() { }
+void Cpu_::Opcode_16() { Load(this->d, GetByte()); }
 void Cpu_::Opcode_17() { }
 void Cpu_::Opcode_18() { }
 void Cpu_::Opcode_19() { }
-void Cpu_::Opcode_1A() { }
+void Cpu_::Opcode_1A() { Load(this->a, this->de); }
 void Cpu_::Opcode_1B() { }
 void Cpu_::Opcode_1C() { }
 void Cpu_::Opcode_1D() { }
-void Cpu_::Opcode_1E() { }
+void Cpu_::Opcode_1E() { Load(this->e, GetByte()); }
 void Cpu_::Opcode_1F() { }
 void Cpu_::Opcode_20() { }
-void Cpu_::Opcode_21() { }
-void Cpu_::Opcode_22() { }
+void Cpu_::Opcode_21() { Load(this->hl, GetWord()); }
+void Cpu_::Opcode_22() { LoadInc(this->hl, this->a); }
 void Cpu_::Opcode_23() { }
 void Cpu_::Opcode_24() { }
 void Cpu_::Opcode_25() { }
-void Cpu_::Opcode_26() { }
+void Cpu_::Opcode_26() { Load(this->h, GetByte()); }
 void Cpu_::Opcode_27() { }
 void Cpu_::Opcode_28() { }
 void Cpu_::Opcode_29() { }
-void Cpu_::Opcode_2A() { }
+void Cpu_::Opcode_2A() { LoadInc(this->a, this->hl); }
 void Cpu_::Opcode_2B() { }
 void Cpu_::Opcode_2C() { }
 void Cpu_::Opcode_2D() { }
-void Cpu_::Opcode_2E() { }
+void Cpu_::Opcode_2E() { Load(this->l, GetByte()); }
 void Cpu_::Opcode_2F() { }
 void Cpu_::Opcode_30() { }
-void Cpu_::Opcode_31() { }
-void Cpu_::Opcode_32() { }
+void Cpu_::Opcode_31() { Load(this->sp, GetWord()); }
+void Cpu_::Opcode_32() { LoadDec(this->hl, this->a); }
 void Cpu_::Opcode_33() { }
 void Cpu_::Opcode_34() { }
 void Cpu_::Opcode_35() { }
-void Cpu_::Opcode_36() { }
+void Cpu_::Opcode_36() { Load(this->hl, GetByte()); }
 void Cpu_::Opcode_37() { }
 void Cpu_::Opcode_38() { }
 void Cpu_::Opcode_39() { }
-void Cpu_::Opcode_3A() { }
+void Cpu_::Opcode_3A() { LoadDec(this->a, this->hl); }
 void Cpu_::Opcode_3B() { }
 void Cpu_::Opcode_3C() { }
 void Cpu_::Opcode_3D() { }
-void Cpu_::Opcode_3E() { }
+void Cpu_::Opcode_3E() { Load(this->a, GetByte()); }
 void Cpu_::Opcode_3F() { }
-void Cpu_::Opcode_40() { }
-void Cpu_::Opcode_41() { }
-void Cpu_::Opcode_42() { }
-void Cpu_::Opcode_43() { }
-void Cpu_::Opcode_44() { }
-void Cpu_::Opcode_45() { }
-void Cpu_::Opcode_46() { }
-void Cpu_::Opcode_47() { }
-void Cpu_::Opcode_48() { }
-void Cpu_::Opcode_49() { }
-void Cpu_::Opcode_4A() { }
-void Cpu_::Opcode_4B() { }
-void Cpu_::Opcode_4C() { }
-void Cpu_::Opcode_4D() { }
-void Cpu_::Opcode_4E() { }
-void Cpu_::Opcode_4F() { }
-void Cpu_::Opcode_50() { }
-void Cpu_::Opcode_51() { }
-void Cpu_::Opcode_52() { }
-void Cpu_::Opcode_53() { }
-void Cpu_::Opcode_54() { }
-void Cpu_::Opcode_55() { }
-void Cpu_::Opcode_56() { }
-void Cpu_::Opcode_57() { }
-void Cpu_::Opcode_58() { }
-void Cpu_::Opcode_59() { }
-void Cpu_::Opcode_5A() { }
-void Cpu_::Opcode_5B() { }
-void Cpu_::Opcode_5C() { }
-void Cpu_::Opcode_5D() { }
-void Cpu_::Opcode_5E() { }
-void Cpu_::Opcode_5F() { }
-void Cpu_::Opcode_60() { }
-void Cpu_::Opcode_61() { }
-void Cpu_::Opcode_62() { }
-void Cpu_::Opcode_63() { }
-void Cpu_::Opcode_64() { }
-void Cpu_::Opcode_65() { }
-void Cpu_::Opcode_66() { }
-void Cpu_::Opcode_67() { }
-void Cpu_::Opcode_68() { }
-void Cpu_::Opcode_69() { }
-void Cpu_::Opcode_6A() { }
-void Cpu_::Opcode_6B() { }
-void Cpu_::Opcode_6C() { }
-void Cpu_::Opcode_6D() { }
-void Cpu_::Opcode_6E() { }
-void Cpu_::Opcode_6F() { }
-void Cpu_::Opcode_70() { }
-void Cpu_::Opcode_71() { }
-void Cpu_::Opcode_72() { }
-void Cpu_::Opcode_73() { }
-void Cpu_::Opcode_74() { }
-void Cpu_::Opcode_75() { }
+void Cpu_::Opcode_40() { Load(this->b, this->b); }
+void Cpu_::Opcode_41() { Load(this->b, this->c); }
+void Cpu_::Opcode_42() { Load(this->b, this->d); }
+void Cpu_::Opcode_43() { Load(this->b, this->e);}
+void Cpu_::Opcode_44() { Load(this->b, this->h); }
+void Cpu_::Opcode_45() { Load(this->b, this->l); }
+void Cpu_::Opcode_46() { Load(this->b, this->hl); }
+void Cpu_::Opcode_47() { Load(this->b, this->a); }
+void Cpu_::Opcode_48() { Load(this->c, this->b); }
+void Cpu_::Opcode_49() { Load(this->c, this->c); }
+void Cpu_::Opcode_4A() { Load(this->c, this->d); }
+void Cpu_::Opcode_4B() { Load(this->c, this->e); }
+void Cpu_::Opcode_4C() { Load(this->c, this->h); }
+void Cpu_::Opcode_4D() { Load(this->c, this->l); }
+void Cpu_::Opcode_4E() { Load(this->c, this->hl); }
+void Cpu_::Opcode_4F() { Load(this->c, this->a); }
+void Cpu_::Opcode_50() { Load(this->d, this->b); }
+void Cpu_::Opcode_51() { Load(this->d, this->c); }
+void Cpu_::Opcode_52() { Load(this->d, this->d); }
+void Cpu_::Opcode_53() { Load(this->d, this->e); }
+void Cpu_::Opcode_54() { Load(this->d, this->h); }
+void Cpu_::Opcode_55() { Load(this->d, this->l); }
+void Cpu_::Opcode_56() { Load(this->d, this->hl); }
+void Cpu_::Opcode_57() { Load(this->d, this->a); }
+void Cpu_::Opcode_58() { Load(this->e, this->b); }
+void Cpu_::Opcode_59() { Load(this->e, this->c); }
+void Cpu_::Opcode_5A() { Load(this->e, this->d); }
+void Cpu_::Opcode_5B() { Load(this->e, this->e); }
+void Cpu_::Opcode_5C() { Load(this->e, this->h); }
+void Cpu_::Opcode_5D() { Load(this->e, this->l); }
+void Cpu_::Opcode_5E() { Load(this->e, this->hl); }
+void Cpu_::Opcode_5F() { Load(this->e, this->a);  }
+void Cpu_::Opcode_60() { Load(this->h, this->b); }
+void Cpu_::Opcode_61() { Load(this->h, this->c); }
+void Cpu_::Opcode_62() { Load(this->h, this->d); }
+void Cpu_::Opcode_63() { Load(this->h, this->e); }
+void Cpu_::Opcode_64() { Load(this->h, this->h); }
+void Cpu_::Opcode_65() { Load(this->h, this->l); }
+void Cpu_::Opcode_66() { Load(this->h, this->hl); }
+void Cpu_::Opcode_67() { Load(this->h, this->a); }
+void Cpu_::Opcode_68() { Load(this->l, this->b); }
+void Cpu_::Opcode_69() { Load(this->l, this->c); }
+void Cpu_::Opcode_6A() { Load(this->l, this->d); }
+void Cpu_::Opcode_6B() { Load(this->l, this->e); }
+void Cpu_::Opcode_6C() { Load(this->l, this->h); }
+void Cpu_::Opcode_6D() { Load(this->l, this->l); }
+void Cpu_::Opcode_6E() { Load(this->l, this->hl); }
+void Cpu_::Opcode_6F() { Load(this->l, this->a); }
+void Cpu_::Opcode_70() { Load(this->hl, this->b); }
+void Cpu_::Opcode_71() { Load(this->hl, this->c); }
+void Cpu_::Opcode_72() { Load(this->hl, this->d); }
+void Cpu_::Opcode_73() { Load(this->hl, this->e); }
+void Cpu_::Opcode_74() { Load(this->hl, this->h); }
+void Cpu_::Opcode_75() { Load(this->hl, this->l); }
 void Cpu_::Opcode_76() { }
-void Cpu_::Opcode_77() { }
-void Cpu_::Opcode_78() { }
-void Cpu_::Opcode_79() { }
-void Cpu_::Opcode_7A() { }
-void Cpu_::Opcode_7B() { }
-void Cpu_::Opcode_7C() { }
-void Cpu_::Opcode_7D() { }
-void Cpu_::Opcode_7E() { }
-void Cpu_::Opcode_7F() { }
+void Cpu_::Opcode_77() { Load(this->hl, this->a); }
+void Cpu_::Opcode_78() { Load(this->a, this->b); }
+void Cpu_::Opcode_79() { Load(this->a, this->c); }
+void Cpu_::Opcode_7A() { Load(this->a, this->d); }
+void Cpu_::Opcode_7B() { Load(this->a, this->e); }
+void Cpu_::Opcode_7C() { Load(this->a, this->h); }
+void Cpu_::Opcode_7D() { Load(this->a, this->l); }
+void Cpu_::Opcode_7E() { Load(this->a, this->hl); }
+void Cpu_::Opcode_7F() { Load(this->a, this->a); }
 void Cpu_::Opcode_80() { }
 void Cpu_::Opcode_81() { }
 void Cpu_::Opcode_82() { }
@@ -195,11 +195,11 @@ void Cpu_::Opcode_BD() { }
 void Cpu_::Opcode_BE() { }
 void Cpu_::Opcode_BF() { }
 void Cpu_::Opcode_C0() { }
-void Cpu_::Opcode_C1() { }
+void Cpu_::Opcode_C1() { Pop(this->bc); }
 void Cpu_::Opcode_C2() { }
 void Cpu_::Opcode_C3() { }
 void Cpu_::Opcode_C4() { }
-void Cpu_::Opcode_C5() { }
+void Cpu_::Opcode_C5() { Push(this->bc); }
 void Cpu_::Opcode_C6() { }
 void Cpu_::Opcode_C7() { }
 void Cpu_::Opcode_C8() { }
@@ -211,11 +211,11 @@ void Cpu_::Opcode_CD() { }
 void Cpu_::Opcode_CE() { }
 void Cpu_::Opcode_CF() { }
 void Cpu_::Opcode_D0() { }
-void Cpu_::Opcode_D1() { }
+void Cpu_::Opcode_D1() { Pop(this->de); }
 void Cpu_::Opcode_D2() { }
 void Cpu_::Opcode_D3() { }
 void Cpu_::Opcode_D4() { }
-void Cpu_::Opcode_D5() { }
+void Cpu_::Opcode_D5() { Push(this->de); }
 void Cpu_::Opcode_D6() { }
 void Cpu_::Opcode_D7() { }
 void Cpu_::Opcode_D8() { }
@@ -225,34 +225,34 @@ void Cpu_::Opcode_DB() { }
 void Cpu_::Opcode_DC() { }
 void Cpu_::Opcode_DD() { }
 void Cpu_::Opcode_DE() { }
-void Cpu_::Opcode_E0() { }
 void Cpu_::Opcode_DF() { }
-void Cpu_::Opcode_E1() { }
-void Cpu_::Opcode_E2() { }
+void Cpu_::Opcode_E0() { Load(Address{GetByte()}, this->a); }
+void Cpu_::Opcode_E1() { Pop(this->hl); }
+void Cpu_::Opcode_E2() { Load(this->c.Addr(), this->a); }
 void Cpu_::Opcode_E3() { }
 void Cpu_::Opcode_E4() { }
-void Cpu_::Opcode_E5() { }
+void Cpu_::Opcode_E5() { Push(this->hl); }
 void Cpu_::Opcode_E6() { }
 void Cpu_::Opcode_E7() { }
 void Cpu_::Opcode_E8() { }
 void Cpu_::Opcode_E9() { }
-void Cpu_::Opcode_EA() { }
+void Cpu_::Opcode_EA() { Load(Address{GetWord()}, this->a); }
 void Cpu_::Opcode_EB() { }
 void Cpu_::Opcode_EC() { }
 void Cpu_::Opcode_ED() { }
 void Cpu_::Opcode_EE() { }
 void Cpu_::Opcode_EF() { }
-void Cpu_::Opcode_F0() { }
-void Cpu_::Opcode_F1() { }
-void Cpu_::Opcode_F2() { }
+void Cpu_::Opcode_F0() { Load(this->a, Address{GetByte()}); }
+void Cpu_::Opcode_F1() { Pop(this->af); }
+void Cpu_::Opcode_F2() { Load(this->a, this->c.Addr()); }
 void Cpu_::Opcode_F3() { }
 void Cpu_::Opcode_F4() { }
-void Cpu_::Opcode_F5() { }
+void Cpu_::Opcode_F5() { Push(this->af); }
 void Cpu_::Opcode_F6() { }
 void Cpu_::Opcode_F7() { }
-void Cpu_::Opcode_F8() { }
-void Cpu_::Opcode_F9() { }
-void Cpu_::Opcode_FA() { }
+void Cpu_::Opcode_F8() { Load(this->hl, this->sp, static_cast<s8>(GetByte())); }
+void Cpu_::Opcode_F9() { Load(this->sp, this->hl); }
+void Cpu_::Opcode_FA() { Load(this->a, Address{GetWord()}); }
 void Cpu_::Opcode_FB() { }
 void Cpu_::Opcode_FC() { }
 void Cpu_::Opcode_FD() { }

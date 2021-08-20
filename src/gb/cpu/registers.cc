@@ -3,16 +3,14 @@
 
 namespace gb {
 
-template<typename T>
-Register<T>::Register() : v{0} {}
+ByteReg::ByteReg() : v{0} {}
 
-template<typename T> template<typename U>
-Addr<U> Register<T>::IoAddr() const { return static_cast<u16>(0xFF00 + this->v); }
+Address ByteReg::Addr() const { return Address{static_cast<u16>(0xFF00 + this->v)}; }
 
-template class Register<u8>;
-template class Register<u16>;
+WordReg::WordReg() : v{0} {}
 
 Address::Address(const u16 a) : a{a} {}
+Address::Address(const u8 a) : a{static_cast<u16>(a + 0xFF00)} {}
 
 RegPair::RegPair(ByteReg& h, ByteReg& l) : h{h.v}, l{l.v} {}
 

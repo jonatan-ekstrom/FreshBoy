@@ -1,27 +1,24 @@
 #pragma once
-#include <type_traits>
 #include "types.h"
 
 namespace gb {
 
-template<typename T>
-using Addr = std::enable_if_t<std::is_same_v<T, u8>, u16>;
+class Address;
 
-template<typename T>
-struct Register {
-    Register();
-    template<typename U = T>
-    Addr<U> IoAddr() const;
-    T v;
+struct ByteReg {
+    ByteReg();
+    u8 v;
+    Address Addr() const;
 };
 
-extern template class Register<u8>;
-extern template class Register<u16>;
-using ByteReg = Register<u8>;
-using WordReg = Register<u16>;
+struct WordReg {
+    WordReg();
+    u16 v;
+};
 
 struct Address {
     explicit Address(u16 a);
+    explicit Address(u8 a);
     u16 a;
 };
 
