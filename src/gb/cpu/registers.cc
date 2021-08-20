@@ -21,15 +21,15 @@ u16 RegPair::Addr() { return bit::Merge(this->h, this->l); }
 void RegPair::Inc() {
     auto merged{bit::Merge(this->h, this->l)};
     ++merged;
-    this->h = bit::HighByte(merged);
-    this->l = bit::LowByte(merged);
+    this->h = bit::High(merged);
+    this->l = bit::Low(merged);
 }
 
 void RegPair::Dec() {
     auto merged{bit::Merge(this->h, this->l)};
     --merged;
-    this->h = bit::HighByte(merged);
-    this->l = bit::LowByte(merged);
+    this->h = bit::High(merged);
+    this->l = bit::Low(merged);
 }
 
 Flags::Flags(ByteReg& f) : f{f.v} {}

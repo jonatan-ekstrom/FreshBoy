@@ -56,11 +56,11 @@ constexpr u8 LowNibble(const u8 reg) {
     return static_cast<u8>(reg & 0x0F);
 }
 
-constexpr u8 HighByte(const u16 reg) {
+constexpr u8 High(const u16 reg) {
     return static_cast<u8>((reg >> 8) & 0xFF);
 }
 
-constexpr u8 LowByte(const u16 reg) {
+constexpr u8 Low(const u16 reg) {
     return static_cast<u8>(reg & 0xFF);
 }
 

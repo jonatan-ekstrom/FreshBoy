@@ -101,8 +101,8 @@ u16 Cpu_::GetWord() {
 }
 
 void Cpu_::PushPc() {
-    const auto high{bit::HighByte(this->pc.v)};
-    const auto low{bit::LowByte(this->pc.v)};
+    const auto high{bit::High(this->pc.v)};
+    const auto low{bit::Low(this->pc.v)};
     this->mmu->Write(--this->sp.v, high);
     this->mmu->Write(--this->sp.v, low);
 }

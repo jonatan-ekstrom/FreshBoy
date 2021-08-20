@@ -17,10 +17,10 @@ void Cpu_::LoadDec(ByteReg& dst, RegPair src) { dst.v = this->mmu->Read(src.Addr
 void Cpu_::LoadDec(RegPair dst, ByteReg& src) { this->mmu->Write(dst.Addr(), src.v); dst.Dec(); }
 
 //16-bit transfer
-void Cpu_::Load(RegPair dst, u16 imm) { dst.h = bit::HighByte(imm); dst.l = bit::LowByte(imm); }
+void Cpu_::Load(RegPair dst, u16 imm) { dst.h = bit::High(imm); dst.l = bit::Low(imm); }
 void Cpu_::Load(WordReg& dst, u16 imm) {
-    const auto high{bit::HighByte(imm)};
-    const auto low{bit::LowByte(imm)};
+    const auto high{bit::High(imm)};
+    const auto low{bit::Low(imm)};
     dst.v = bit::Merge(high, low);
 }
 void Cpu_::Load(RegPair dst, RegPair src) { dst.h = src.h; dst.l = src.l; }
@@ -30,8 +30,8 @@ void Cpu_::Load(RegPair dst, RegPair src, s8 imm) {
     const auto lhs{static_cast<int>(src.Addr())};
     const auto rhs{static_cast<int>(imm)};
     const auto sum{static_cast<u16>(lhs + rhs)};
-    dst.h = bit::HighByte(sum);
-    dst.l = bit::LowByte(sum);
+    dst.h = bit::High(sum);
+    dst.l = bit::Low(sum);
 
     this->flags.UpdateZ(false);
     this->flags.UpdateN(false);
@@ -40,8 +40,8 @@ void Cpu_::Load(RegPair dst, RegPair src, s8 imm) {
 }
 
 void Cpu_::Load(Address dst, WordReg src) {
-    this->mmu->Write(dst.a, bit::LowByte(src.v));
-    this->mmu->Write(dst.a+1, bit::HighByte(src.v));
+    this->mmu->Write(dst.a, bit::Low(src.v));
+    this->mmu->Write(dst.a+1, bit::High(src.v));
 }
 
 }

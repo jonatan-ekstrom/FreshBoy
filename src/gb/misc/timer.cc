@@ -104,7 +104,7 @@ bool Timer_::Output() const {
 }
 
 u8 Timer_::Div() const {
-    return bit::HighByte(this->ticks);
+    return bit::High(this->ticks);
 }
 
 void Timer_::FireInterrupt() const {
