@@ -3,7 +3,7 @@
 
 namespace gb {
 
-class Address;
+struct Address;
 
 struct ByteReg {
     ByteReg();
