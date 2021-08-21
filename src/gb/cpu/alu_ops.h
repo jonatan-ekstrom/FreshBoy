@@ -19,4 +19,6 @@ void And(RegPair rp);
 void Or(u8 imm);
 void Or(ByteReg reg);
 void Or(RegPair rp);
-
+void Xor(u8 imm);
+void Xor(ByteReg reg);
+void Xor(RegPair rp);

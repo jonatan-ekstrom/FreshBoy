@@ -97,4 +97,20 @@ void Cpu_::Or(const RegPair rp) {
     Or(this->mmu->Read(rp.Addr()));
 }
 
+void Cpu_::Xor(const u8 imm) {
+    this->a.v ^= imm;
+    this->flags.UpdateZ(this->a.v == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(false);
+    this->flags.UpdateC(false);
+}
+
+void Cpu_::Xor(const ByteReg reg) {
+    Xor(reg.v);
+}
+
+void Cpu_::Xor(const RegPair rp) {
+    Xor(this->mmu->Read(rp.Addr()));
+}
+
 }
