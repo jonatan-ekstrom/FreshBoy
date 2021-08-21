@@ -38,6 +38,7 @@ private:
     void Execute(u8 opcode);
     void ExecuteEx(u8 opcode);
     #include "ops.h"
+    #include "alu_ops.h"
     #include "mem_ops.h"
 };
 
