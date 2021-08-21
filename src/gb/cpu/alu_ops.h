@@ -22,3 +22,6 @@ void Or(RegPair rp);
 void Xor(u8 imm);
 void Xor(ByteReg reg);
 void Xor(RegPair rp);
+void Cmp(u8 imm);
+void Cmp(ByteReg reg);
+void Cmp(RegPair rp);

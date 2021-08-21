@@ -113,4 +113,21 @@ void Cpu_::Xor(const RegPair rp) {
     Xor(this->mmu->Read(rp.Addr()));
 }
 
+void Cpu_::Cmp(const u8 imm) {
+    const auto lhs{this->a.v};
+    const auto rhs{imm};
+    this->flags.UpdateZ((lhs - rhs) == 0);
+    this->flags.UpdateN(true);
+    this->flags.UpdateH(bit::Borrow(lhs, rhs, 4));
+    this->flags.UpdateC(bit::Borrow(lhs, rhs, 8));
+}
+
+void Cpu_::Cmp(const ByteReg reg) {
+    Cmp(reg.v);
+}
+
+void Cpu_::Cmp(const RegPair rp) {
+    Cmp(this->mmu->Read(rp.Addr()));
+}
+
 }
