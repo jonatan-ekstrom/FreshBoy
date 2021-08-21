@@ -13,3 +13,6 @@ void Sub(RegPair rp);
 void SubWithBorrow(u8 imm);
 void SubWithBorrow(ByteReg reg);
 void SubWithBorrow(RegPair rp);
+void And(u8 imm);
+void And(ByteReg reg);
+void And(RegPair rp);

@@ -65,4 +65,20 @@ void Cpu_::SubWithBorrow(const RegPair rp) {
     SubWithBorrow(this->mmu->Read(rp.Addr()));
 }
 
+void Cpu_::And(const u8 imm) {
+    this->a.v &= imm;
+    this->flags.UpdateZ(this->a.v == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(true);
+    this->flags.UpdateC(false);
+}
+
+void Cpu_::And(const ByteReg reg) {
+    And(reg.v);
+}
+
+void Cpu_::And(const RegPair rp) {
+    And(this->mmu->Read(rp.Addr()));
+}
+
 }
