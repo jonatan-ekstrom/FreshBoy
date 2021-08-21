@@ -32,9 +32,12 @@ struct Address {
     u16 a;
 };
 
+enum class Condition { NZ, Z, NC, C };
+
 class Flags {
 public:
     explicit Flags(ByteReg& f);
+    bool Check(Condition c) const;
     bool Z() const;
     bool N() const;
     bool H() const;
@@ -46,5 +49,6 @@ public:
 private:
     u8& f;
 };
+
 
 }

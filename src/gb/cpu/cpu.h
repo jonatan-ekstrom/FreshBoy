@@ -39,6 +39,7 @@ private:
     void ExecuteEx(u8 opcode);
     #include "ops.h"
     #include "alu_ops.h"
+    #include "flow_ops.h"
     #include "mem_ops.h"
 };
 

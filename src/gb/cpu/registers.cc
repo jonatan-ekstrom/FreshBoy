@@ -33,6 +33,16 @@ Address::Address(const RegPair rp) : a{rp.Addr()} {}
 
 Flags::Flags(ByteReg& f) : f{f.v} {}
 
+bool Flags::Check(const Condition c) const {
+    switch (c) {
+        case Condition::NZ: return !Z();
+        case Condition::Z: return Z();
+        case Condition::NC: return !C();
+        case Condition::C: return C();
+        default: return false;
+    }
+}
+
 bool Flags::Z() const { return bit::IsSet(this->f, 7); }
 
 bool Flags::N() const { return bit::IsSet(this->f, 6); }
