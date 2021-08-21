@@ -24,9 +24,9 @@ struct Address {
 
 struct RegPair {
     RegPair(ByteReg& h, ByteReg& l);
-    u16 Addr();
-    void Inc();
-    void Dec();
+    u16 Addr() const;
+    void Inc() const;
+    void Dec() const;
     u8& h;
     u8& l;
 };

@@ -14,16 +14,16 @@ Address::Address(const u8 a) : a{static_cast<u16>(a + 0xFF00)} {}
 
 RegPair::RegPair(ByteReg& h, ByteReg& l) : h{h.v}, l{l.v} {}
 
-u16 RegPair::Addr() { return bit::Merge(this->h, this->l); }
+u16 RegPair::Addr() const { return bit::Merge(this->h, this->l); }
 
-void RegPair::Inc() {
+void RegPair::Inc() const {
     auto merged{bit::Merge(this->h, this->l)};
     ++merged;
     this->h = bit::High(merged);
     this->l = bit::Low(merged);
 }
 
-void RegPair::Dec() {
+void RegPair::Dec() const {
     auto merged{bit::Merge(this->h, this->l)};
     --merged;
     this->h = bit::High(merged);
