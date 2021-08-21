@@ -16,12 +16,6 @@ struct WordReg {
     u16 v;
 };
 
-struct Address {
-    explicit Address(u16 a);
-    explicit Address(u8 a);
-    u16 a;
-};
-
 struct RegPair {
     RegPair(ByteReg& h, ByteReg& l);
     u16 Addr() const;
@@ -29,6 +23,13 @@ struct RegPair {
     void Dec() const;
     u8& h;
     u8& l;
+};
+
+struct Address {
+    explicit Address(u16 a);
+    explicit Address(u8 a);
+    explicit Address(RegPair rp);
+    u16 a;
 };
 
 class Flags {

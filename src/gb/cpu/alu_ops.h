@@ -27,7 +27,17 @@ void Cmp(ByteReg reg);
 void Cmp(RegPair rp);
 void Inc(u8& val);
 void Inc(ByteReg& reg);
-void Inc(RegPair rp);
+void Inc(Address a);
 void Dec(u8& val);
 void Dec(ByteReg& reg);
+void Dec(Address a);
+
+// 16-bit ALU ops
+void Add(RegPair dst, u16 imm);
+void Add(RegPair dst, RegPair src);
+void Add(RegPair dst, WordReg src);
+void Add(WordReg& dst, s8 imm);
+void Inc(RegPair rp);
+void Inc(WordReg& reg);
 void Dec(RegPair rp);
+void Dec(WordReg& reg);

@@ -143,10 +143,10 @@ void Cpu_::Inc(ByteReg& reg) {
     Inc(reg.v);
 }
 
-void Cpu_::Inc(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+void Cpu_::Inc(const Address a) {
+    auto val{this->mmu->Read(a.a)};
     Inc(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(a.a, val);
 }
 
 void Cpu_::Dec(u8& val) {
@@ -162,10 +162,57 @@ void Cpu_::Dec(ByteReg& reg) {
     Dec(reg.v);
 }
 
-void Cpu_::Dec(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+void Cpu_::Dec(const Address a) {
+    auto val{this->mmu->Read(a.a)};
     Dec(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(a.a, val);
+}
+
+void Cpu_::Add(const RegPair dst, const u16 imm) {
+    const auto lhs{dst.Addr()};
+    const auto rhs{imm};
+    const auto sum{static_cast<u16>(lhs + rhs)};
+    dst.h = bit::High(sum);
+    dst.l = bit::Low(sum);
+
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(bit::Carry(lhs, rhs, 11));
+    this->flags.UpdateC(bit::Carry(lhs, rhs, 15));
+}
+
+void Cpu_::Add(const RegPair dst, const RegPair src) {
+    Add(dst, src.Addr());
+}
+
+void Cpu_::Add(const RegPair dst, const WordReg src) {
+    Add(dst, src.v);
+}
+
+void Cpu_::Add(WordReg& dst, const s8 imm) {
+    const auto lhs{static_cast<int>(dst.v)};
+    const auto rhs{static_cast<int>(imm)};
+    const auto sum{static_cast<u16>(lhs + rhs)};
+    dst.v = sum;
+    this->flags.UpdateZ(false);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(bit::Carry(lhs, rhs, 11));
+    this->flags.UpdateC(bit::Carry(lhs, rhs, 15));
+}
+
+void Cpu_::Inc(const RegPair rp) {
+    rp.Inc();
+}
+
+void Cpu_::Inc(WordReg& reg) {
+    ++reg.v;
+}
+
+void Cpu_::Dec(const RegPair rp) {
+    rp.Dec();
+}
+
+void Cpu_::Dec(WordReg& reg) {
+    --reg.v;
 }
 
 }

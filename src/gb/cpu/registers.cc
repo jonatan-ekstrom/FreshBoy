@@ -9,9 +9,6 @@ Address ByteReg::Addr() const { return Address{static_cast<u16>(0xFF00 + this->v
 
 WordReg::WordReg() : v{0} {}
 
-Address::Address(const u16 a) : a{a} {}
-Address::Address(const u8 a) : a{static_cast<u16>(a + 0xFF00)} {}
-
 RegPair::RegPair(ByteReg& h, ByteReg& l) : h{h.v}, l{l.v} {}
 
 u16 RegPair::Addr() const { return bit::Merge(this->h, this->l); }
@@ -29,6 +26,10 @@ void RegPair::Dec() const {
     this->h = bit::High(merged);
     this->l = bit::Low(merged);
 }
+
+Address::Address(const u16 a) : a{a} {}
+Address::Address(const u8 a) : a{static_cast<u16>(a + 0xFF00)} {}
+Address::Address(const RegPair rp) : a{rp.Addr()} {}
 
 Flags::Flags(ByteReg& f) : f{f.v} {}
 
