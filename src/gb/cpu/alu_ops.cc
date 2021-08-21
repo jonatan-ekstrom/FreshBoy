@@ -130,4 +130,42 @@ void Cpu_::Cmp(const RegPair rp) {
     Cmp(this->mmu->Read(rp.Addr()));
 }
 
+void Cpu_::Inc(u8& val) {
+    const auto lhs{val};
+    const u8 rhs{1};
+    ++val;
+    this->flags.UpdateZ(val == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(bit::Carry(lhs, rhs, 3));
+}
+
+void Cpu_::Inc(ByteReg& reg) {
+    Inc(reg.v);
+}
+
+void Cpu_::Inc(const RegPair rp) {
+    auto val{this->mmu->Read(rp.Addr())};
+    Inc(val);
+    this->mmu->Write(rp.Addr(), val);
+}
+
+void Cpu_::Dec(u8& val) {
+    const auto lhs{val};
+    const u8 rhs{1};
+    ++val;
+    this->flags.UpdateZ(val == 0);
+    this->flags.UpdateN(true);
+    this->flags.UpdateH(bit::Borrow(lhs, rhs, 4));
+}
+
+void Cpu_::Dec(ByteReg& reg) {
+    Dec(reg.v);
+}
+
+void Cpu_::Dec(const RegPair rp) {
+    auto val{this->mmu->Read(rp.Addr())};
+    Dec(val);
+    this->mmu->Write(rp.Addr(), val);
+}
+
 }
