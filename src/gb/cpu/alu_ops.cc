@@ -81,4 +81,20 @@ void Cpu_::And(const RegPair rp) {
     And(this->mmu->Read(rp.Addr()));
 }
 
+void Cpu_::Or(const u8 imm) {
+    this->a.v |= imm;
+    this->flags.UpdateZ(this->a.v == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(false);
+    this->flags.UpdateC(false);
+}
+
+void Cpu_::Or(const ByteReg reg) {
+    Or(reg.v);
+}
+
+void Cpu_::Or(const RegPair rp) {
+    Or(this->mmu->Read(rp.Addr()));
+}
+
 }

@@ -16,3 +16,7 @@ void SubWithBorrow(RegPair rp);
 void And(u8 imm);
 void And(ByteReg reg);
 void And(RegPair rp);
+void Or(u8 imm);
+void Or(ByteReg reg);
+void Or(RegPair rp);
+
