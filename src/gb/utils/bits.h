@@ -72,6 +72,14 @@ constexpr bool Carry(const T lhs, const T rhs, const uint bit) {
     return ((l & mask) + (r & mask) > mask);
 }
 
+template<typename T>
+constexpr bool Borrow(const T lhs, const T rhs, const uint bit) {
+    const auto mask{(1 << bit) - 1};
+    const auto l{static_cast<int>(lhs)};
+    const auto r{static_cast<int>(rhs)};
+    return ((l & mask) - (r & mask) < 0);
+}
+
 }
 
 }
