@@ -160,4 +160,24 @@ void Cpu_::Srl(const RegPair rp) {
     this->mmu->Write(rp.Addr(), val);
 }
 
+void Cpu_::Swap(u8& imm) {
+    const auto high{bit::HighNibble(imm)};
+    const auto low{bit::LowNibble(imm)};
+    imm = static_cast<u8>((low << 4) | high);
+    this->flags.UpdateZ(imm == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(false);
+    this->flags.UpdateC(false);
+}
+
+void Cpu_::Swap(ByteReg& reg) {
+    Swap(reg.v);
+}
+
+void Cpu_::Swap(const RegPair rp) {
+    auto val{this->mmu->Read(rp.Addr())};
+    Swap(val);
+    this->mmu->Write(rp.Addr(), val);
+}
+
 }

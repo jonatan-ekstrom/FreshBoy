@@ -31,3 +31,7 @@ void Sra(RegPair rp);
 void Srl(u8& imm);
 void Srl(ByteReg& reg);
 void Srl(RegPair rp);
+
+void Swap(u8& imm);
+void Swap(ByteReg& reg);
+void Swap(RegPair rp);
