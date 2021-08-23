@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include <stdexcept>
 
 namespace gb {
 
@@ -28,6 +29,39 @@ void Cpu_::RelJump(const Condition c, const s8 imm) {
     if (this->flags.Check(c)) {
         RelJump(imm);
     }
+}
+
+void Cpu_::Call(const u16 imm) {
+    PushPc();
+    Jump(imm);
+}
+
+void Cpu_::Call(const Condition c, const u16 imm) {
+    if (this->flags.Check(c)) {
+        Call(imm);
+    }
+}
+
+void Cpu_::Ret() {
+    PopPc();
+    this->branched = true;
+}
+
+void Cpu_::Ret(const Condition c) {
+    if (this->flags.Check(c)) {
+        Ret();
+    }
+}
+
+void Cpu_::Reti() {
+    Ret();
+    this->interrupts->EnableInterrupts();
+}
+
+void Cpu_::Rst(const uint t) {
+    if (t > 7) throw std::runtime_error{"RST - unknown vector."};
+    const u16 addr{static_cast<u16>(t * 0x08)};
+    Call(addr);
 }
 
 }

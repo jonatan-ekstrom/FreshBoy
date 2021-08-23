@@ -107,4 +107,10 @@ void Cpu_::PushPc() {
     this->mmu->Write(--this->sp.v, low);
 }
 
+void Cpu_::PopPc() {
+    const auto low{this->mmu->Read(this->sp.v++)};
+    const auto high{this->mmu->Read(this->sp.v++)};
+    this->pc.v = bit::Merge(high, low);
+}
+
 }

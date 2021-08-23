@@ -35,6 +35,7 @@ private:
     u8 GetByte();
     u16 GetWord();
     void PushPc();
+    void PopPc();
     void Execute(u8 opcode);
     void ExecuteEx(u8 opcode);
     #include "ops.h"
