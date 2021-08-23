@@ -152,7 +152,7 @@ void Cpu_::Inc(const Address a) {
 void Cpu_::Dec(u8& val) {
     const auto lhs{val};
     const u8 rhs{1};
-    ++val;
+    --val;
     this->flags.UpdateZ(val == 0);
     this->flags.UpdateN(true);
     this->flags.UpdateH(bit::Borrow(lhs, rhs, 4));
