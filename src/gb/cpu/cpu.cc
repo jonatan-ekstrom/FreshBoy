@@ -55,13 +55,15 @@ uint Cpu_::Tick() {
     if (this->halted) return mCycle;
     const auto [opcode, ex] = GetOpcode();
     this->branched = false;
+    uint mCycles;
     if (ex) {
         ExecuteEx(opcode);
-        return cyclesEx[opcode];
+        mCycles = cyclesEx[opcode];
     } else {
         Execute(opcode);
-        return branched ? cyclesBranched[opcode] : cycles[opcode];
+        mCycles = branched ? cyclesBranched[opcode] : cycles[opcode];
     }
+    return mCycles * 4;
 }
 
 bool Cpu_::HandleInterrupts() {
