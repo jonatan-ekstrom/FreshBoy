@@ -35,3 +35,15 @@ void Srl(RegPair rp);
 void Swap(u8& imm);
 void Swap(ByteReg& reg);
 void Swap(RegPair rp);
+
+void Bit(u8 imm, uint bit);
+void Bit(ByteReg reg, uint bit);
+void Bit(RegPair rp, uint bit);
+
+void Set(u8& imm, uint bit);
+void Set(ByteReg& reg, uint bit);
+void Set(RegPair rp, uint bit);
+
+void Res(u8& imm, uint bit);
+void Res(ByteReg& reg, uint bit);
+void Res(RegPair rp, uint bit);

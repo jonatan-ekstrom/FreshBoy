@@ -180,4 +180,47 @@ void Cpu_::Swap(const RegPair rp) {
     this->mmu->Write(rp.Addr(), val);
 }
 
+void Cpu_::Bit(const u8 imm, const uint bit) {
+    const auto set{bit::IsSet(imm, bit)};
+    this->flags.UpdateZ(!set);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(true);
+}
+
+void Cpu_::Bit(const ByteReg reg, const uint bit) {
+    Bit(reg.v, bit);
+}
+
+void Cpu_::Bit(const RegPair rp, const uint bit) {
+    Bit(this->mmu->Read(rp.Addr()), bit);
+}
+
+void Cpu_::Set(u8& imm, const uint bit) {
+    bit::Set(imm, bit);
+}
+
+void Cpu_::Set(ByteReg& reg, const uint bit) {
+    Set(reg.v, bit);
+}
+
+void Cpu_::Set(const RegPair rp, const uint bit) {
+    auto val{this->mmu->Read(rp.Addr())};
+    Set(val, bit);
+    this->mmu->Write(rp.Addr(), val);
+}
+
+void Cpu_::Res(u8& imm, const uint bit) {
+    bit::Clear(imm, bit);
+}
+
+void Cpu_::Res(ByteReg& reg, const uint bit) {
+    Res(reg.v, bit);
+}
+
+void Cpu_::Res(const RegPair rp, const uint bit) {
+    auto val{this->mmu->Read(rp.Addr())};
+    Res(val, bit);
+    this->mmu->Write(rp.Addr(), val);
+}
+
 }
