@@ -11,7 +11,7 @@ void Merge(std::vector<gb::Dot>& dst, const std::vector<gb::Dot>& src) {
         throw std::runtime_error{"Scanlines must be equal length."};
     }
     std::transform(src.cbegin(), src.cend(),
-                   dst.begin(), dst.end(), std::plus<>{});
+                   dst.begin(), dst.begin(), std::plus<>{});
 }
 
 }
