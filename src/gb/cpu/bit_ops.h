@@ -19,3 +19,15 @@ void Rrc(u8& imm);
 void Rrc(ByteReg& reg);
 void Rrc(RegPair rp);
 void Rrca();
+
+void Sla(u8& imm);
+void Sla(ByteReg& reg);
+void Sla(RegPair rp);
+
+void Sra(u8& imm);
+void Sra(ByteReg& reg);
+void Sra(RegPair rp);
+
+void Srl(u8& imm);
+void Srl(ByteReg& reg);
+void Srl(RegPair rp);

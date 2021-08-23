@@ -103,4 +103,61 @@ void Cpu_::Rrca() {
     this->flags.UpdateZ(false);
 }
 
+void Cpu_::Sla(u8& imm) {
+    this->flags.UpdateC(bit::IsSet(imm, 7));
+    imm = static_cast<u8>(imm << 1);
+    this->flags.UpdateZ(imm == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(false);
+}
+
+void Cpu_::Sla(ByteReg& reg) {
+    Sla(reg.v);
+}
+
+void Cpu_::Sla(const RegPair rp) {
+    auto val{this->mmu->Read(rp.Addr())};
+    Sla(val);
+    this->mmu->Write(rp.Addr(), val);
+}
+
+void Cpu_::Sra(u8& imm) {
+    this->flags.UpdateC(bit::IsSet(imm, 0));
+    const auto sevenSet{bit::IsSet(imm, 7)};
+    imm = static_cast<u8>(imm >> 1);
+    bit::Update(imm, 7, sevenSet);
+    this->flags.UpdateZ(imm == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(false);
+}
+
+void Cpu_::Sra(ByteReg& reg) {
+    Sra(reg.v);
+}
+
+void Cpu_::Sra(const RegPair rp) {
+    auto val{this->mmu->Read(rp.Addr())};
+    Sra(val);
+    this->mmu->Write(rp.Addr(), val);
+}
+
+void Cpu_::Srl(u8& imm) {
+    this->flags.UpdateC(bit::IsSet(imm, 0));
+    imm = static_cast<u8>(imm >> 1);
+    bit::Clear(imm, 7);
+    this->flags.UpdateZ(imm == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(false);
+}
+
+void Cpu_::Srl(ByteReg& reg) {
+    Srl(reg.v);
+}
+
+void Cpu_::Srl(const RegPair rp) {
+    auto val{this->mmu->Read(rp.Addr())};
+    Srl(val);
+    this->mmu->Write(rp.Addr(), val);
+}
+
 }
