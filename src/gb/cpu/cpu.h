@@ -33,6 +33,7 @@ private:
     bool HandleInterrupts();
     std::tuple<u8, bool> GetOpcode();
     u8 GetByte();
+    s8 GetSignedByte();
     u16 GetWord();
     void PushPc();
     void PopPc();

@@ -234,7 +234,7 @@ void Cpu_::Opcode_E4() { }
 void Cpu_::Opcode_E5() { Push(this->hl); }
 void Cpu_::Opcode_E6() { And(GetByte()); }
 void Cpu_::Opcode_E7() { }
-void Cpu_::Opcode_E8() { Add(this->sp, static_cast<s8>(GetByte())); }
+void Cpu_::Opcode_E8() { Add(this->sp, GetSignedByte()); }
 void Cpu_::Opcode_E9() { }
 void Cpu_::Opcode_EA() { Load(Address{GetWord()}, this->a); }
 void Cpu_::Opcode_EB() { }
@@ -250,7 +250,7 @@ void Cpu_::Opcode_F4() { }
 void Cpu_::Opcode_F5() { Push(this->af); }
 void Cpu_::Opcode_F6() { Or(GetByte()); }
 void Cpu_::Opcode_F7() { }
-void Cpu_::Opcode_F8() { Load(this->hl, this->sp, static_cast<s8>(GetByte())); }
+void Cpu_::Opcode_F8() { Load(this->hl, this->sp, GetSignedByte()); }
 void Cpu_::Opcode_F9() { Load(this->sp, this->hl); }
 void Cpu_::Opcode_FA() { Load(this->a, Address{GetWord()}); }
 void Cpu_::Opcode_FB() { }

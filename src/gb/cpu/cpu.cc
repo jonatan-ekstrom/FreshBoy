@@ -94,6 +94,10 @@ u8 Cpu_::GetByte() {
     return this->mmu->Read(this->pc.v++);
 }
 
+s8 Cpu_::GetSignedByte() {
+    return static_cast<s8>(GetByte());
+}
+
 u16 Cpu_::GetWord() {
     const auto low{GetByte()};
     const auto high{GetByte()};
