@@ -44,6 +44,7 @@ private:
     #include "bit_ops.h"
     #include "flow_ops.h"
     #include "mem_ops.h"
+    #include "spec_ops.h"
 };
 
 }
