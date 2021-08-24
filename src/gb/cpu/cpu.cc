@@ -70,6 +70,9 @@ bool Cpu_::HandleInterrupts() {
     const auto pending{this->interrupts->PendingInterrupts()};
     if (pending.empty()) return false;
 
+    this->halted = false;
+    if (!this->interrupts->InterruptsEnabled()) return false;
+
     const auto requested{pending.front()};
     this->interrupts->DisableInterrupts();
     this->interrupts->AcknowledgeInterrupt(requested);
@@ -77,7 +80,6 @@ bool Cpu_::HandleInterrupts() {
     const auto vector{Vector(requested)};
     PushPc();
     this->pc.v = vector;
-    this->halted = false;
 
     return true;
 }

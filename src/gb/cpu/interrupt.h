@@ -22,6 +22,7 @@ public:
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
     std::vector<Interrupt> PendingInterrupts() const;
+    bool InterruptsEnabled() const;
     void EnableInterrupts();
     void DisableInterrupts();
     void RequestInterrupt(Interrupt intr);

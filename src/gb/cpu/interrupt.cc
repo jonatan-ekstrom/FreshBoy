@@ -44,10 +44,6 @@ void InterruptManager_::Write(const u16 address, const u8 byte) {
 }
 
 std::vector<Interrupt> InterruptManager_::PendingInterrupts() const {
-    if (!this->ime) {
-        return {};
-    }
-
     std::vector<Interrupt> pending;
     constexpr auto numInterrupts{5};
     const auto masked{static_cast<u8>(this->enabled & this->flags)};
@@ -57,6 +53,10 @@ std::vector<Interrupt> InterruptManager_::PendingInterrupts() const {
         }
     }
     return pending;
+}
+
+bool InterruptManager_::InterruptsEnabled() const {
+    return this->ime;
 }
 
 void InterruptManager_::EnableInterrupts() {
