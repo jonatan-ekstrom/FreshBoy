@@ -18,7 +18,7 @@ private:
                uint displayX, uint displayY) const;
     static uint DotX(const Sprite& sprite, uint displayX);
     uint DotY(const Sprite& sprite, uint displayY) const;
-    const Tile& GetTile(const Sprite& sprite, uint dotY) const;
+    const Tile& GetTile(const Sprite& sprite, uint& dotY) const;
     TileBanks banks;
     SpriteTable table;
     Palette obp0;

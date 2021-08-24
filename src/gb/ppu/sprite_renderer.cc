@@ -62,15 +62,15 @@ std::vector<Dot> SpriteRenderer::RenderScanline(const uint line) const {
 }
 
 Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
-                           uint displayX,
-                           uint displayY) const {
+                           const uint displayX,
+                           const uint displayY) const {
     Dot dot{Shade::Transparent, Layer::Object};
     for (const auto s : sprites) {
         // If the current pixel does not overlap this sprite, move to the next.
         if (!OverlapX(*s, displayX)) continue;
 
         const auto dotX{DotX(*s, displayX)};
-        const auto dotY{DotY(*s, displayY)};
+        auto dotY{DotY(*s, displayY)};
         const auto& tile{GetTile(*s, dotY)};
         const auto color{tile.Color(dotX, dotY)};
         const auto zero{s->Palette() == SpritePalette::Zero};
@@ -116,7 +116,7 @@ uint SpriteRenderer::DotY(const Sprite& sprite,
 }
 
 const Tile& SpriteRenderer::GetTile(const Sprite& sprite,
-                                    const uint dotY) const {
+                                    uint& dotY) const {
     if (this->spriteSize == SpriteSize::Small) {
         return this->banks->GetTileLow(sprite.TileIndex());
     }
@@ -126,6 +126,7 @@ const Tile& SpriteRenderer::GetTile(const Sprite& sprite,
         return this->banks->GetTileLow(sprite.TileIndex() & mask);
     }
 
+    dotY -= Size; // Adjust Y-coordinate.
     return this->banks->GetTileLow((sprite.TileIndex() & mask) + 1);
 }
 

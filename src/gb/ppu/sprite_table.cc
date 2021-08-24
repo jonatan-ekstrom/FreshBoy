@@ -106,8 +106,8 @@ SpriteTable_::GetSpritesToRender(const uint line,
     candidates.reserve(maxCandidates);
     for (const auto& sprite : this->sprites) {
         const auto topRow{sprite.Y()};
-        const auto bottomRow{topRow + spriteHeight - 1};
-        const bool include{scanline >= topRow && scanline <= bottomRow};
+        const auto bottomRow{topRow + spriteHeight};
+        const bool include{scanline >= topRow && scanline < bottomRow};
         if (include) {
             candidates.push_back(&sprite);
         }
