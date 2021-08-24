@@ -38,8 +38,8 @@ void Tile::Write(const uint index, const u8 byte) {
 ColorIndex Tile::Color(const uint dotX, const uint dotY) const {
     const auto lowByte{this->data[dotY * 2]};
     const auto highByte{this->data[dotY * 2 + 1]};
-    const auto highBit{bit::Get(highByte, dotX)};
-    const auto lowBit{bit::Get(lowByte, dotX)};
+    const auto highBit{bit::Get(highByte, 7 - dotX)};
+    const auto lowBit{bit::Get(lowByte, 7 - dotX)};
     const auto color{highBit << 1 | lowBit};
     return static_cast<ColorIndex>(color);
 }
