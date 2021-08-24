@@ -28,7 +28,7 @@ bool LcdControl::LcdEnabled() const {
 }
 
 TileMap LcdControl::WindowMap() const {
-    return bit::IsSet(this->lcdc, 6) ? TileMap::Low : TileMap::High;
+    return bit::IsSet(this->lcdc, 6) ? TileMap::High : TileMap::Low;
 }
 
 bool LcdControl::WindowEnabled() const {
@@ -36,11 +36,11 @@ bool LcdControl::WindowEnabled() const {
 }
 
 TileBank LcdControl::BackgroundBank() const {
-    return bit::IsSet(this->lcdc, 4) ? TileBank::High : TileBank::Low;
+    return bit::IsSet(this->lcdc, 4) ? TileBank::Low : TileBank::High;
 }
 
 TileMap LcdControl::BackgroundMap() const {
-    return bit::IsSet(this->lcdc, 3) ? TileMap::Low : TileMap::High;
+    return bit::IsSet(this->lcdc, 3) ? TileMap::High : TileMap::Low;
 }
 
 SpriteSize LcdControl::ObjectSize() const {
