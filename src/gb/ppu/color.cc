@@ -43,32 +43,32 @@ Color::Color(const Shade shade) : Color{} {
     u8 alpha{255};
     switch (shade) {
         case Shade::Screen:
-            this->R = 202;
-            this->G = 220;
-            this->B = 159;
+            this->R = 235;
+            this->G = 247;
+            this->B = 227;
             break;
         case Shade::Transparent:
             alpha = 0;
             break;
         case Shade::Darkest:
-            this->R = 15;
-            this->G = 56;
-            this->B = 15;
+            this->R = 8;
+            this->G = 24;
+            this->B = 32;
             break;
         case Shade::Dark:
-            this->R = 48;
-            this->G = 98;
-            this->B = 48;
+            this->R = 52;
+            this->G = 104;
+            this->B = 86;
             break;
         case Shade::Light:
-            this->R = 139;
-            this->G = 172;
-            this->B = 15;
+            this->R = 136;
+            this->G = 192;
+            this->B = 112;
             break;
         case Shade::Lightest:
-            this->R = 155;
-            this->G = 188;
-            this->B = 15;
+            this->R = 224;
+            this->G = 248;
+            this->B = 208;
             break;
         default:
             throw std::runtime_error{"Color - Unknown shade."};
