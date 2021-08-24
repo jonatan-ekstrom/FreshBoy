@@ -53,6 +53,7 @@ std::vector<Dot> SpriteRenderer::RenderScanline(const uint line) const {
 
     // Get (up to 10) sprites matching this scanline sorted in priority order.
     const auto sprites{this->table->GetSpritesToRender(line, this->spriteSize)};
+    if (sprites.empty()) return scanline;
 
     for (auto displayX{0u}; displayX < lcd::DisplayWidth; ++displayX) {
         scanline[displayX] = GetDot(sprites, displayX, line);
