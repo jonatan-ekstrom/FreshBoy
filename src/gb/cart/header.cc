@@ -73,6 +73,8 @@ constexpr uint MemSizeToRomBanks(const gb::MemSize sz) {
 constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
+        case MemSize::Zero:
+            return 0;
         case MemSize::KB8:
             return 1;
         case MemSize::KB32:
@@ -81,7 +83,6 @@ constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
             return 8;
         case MemSize::KB128:
             return 16;
-        case MemSize::Zero:
         case MemSize::KB256:
         case MemSize::KB512:
         case MemSize::MB1:
