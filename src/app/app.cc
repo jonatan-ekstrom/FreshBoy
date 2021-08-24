@@ -10,10 +10,10 @@ using namespace sdl;
 namespace {
 
 constexpr auto Title{"Gameboy"};
-constexpr auto WindowWidth{600};
-constexpr auto WindowHeight{400};
 constexpr auto DisplayWidth{160};
 constexpr auto DisplayHeight{144};
+constexpr auto WindowHeight{600};
+constexpr auto WindowWidth{(WindowHeight * 10) / 9};
 
 constexpr api::Button CodeToButton(const enum Key::Code code) {
     using api::Button;
