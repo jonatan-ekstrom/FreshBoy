@@ -32,10 +32,12 @@ u8 InterruptManager_::Read(const u16 address) const {
 void InterruptManager_::Write(const u16 address, const u8 byte) {
     if (address == FlagsAddress) {
         this->flags = byte & 0x1F;
+        return;
     }
 
     if (address == EnableAddress) {
         this->enabled = byte & 0x1F;
+        return;
     }
 
     throw std::runtime_error{"InterruptManager - invalid write address."};
