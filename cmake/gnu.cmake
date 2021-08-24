@@ -66,7 +66,7 @@ set(warningList
     -Wstack-protector
     -Wstrict-aliasing=3
     -Wstrict-null-sentinel
-    -Wstrict-overflow=5
+    -Wstrict-overflow=2
     -Wstringop-overflow=4
     -Wsuggest-final-methods
     -Wsuggest-final-types

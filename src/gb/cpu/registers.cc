@@ -3,11 +3,7 @@
 
 namespace gb {
 
-ByteReg::ByteReg() : v{0} {}
-
 Address ByteReg::Addr() const { return Address{static_cast<u16>(0xFF00 + this->v)}; }
-
-WordReg::WordReg() : v{0} {}
 
 RegPair::RegPair(ByteReg& h, ByteReg& l) : h{h.v}, l{l.v} {}
 

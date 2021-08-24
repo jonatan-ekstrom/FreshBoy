@@ -6,14 +6,12 @@ namespace gb {
 struct Address;
 
 struct ByteReg {
-    ByteReg();
-    u8 v;
     Address Addr() const;
+    u8 v{0};
 };
 
 struct WordReg {
-    WordReg();
-    u16 v;
+    u16 v{0};
 };
 
 struct RegPair {
