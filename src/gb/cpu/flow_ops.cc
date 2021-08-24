@@ -8,8 +8,8 @@ void Cpu_::Jump(const u16 imm) {
     this->branched = true;
 }
 
-void Cpu_::Jump(const Condition c, const u16 imm) {
-    if (this->flags.Check(c)) {
+void Cpu_::Jump(const Condition cond, const u16 imm) {
+    if (this->flags.Check(cond)) {
         Jump(imm);
     }
 }
@@ -25,8 +25,8 @@ void Cpu_::RelJump(const s8 imm) {
     Jump(next);
 }
 
-void Cpu_::RelJump(const Condition c, const s8 imm) {
-    if (this->flags.Check(c)) {
+void Cpu_::RelJump(const Condition cond, const s8 imm) {
+    if (this->flags.Check(cond)) {
         RelJump(imm);
     }
 }
@@ -36,8 +36,8 @@ void Cpu_::Call(const u16 imm) {
     Jump(imm);
 }
 
-void Cpu_::Call(const Condition c, const u16 imm) {
-    if (this->flags.Check(c)) {
+void Cpu_::Call(const Condition cond, const u16 imm) {
+    if (this->flags.Check(cond)) {
         Call(imm);
     }
 }
@@ -47,8 +47,8 @@ void Cpu_::Ret() {
     this->branched = true;
 }
 
-void Cpu_::Ret(const Condition c) {
-    if (this->flags.Check(c)) {
+void Cpu_::Ret(const Condition cond) {
+    if (this->flags.Check(cond)) {
         Ret();
     }
 }
