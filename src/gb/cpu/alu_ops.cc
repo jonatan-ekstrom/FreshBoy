@@ -6,7 +6,7 @@ namespace gb {
 void Cpu_::Add(const u8 imm) {
     const auto lhs{this->a.v};
     const auto rhs{imm};
-    this->a.v += imm;
+    this->a.v = static_cast<u8>(lhs + rhs);
     this->flags.UpdateZ(this->a.v == 0);
     this->flags.UpdateN(false);
     this->flags.UpdateH(bit::Carry(lhs, rhs, 3));
@@ -22,8 +22,14 @@ void Cpu_::Add(const RegPair rp) {
 }
 
 void Cpu_::AddWithCarry(const u8 imm) {
-    const auto carry{this->flags.C() ? 1 : 0};
-    Add(static_cast<u8>(imm + carry));
+    const auto lhs{this->a.v};
+    const auto rhs{imm};
+    const auto carry{static_cast<u8>(this->flags.C() ? 1 : 0)};
+    this->a.v = static_cast<u8>(lhs + rhs + carry);
+    this->flags.UpdateZ(this->a.v == 0);
+    this->flags.UpdateN(false);
+    this->flags.UpdateH(bit::Carry(lhs, rhs, carry, 3));
+    this->flags.UpdateC(bit::Carry(lhs, rhs, carry, 7));
 }
 
 void Cpu_::AddWithCarry(const ByteReg reg) {
@@ -37,7 +43,7 @@ void Cpu_::AddWithCarry(const RegPair rp) {
 void Cpu_::Sub(const u8 imm) {
     const auto lhs{this->a.v};
     const auto rhs{imm};
-    this->a.v -= imm;
+    this->a.v = static_cast<u8>(lhs - rhs);
     this->flags.UpdateZ(this->a.v == 0);
     this->flags.UpdateN(true);
     this->flags.UpdateH(bit::Borrow(lhs, rhs, 4));
@@ -53,8 +59,14 @@ void Cpu_::Sub(const RegPair rp) {
 }
 
 void Cpu_::SubWithBorrow(const u8 imm) {
-    const auto borrow{this->flags.C() ? 1 : 0};
-    Sub(static_cast<u8>(imm - borrow));
+    const auto lhs{this->a.v};
+    const auto rhs{imm};
+    const auto borrow{static_cast<u8>(this->flags.C() ? 1 : 0)};
+    this->a.v = static_cast<u8>(lhs - rhs - borrow);
+    this->flags.UpdateZ(this->a.v == 0);
+    this->flags.UpdateN(true);
+    this->flags.UpdateH(bit::Borrow(lhs, rhs, borrow, 4));
+    this->flags.UpdateC(bit::Borrow(lhs, rhs, borrow, 8));
 }
 
 void Cpu_::SubWithBorrow(const ByteReg reg) {

@@ -64,20 +64,38 @@ constexpr u8 Low(const u16 reg) {
     return static_cast<u8>(reg & 0xFF);
 }
 
-template<typename T>
-constexpr bool Carry(const T lhs, const T rhs, const uint from) {
+template<typename... Args>
+constexpr bool Carry(const Args... args, const uint from) {
     const auto mask{(1u << (from + 1)) - 1};
-    const auto l{static_cast<uint>(lhs)};
-    const auto r{static_cast<uint>(rhs)};
-    return ((l & mask) + (r & mask) > mask);
+    const auto sum{(... + (static_cast<uint>(args) & mask))};
+    return sum > mask;
 }
 
 template<typename T>
-constexpr bool Borrow(const T lhs, const T rhs, const uint from) {
+constexpr bool Carry(const T lhs, const T rhs, const uint from) {
+    return Carry<T, T>(lhs, rhs, from);
+}
+
+template<typename T>
+constexpr bool Carry(const T lhs, const T rhs, const T c, const uint from) {
+    return Carry<T, T, T>(lhs, rhs, c, from);
+}
+
+template<typename... Args>
+constexpr bool Borrow(const Args... args, const int from) {
     const auto mask{(1 << from) - 1};
-    const auto l{static_cast<int>(lhs)};
-    const auto r{static_cast<int>(rhs)};
-    return ((l & mask) - (r & mask) < 0);
+    const auto diff{(... - (static_cast<int>(args) & mask))};
+    return diff < 0;
+}
+
+template<typename T>
+constexpr bool Borrow(const T lhs, const T rhs, const int from) {
+    return Borrow<T, T>(lhs, rhs, from);
+}
+
+template<typename T>
+constexpr bool Borrow(const T lhs, const T rhs, const T c, const int from) {
+    return Borrow<T, T, T>(lhs, rhs, c, from);
 }
 
 }
