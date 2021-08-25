@@ -9,7 +9,7 @@ using namespace sdl;
 
 namespace {
 
-constexpr auto Title{"Gameboy"};
+constexpr auto Title{"j0n1zBoy"};
 constexpr auto DisplayWidth{160};
 constexpr auto DisplayHeight{144};
 constexpr auto WindowHeight{600};
