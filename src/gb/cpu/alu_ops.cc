@@ -207,8 +207,8 @@ void Cpu_::Add(WordReg& dst, const s8 imm) {
     dst.v = sum;
     this->flags.UpdateZ(false);
     this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry(lhs, rhs, 11));
-    this->flags.UpdateC(bit::Carry(lhs, rhs, 15));
+    this->flags.UpdateH(bit::Carry(lhs, rhs, 3));
+    this->flags.UpdateC(bit::Carry(lhs, rhs, 7));
 }
 
 void Cpu_::Inc(const RegPair rp) {
