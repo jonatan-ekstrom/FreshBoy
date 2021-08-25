@@ -1,8 +1,9 @@
 #include "gb.h"
+#include "log.h"
 
 namespace gb {
 
-Gameboy_::Gameboy_(const std::string& filePath, const RenderCallback& render)
+Gameboy_::Gameboy_(const std::string& filePath, const RenderCallback& render, const bool log)
     : cart{Cartridge_::Create(filePath)},
       interrupts{InterruptManager_::Create()},
       input{Input_::Create(this->interrupts)},
@@ -12,11 +13,14 @@ Gameboy_::Gameboy_(const std::string& filePath, const RenderCallback& render)
       apu{Sound_::Create()},
       mmu{Memory_::Create(this->cart, this->input, this->interrupts,
                           this->ppu, this->serial, this->apu, this->timer)},
-      cpu{Cpu_::Create(this->interrupts, this->mmu)} {}
+      cpu{Cpu_::Create(this->interrupts, this->mmu)} {
+    if (log) log::Enable();
+}
 
 Gameboy Gameboy_::Create(const std::string& filePath,
-                         const Gameboy_::RenderCallback& render) {
-    return Gameboy{new Gameboy_{filePath, render}};
+                         const Gameboy_::RenderCallback& render,
+                         const bool log) {
+    return Gameboy{new Gameboy_{filePath, render, log}};
 }
 
 std::string Gameboy_::Header() const {

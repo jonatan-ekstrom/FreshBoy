@@ -1,7 +1,13 @@
 #include "log.h"
 #include <iostream>
 
+namespace {
+    bool Enabled{false};
+}
+
 namespace gb::log {
+
+void Enable() { Enabled = true; }
 
 std::string Hex(const u16 address) {
     constexpr char c[]{"0123456789ABCDEF"};
@@ -14,6 +20,7 @@ std::string Hex(const u16 address) {
 }
 
 void Warning(const std::string& txt) {
+    if (!Enabled) return;
     std::cout << "WARN: " + txt << std::endl;
 }
 
