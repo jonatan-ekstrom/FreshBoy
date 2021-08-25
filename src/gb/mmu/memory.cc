@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <utility>
 #include "boot.h"
+#include "log.h"
 
 namespace gb {
 
@@ -60,7 +61,8 @@ u8 Memory_::Read(const u16 address) const {
 
     // Invalid
     if (address >= 0xE000 && address <= 0xFDFF) {
-        throw std::runtime_error{"MMU - invalid read address."};
+        log::Warning("MMU - invalid read address: " + log::Hex(address));
+        return 0xFF;
     }
 
     // OAM
@@ -70,7 +72,8 @@ u8 Memory_::Read(const u16 address) const {
 
     // Invalid
     if (address >= 0xFEA0 && address <= 0xFEFF) {
-        throw std::runtime_error{"MMU - invalid read address."};
+        log::Warning("MMU - invalid read address: " + log::Hex(address));
+        return 0xFF;
     }
 
     // I/O
@@ -88,14 +91,16 @@ u8 Memory_::Read(const u16 address) const {
         return this->interrupts->Read(address);
     }
 
-    throw std::runtime_error{"MMU - invalid read address."};
+    log::Warning("MMU - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Memory_::Write(const u16 address, const u8 byte) {
     // Boot ROM / Cartridge
     if (address <= 0xFF) {
         if (BootRomEnabled()) {
-            throw std::runtime_error{"MMU - invalid write address."};
+            log::Warning("MMU - invalid write address: " + log::Hex(address));
+            return;
         } else {
             this->cart->Write(address, byte);
             return;
@@ -128,7 +133,8 @@ void Memory_::Write(const u16 address, const u8 byte) {
 
     // Invalid
     if (address >= 0xE000 && address <= 0xFDFF) {
-        throw std::runtime_error{"MMU - invalid write address."};
+        log::Warning("MMU - invalid write address: " + log::Hex(address));
+        return;
     }
 
     // OAM
@@ -139,7 +145,8 @@ void Memory_::Write(const u16 address, const u8 byte) {
 
     // Invalid
     if (address >= 0xFEA0 && address <= 0xFEFF) {
-        throw std::runtime_error{"MMU - invalid write address."};
+        log::Warning("MMU - invalid write address: " + log::Hex(address));
+        return;
     }
 
     // I/O
@@ -160,7 +167,7 @@ void Memory_::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"MMU - invalid write address."};
+    log::Warning("MMU - invalid write address: " + log::Hex(address));
 }
 
 bool Memory_::BootRomEnabled() const {
@@ -213,7 +220,8 @@ u8 Memory_::ReadIo(const u16 address) const {
         return this->bank;
     }
 
-    throw std::runtime_error{"MMU - invalid read address"};
+    log::Warning("MMU - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Memory_::WriteIo(const u16 address, const u8 byte) {
@@ -271,7 +279,7 @@ void Memory_::WriteIo(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"MMU - invalid write address"};
+    log::Warning("MMU - invalid write address: " + log::Hex(address));
 }
 
 void Memory_::DmaTransfer(const u8 byte) {
