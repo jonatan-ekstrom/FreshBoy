@@ -8,9 +8,11 @@ namespace {
 constexpr auto Size{8};
 
 auto GetLine() {
-    return std::vector<gb::Dot>{gb::lcd::DisplayWidth,
-                                gb::Dot{gb::Shade::Transparent,
-                                        gb::Layer::Object}};
+    using namespace gb;
+    return std::vector<Dot>{lcd::DisplayWidth,
+                            Dot{ColorIndex::Zero,
+                                Shade::Transparent,
+                                Layer::Object}};
 }
 
 bool OverlapX(const gb::Sprite& sprite, const uint displayX) {
@@ -64,7 +66,7 @@ std::vector<Dot> SpriteRenderer::RenderScanline(const uint line) const {
 Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
                            const uint displayX,
                            const uint displayY) const {
-    Dot dot{Shade::Transparent, Layer::Object};
+    Dot dot{ColorIndex::Zero, Shade::Transparent, Layer::Object};
     for (const auto s : sprites) {
         // If the current pixel does not overlap this sprite, move to the next.
         if (!OverlapX(*s, displayX)) continue;
@@ -72,13 +74,14 @@ Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
         const auto dotX{DotX(*s, displayX)};
         auto dotY{DotY(*s, displayY)};
         const auto& tile{GetTile(*s, dotY)};
-        const auto color{tile.Color(dotX, dotY)};
+        const auto index{tile.Color(dotX, dotY)};
         const auto zero{s->Palette() == SpritePalette::Zero};
         const auto& palette{zero ? this->obp0 : this->obp1};
-        const auto shade = palette->Map(color);
+        const auto shade = palette->Map(index);
 
         // If we've found a non-transparent pixel, we're done.
         if (shade != Shade::Transparent) {
+            dot.Index = index;
             dot.Tone = shade;
             dot.Level = s->Hidden() ? Layer::Hidden : Layer::Object;
             break;

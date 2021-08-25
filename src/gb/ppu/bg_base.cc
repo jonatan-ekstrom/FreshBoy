@@ -57,12 +57,7 @@ u8 BgBase::Y() const {
     return this->yReg;
 }
 
-Shade BgBase::Map(const uint mapX, const uint mapY) const {
-    return this->palette->Map(GetColorIndex(mapX, mapY));
-}
-
-ColorIndex BgBase::GetColorIndex(const uint mapX,
-                                 const uint mapY) const {
+ColorIndex BgBase::GetColor(const uint mapX, const uint mapY) const {
     constexpr auto tileSize{8};
     constexpr auto tilesPerLine{32};
     const auto tileX{mapX / tileSize};
@@ -81,6 +76,10 @@ ColorIndex BgBase::GetColorIndex(const uint mapX,
                     this->banks->GetTileHigh(tileIndex)};
 
     return tile.Color(dotX, dotY);
+}
+
+Shade BgBase::GetShade(const ColorIndex index) const {
+    return this->palette->Map(index);
 }
 
 u16 BgBase::XAddr() const {

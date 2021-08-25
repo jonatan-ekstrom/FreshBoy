@@ -7,11 +7,13 @@
 namespace {
 
 void Merge(std::vector<gb::Dot>& dst, const std::vector<gb::Dot>& src) {
+    using namespace gb;
     if (dst.size() != src.size()) {
         throw std::runtime_error{"Scanlines must be equal length."};
     }
     std::transform(src.cbegin(), src.cend(),
-                   dst.begin(), dst.begin(), std::plus<>{});
+                   dst.begin(), dst.begin(),
+                   [] (const Dot& s, const Dot& d) { return Fuse(d, s); });
 }
 
 }

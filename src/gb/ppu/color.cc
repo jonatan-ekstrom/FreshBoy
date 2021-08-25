@@ -3,38 +3,49 @@
 
 namespace gb {
 
-Dot::Dot() : Tone{Shade::Screen}, Level{Layer::Screen} {}
+Dot::Dot(const ColorIndex index,
+         const Shade tone,
+         const Layer layer)
+    : Index{index}, Tone{tone}, Level{layer} {}
 
-Dot::Dot(const Shade shade, const Layer layer) : Tone{shade}, Level{layer} {}
-
-Dot& Dot::operator+=(const Dot& other) {
+Dot& Dot::Fuse(const Dot& other) {
     const auto myLevel{static_cast<int>(this->Level)};
     const auto theirLevel{static_cast<int>(other.Level)};
-    const auto myTone{this->Tone};
-    const auto theirTone{other.Tone};
+    const auto bgWin{this->Level == Layer::Background ||
+                     this->Level == Layer::Window};
 
-    if (myLevel <= theirLevel) {
-        // Their level is higher, use their level from now on.
-        this->Level = static_cast<Layer>(theirLevel);
+    if (myLevel >= theirLevel) {
+        throw std::runtime_error{"Dot - Only possible to fuse higher level dots."};
+    }
 
-        // If their color is opaque, we need to switch to it.
-        if (theirTone != Shade::Transparent) {
-            this->Tone = theirTone;
-        }
+    // Switch to their level.
+    this->Level = other.Level;
+
+    // If they are transparent, we're done.
+    if (other.Tone == Shade::Transparent) {
         return *this;
     }
 
-    // Our level is higher so we keep it.
-
-    // If we're transparent, we need to switch to their color.
-    if (myTone == Shade::Transparent) {
-        this->Tone = theirTone;
+    /*
+     * If they are a low-prio object (hidden) and
+     * we are a BG or WIN with a non-zero color index,
+     * we treat them as transparent.
+     */
+    const auto hidden{other.Level == Layer::Hidden};
+    const auto nonZeroIndex{this->Index != ColorIndex::Zero};
+    if (hidden && bgWin && nonZeroIndex) {
+        return *this;
     }
+
+    // Switch to their index and tone.
+    this->Index = other.Index;
+    this->Tone = other.Tone;
+
     return *this;
 }
 
-Dot operator+(Dot lhs, const Dot& rhs) {
-    return lhs += rhs;
+Dot Fuse(Dot target, const Dot& other) {
+    return target.Fuse(other);
 }
 
 Color::Color() : R{0}, G{0}, B{0}, A{255} {}

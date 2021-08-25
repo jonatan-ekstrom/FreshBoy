@@ -16,11 +16,11 @@ public:
     void Write(u16 address, u8 byte);
 protected:
     BgBase(TileBanks banks, TileMaps maps, Palette palette, u16 address);
-    Shade Map(uint mapX, uint mapY) const;
+    ColorIndex GetColor(uint mapX, uint mapY) const;
+    Shade GetShade(ColorIndex index) const;
     u8 X() const;
     u8 Y() const;
 private:
-    ColorIndex GetColorIndex(uint mapX, uint mapY) const;
     u16 XAddr() const;
     u16 YAddr() const;
     TileBanks banks;

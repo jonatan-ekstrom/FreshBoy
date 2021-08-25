@@ -42,7 +42,7 @@ void Framebuffer::WriteLine(const Scanline& line,
 }
 
 Framebuffer::Scanline Framebuffer::GetScreenLine() {
-    const Dot dot{Shade::Screen, Layer::Screen};
+    const Dot dot{ColorIndex::Zero, Shade::Screen, Layer::Screen};
     return Scanline{lcd::DisplayWidth, dot};
 }
 

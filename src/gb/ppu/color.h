@@ -11,8 +11,8 @@ enum class ColorIndex {
 };
 
 enum class Shade {
-    Screen,
     Transparent,
+    Screen,
     Darkest,
     Dark,
     Light,
@@ -21,21 +21,21 @@ enum class Shade {
 
 enum class Layer {
     Screen,
-    Hidden,
     Background,
     Window,
+    Hidden,
     Object
 };
 
 struct Dot {
-    Dot();
-    Dot(Shade tone, Layer level);
-    Dot& operator+=(const Dot& other);
+    Dot(ColorIndex index, Shade tone, Layer level);
+    Dot& Fuse(const Dot& other);
+    ColorIndex Index;
     Shade Tone;
     Layer Level;
 };
 
-Dot operator+(Dot lhs, const Dot& rhs);
+Dot Fuse(Dot target, const Dot& other);
 
 struct Color {
     Color();

@@ -5,13 +5,15 @@
 
 namespace {
 
-gb::Dot MakeDot(const gb::Shade shade) {
-    return gb::Dot{shade, gb::Layer::Window};
+gb::Dot MakeDot(const gb::ColorIndex index, const gb::Shade shade) {
+    using namespace gb;
+    return Dot{index, shade, Layer::Window};
 }
 
 auto GetLine() {
-    return std::vector<gb::Dot>{gb::lcd::DisplayWidth,
-                                MakeDot(gb::Shade::Transparent)};
+    using namespace gb;
+    return std::vector<Dot>{lcd::DisplayWidth,
+                            MakeDot(ColorIndex::Zero, Shade::Transparent)};
 }
 
 constexpr auto Address{0xFF4A};
@@ -43,8 +45,9 @@ std::vector<Dot> Window::RenderScanline(const uint line) const {
     const auto endX{originX > 0 ? width : width + originX};
     for (auto displayX{startX}; displayX < endX; ++displayX) {
         const auto mapX{static_cast<uint>(displayX - originX)};
-        const auto shade{Map(mapX, mapY)};
-        scanline[static_cast<uint>(displayX)] = MakeDot(shade);
+        const auto index{GetColor(mapX, mapY)};
+        const auto shade{GetShade(index)};
+        scanline[static_cast<uint>(displayX)] = MakeDot(index, shade);
     }
 
     return scanline;
