@@ -329,7 +329,7 @@ void Cpu_::Opcode_CB_43() { Bit(this->e, 0); }
 void Cpu_::Opcode_CB_44() { Bit(this->h, 0); }
 void Cpu_::Opcode_CB_45() { Bit(this->l, 0); }
 void Cpu_::Opcode_CB_46() { Bit(this->hl, 0); }
-void Cpu_::Opcode_CB_47() { Bit(this->a, 1); }
+void Cpu_::Opcode_CB_47() { Bit(this->a, 0); }
 void Cpu_::Opcode_CB_48() { Bit(this->b, 1); }
 void Cpu_::Opcode_CB_49() { Bit(this->c, 1); }
 void Cpu_::Opcode_CB_4A() { Bit(this->d, 1); }
@@ -393,7 +393,7 @@ void Cpu_::Opcode_CB_83() { Res(this->e, 0); }
 void Cpu_::Opcode_CB_84() { Res(this->h, 0); }
 void Cpu_::Opcode_CB_85() { Res(this->l, 0); }
 void Cpu_::Opcode_CB_86() { Res(this->hl, 0); }
-void Cpu_::Opcode_CB_87() { Res(this->a, 1); }
+void Cpu_::Opcode_CB_87() { Res(this->a, 0); }
 void Cpu_::Opcode_CB_88() { Res(this->b, 1); }
 void Cpu_::Opcode_CB_89() { Res(this->c, 1); }
 void Cpu_::Opcode_CB_8A() { Res(this->d, 1); }
@@ -457,7 +457,7 @@ void Cpu_::Opcode_CB_C3() { Set(this->e, 0); }
 void Cpu_::Opcode_CB_C4() { Set(this->h, 0); }
 void Cpu_::Opcode_CB_C5() { Set(this->l, 0); }
 void Cpu_::Opcode_CB_C6() { Set(this->hl, 0); }
-void Cpu_::Opcode_CB_C7() { Set(this->a, 1); }
+void Cpu_::Opcode_CB_C7() { Set(this->a, 0); }
 void Cpu_::Opcode_CB_C8() { Set(this->b, 1); }
 void Cpu_::Opcode_CB_C9() { Set(this->c, 1); }
 void Cpu_::Opcode_CB_CA() { Set(this->d, 1); }
