@@ -1,6 +1,6 @@
 #include "channel_3.h"
 #include <algorithm>
-#include <stdexcept>
+#include "log.h"
 
 namespace {
 
@@ -43,7 +43,8 @@ u8 Channel3::Read(const u16 address) const {
         return this->wave[address - WaveBase];
     }
 
-    throw std::runtime_error{"Channel3 - invalid read address."};
+    log::Warning("Channel 3 - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Channel3::Write(const u16 address, const u8 byte) {
@@ -77,7 +78,7 @@ void Channel3::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"Channel3 - invalid write address."};
+    log::Warning("Channel 3 - invalid write address: " + log::Hex(address));
 }
 
 void Channel3::Reset() {

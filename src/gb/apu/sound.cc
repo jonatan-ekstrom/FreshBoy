@@ -1,6 +1,6 @@
 #include "sound.h"
-#include <stdexcept>
 #include "bits.h"
+#include "log.h"
 
 namespace {
 
@@ -53,7 +53,8 @@ u8 Sound_::Read(const u16 address) const {
         return this->nr52;
     }
 
-    throw std::runtime_error{"Sound - invalid read address."};
+    log::Warning("APU - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Sound_::Write(const u16 address, const u8 byte) {
@@ -101,7 +102,7 @@ void Sound_::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"Sound - invalid write address."};
+    log::Warning("APU - invalid write address: " + log::Hex(address));
 }
 
 void Sound_::Write52(const u8 byte) {

@@ -1,5 +1,5 @@
 #include "channel_2.h"
-#include <stdexcept>
+#include "log.h"
 
 namespace {
 
@@ -31,7 +31,8 @@ u8 Channel2::Read(const u16 address) const {
         return this->nr24 & 0x40;
     }
 
-    throw std::runtime_error{"Channel2 - invalid read address."};
+    log::Warning("Channel 2 - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Channel2::Write(const u16 address, const u8 byte) {
@@ -55,7 +56,7 @@ void Channel2::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"Channel2 - invalid write address."};
+    log::Warning("Channel 2 - invalid write address: " + log::Hex(address));
 }
 
 void Channel2::Reset() {
