@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <utility>
 #include "bits.h"
+#include "log.h"
 
 namespace {
 
@@ -44,7 +45,8 @@ u8 Timer_::Read(const u16 address) const {
         return this->tac;
     }
 
-    throw std::runtime_error{"Timer - invalid read address."};
+    log::Warning("Timer - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Timer_::Write(const u16 address, const u8 byte) {
@@ -68,7 +70,7 @@ void Timer_::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"Timer - invalid write address."};
+    log::Warning("Timer - invalid write address: " + log::Hex(address));
 }
 
 void Timer_::Tick(const uint cycles) {
