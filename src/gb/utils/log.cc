@@ -9,6 +9,7 @@ std::string Hex(const u16 address) {
     res.push_back(c[(address >> 12) & 0x0F]);
     res.push_back(c[(address >> 8) & 0x0F]);
     res.push_back(c[(address >> 4) & 0x0F]);
+    res.push_back(c[address & 0x0F]);
     return res;
 }
 
