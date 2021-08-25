@@ -1,7 +1,7 @@
 #include "serial.h"
-#include <stdexcept>
 #include <utility>
 #include "bits.h"
+#include "log.h"
 
 namespace {
 
@@ -26,7 +26,8 @@ Serial Serial_::Create(InterruptManager interrupts) {
 u8 Serial_::Read(const u16 address) const {
     if (address == SbAddress) return this->sb;
     if (address == ScAddress) return this->sc;
-    throw std::runtime_error{"Serial - invalid read address."};
+    log::Warning("Serial - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Serial_::Write(const u16 address, const u8 byte) {
@@ -40,7 +41,7 @@ void Serial_::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"Serial - invalid write address."};
+    log::Warning("Serial - invalid write address: " + log::Hex(address));
 }
 
 void Serial_::Tick(const uint cycles) {
