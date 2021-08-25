@@ -15,16 +15,16 @@ void Cpu_::Daa() {
     auto correction{0};
     auto setCarry{false};
 
-    if (hSet || (bit::LowNibble(reg) > 0x09)) {
+    if (hSet || (!nSet && (bit::LowNibble(reg) > 0x09))) {
         correction |= 0x06;
     }
 
-    if (cSet || (reg > 0x99)) {
+    if (cSet || (!nSet && (reg > 0x99))) {
         correction |= 0x60;
         setCarry = true;
     }
 
-    reg = static_cast<u8>(reg + nSet ? -correction : correction);
+    reg = static_cast<u8>(reg + (nSet ? -correction : correction));
     this->flags.UpdateZ(reg == 0);
     this->flags.UpdateH(false);
     this->flags.UpdateC(setCarry);
