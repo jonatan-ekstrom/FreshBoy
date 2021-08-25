@@ -1,5 +1,5 @@
 #include "tile_maps.h"
-#include <stdexcept>
+#include "log.h"
 
 namespace {
 
@@ -25,7 +25,8 @@ TileMaps_::TileMaps_() : map0(TilesPerMap), map1(TilesPerMap) {}
 
 u8 TileMaps_::Read(const u16 address) const {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileMaps - Invalid read address."};
+        log::Warning("TileMaps - invalid read address: " + log::Hex(address));
+        return 0xFF;
     }
     const auto useMap1{address >= Map1Offset};
     const auto& map{useMap1 ? map1 : map0};
@@ -35,7 +36,8 @@ u8 TileMaps_::Read(const u16 address) const {
 
 void TileMaps_::Write(const u16 address, const u8 byte) {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileMaps - Invalid write address."};
+        log::Warning("TileMaps - invalid write address: " + log::Hex(address));
+        return;
     }
     const auto useMap1{address >= Map1Offset};
     auto& map{useMap1 ? map1 : map0};

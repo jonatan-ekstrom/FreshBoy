@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
+#include "log.h"
 
 namespace {
 
@@ -95,7 +96,8 @@ u8 Lcd_::Read(const u16 address) const {
         return this->window.Read(address);
     }
 
-    throw std::runtime_error{"LCD - Invalid read address."};
+    log::Warning("LCD - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Lcd_::Write(const u16 address, const u8 byte) {
@@ -157,7 +159,7 @@ void Lcd_::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"LCD - Invalid write address."};
+    log::Warning("LCD - invalid write address: " + log::Hex(address));
 }
 
 void Lcd_::Tick(const uint cycles) {

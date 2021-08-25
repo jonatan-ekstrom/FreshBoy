@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <utility>
 #include "bits.h"
+#include "log.h"
 
 namespace {
 
@@ -75,7 +76,8 @@ u8 LcdStat::Read(const u16 address) const {
     if (address == StatAddress) return this->stat;
     if (address == LyAddress) return this->ly;
     if (address == LycAddress) return this->lyc;
-    throw std::runtime_error{"LcdStat - invalid read address."};
+    log::Warning("LcdStat - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void LcdStat::Write(const u16 address, const u8 byte) {
@@ -92,7 +94,7 @@ void LcdStat::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"LcdStat - invalid write address"};
+    log::Warning("LcdStat - invalid write address: " + log::Hex(address));
 }
 
 void LcdStat::SetMode(const LcdMode mode) {

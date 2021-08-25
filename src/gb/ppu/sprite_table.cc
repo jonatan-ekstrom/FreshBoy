@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include "bits.h"
 #include "display.h"
+#include "log.h"
 
 namespace {
 
@@ -78,7 +79,8 @@ SpriteTable SpriteTable_::Create() {
 
 u8 SpriteTable_::Read(const u16 address) const {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"SpriteTable - invalid read address."};
+        log::Warning("SpriteTable - invalid read address: " + log::Hex(address));
+        return 0xFF;
     }
     const auto [sprite, index] = GetSpriteAndIndex(address);
     return this->sprites[sprite].Read(index);
@@ -86,7 +88,8 @@ u8 SpriteTable_::Read(const u16 address) const {
 
 void SpriteTable_::Write(const u16 address, const u8 byte) {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"SpriteTable - invalid write address."};
+        log::Warning("SpriteTable - invalid write address: " + log::Hex(address));
+        return;
     }
     const auto [sprite, index] = GetSpriteAndIndex(address);
     this->sprites[sprite].Write(index, byte);

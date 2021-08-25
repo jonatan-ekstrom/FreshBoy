@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <tuple>
 #include "bits.h"
+#include "log.h"
 
 namespace {
 
@@ -52,7 +53,8 @@ TileBanks_::TileBanks_() : tiles(NumTiles) {}
 
 u8 TileBanks_::Read(const u16 address) const {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileBanks - Invalid read access."};
+        log::Warning("TileBanks - invalid read address: " + log::Hex(address));
+        return 0xFF;
     }
     const auto [tile, index] = GetTileAndIndex(address);
     return this->tiles[tile].Read(index);
@@ -60,7 +62,8 @@ u8 TileBanks_::Read(const u16 address) const {
 
 void TileBanks_::Write(const u16 address, const u8 byte) {
     if (!ValidAddress(address)) {
-        throw std::runtime_error{"TileBanks - Invalid write access."};
+        log::Warning("TileBanks - invalid write address: " + log::Hex(address));
+        return;
     }
     const auto [tile, index] = GetTileAndIndex(address);
     this->tiles[tile].Write(index, byte);

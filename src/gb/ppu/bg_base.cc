@@ -1,6 +1,6 @@
 #include "bg_base.h"
-#include <stdexcept>
 #include <utility>
+#include "log.h"
 
 namespace gb {
 
@@ -32,7 +32,8 @@ u8 BgBase::Read(const u16 address) const {
         return this->yReg;
     }
 
-    throw std::runtime_error{"BgBase - invalid read address."};
+    log::Warning("BgBase - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void BgBase::Write(const u16 address, const u8 byte) {
@@ -46,7 +47,7 @@ void BgBase::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"BgBase - invalid write address."};
+    log::Warning("BgBase - invalid write address: " + log::Hex(address));
 }
 
 u8 BgBase::X() const {

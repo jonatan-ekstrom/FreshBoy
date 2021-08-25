@@ -1,5 +1,6 @@
 #include "palettes.h"
 #include <stdexcept>
+#include "log.h"
 
 namespace {
 
@@ -74,7 +75,8 @@ u8 Palettes::Read(const u16 address) const {
         return this->obj1->Read();
     }
 
-    throw std::runtime_error{"Palettes - Invalid read address."};
+    log::Warning("Palettes - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void Palettes::Write(const u16 address, const u8 byte) {
@@ -93,7 +95,7 @@ void Palettes::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"Palettes - Invalid write address."};
+    log::Warning("Palettes - invalid write address: " + log::Hex(address));
 }
 
 Palette Palettes::Background() const {
