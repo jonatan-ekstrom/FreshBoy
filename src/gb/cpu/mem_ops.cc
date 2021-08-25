@@ -58,6 +58,13 @@ void Cpu_::Pop(const RegPair dst) {
     dst.h = this->mmu->Read(this->sp.v++);
 }
 
+void Cpu_::PopAf() {
+    const auto low{this->mmu->Read(this->sp.v++)};
+    const auto high{this->mmu->Read(this->sp.v++)};
+    this->a.v = high;
+    this->f.v = low & 0xF0;
+}
+
 void Cpu_::Load(const RegPair dst, const WordReg src, const s8 imm) {
     const auto lhs{static_cast<int>(src.v)};
     const auto rhs{static_cast<int>(imm)};

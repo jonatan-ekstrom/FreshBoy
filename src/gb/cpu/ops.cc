@@ -243,7 +243,7 @@ void Cpu_::Opcode_ED() { /* Invalid */ }
 void Cpu_::Opcode_EE() { Xor(GetByte()); }
 void Cpu_::Opcode_EF() { Rst(5); }
 void Cpu_::Opcode_F0() { Load(this->a, Address{GetByte()}); }
-void Cpu_::Opcode_F1() { Pop(this->af); }
+void Cpu_::Opcode_F1() { PopAf(); }
 void Cpu_::Opcode_F2() { Load(this->a, this->c.Addr()); }
 void Cpu_::Opcode_F3() { Di(); }
 void Cpu_::Opcode_F4() { /* Invalid */ }

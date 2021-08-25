@@ -19,5 +19,6 @@ void Load(WordReg& dst, u16 imm);
 void Load(WordReg& dst, RegPair src);
 void Push(RegPair src);
 void Pop(RegPair dst);
+void PopAf();
 void Load(RegPair dst, WordReg src, s8 imm);
 void Load(Address dst, WordReg src);
