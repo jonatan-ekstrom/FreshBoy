@@ -3,6 +3,7 @@
 #include <utility>
 #include "file.h"
 #include "header.h"
+#include "log.h"
 
 namespace {
 
@@ -47,7 +48,7 @@ Cartridge Cartridge_::Create(const std::string& filePath) {
             throw std::runtime_error{"Unsupported cartridge type."};
     }
     if (res->Checksum() != checksum) {
-        throw std::runtime_error{"Cartridge checksum mismatch."};
+        log::Warning("Cartridge checksum mismatch.");
     }
     return res;
 }
@@ -62,13 +63,14 @@ RomOnly::RomOnly(const std::string& filePath, Header&& header)
 
 u8 RomOnly::Read(const u16 address) const {
     if (address > 0x7FFF) {
-        throw std::runtime_error{"RomOnly - Invalid address."};
+        log::Warning("RomOnly - Invalid address read: " + log::Hex(address));
+        return 0xFF;
     }
     return rom[address];
 }
 
-void RomOnly::Write(u16, u8) {
-    throw std::runtime_error{"RomOnly - Write to ROM area."};
+void RomOnly::Write(const u16 address, u8) {
+    log::Warning("RomOnly - Write to ROM area: " + log::Hex(address));
 }
 
 u16 RomOnly::Checksum() const {
@@ -120,12 +122,14 @@ u8 MBC1::Read(const u16 address) const {
 
     if (address >= 0xA000 && address <= 0xBFFF) {
         if (!RamEnabled()) {
-            throw std::runtime_error{"MBC1 - RAM read when disabled."};
+            log::Warning("MBC1 - RAM read when disabled: " + log::Hex(address));
+            return 0xFF;
         }
         return this->ramBanks[RamBank()][address - 0xA000];
     }
 
-    throw std::runtime_error{"MBC1 - invalid memory address read."};
+    log::Warning("MBC1 - Invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void MBC1::Write(const u16 address, const u8 byte) {
@@ -151,13 +155,14 @@ void MBC1::Write(const u16 address, const u8 byte) {
 
     if (address >= 0xA000 && address <= 0xBFFF) {
         if (!RamEnabled()) {
-            throw std::runtime_error{"MBC1 - RAM written when disabled."};
+            log::Warning("MBC1 - RAM written when disabled: " + log::Hex(address));
+            return;
         }
         this->ramBanks[RamBank()][address - 0xA000] = byte;
         return;
     }
 
-    throw std::runtime_error{"MBC1 - invalid memory address written."};
+    log::Warning("MBC1 - Invalid write address: " + log::Hex(address));
 }
 
 
