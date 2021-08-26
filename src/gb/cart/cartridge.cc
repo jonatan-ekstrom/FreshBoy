@@ -5,23 +5,6 @@
 #include "header.h"
 #include "log.h"
 
-namespace {
-
-constexpr gb::u8 GetRomBitMask(const gb::uint romBanks) {
-    using namespace gb;
-    auto tmp{romBanks};
-    auto shift{0};
-    u8 mask{0};
-    while (tmp != 0) {
-        mask = mask | static_cast<u8>(1 << shift);
-        tmp = tmp >> 1;
-        ++shift;
-    }
-    return mask;
-}
-
-}
-
 namespace gb {
 
 Cartridge_::Cartridge_(Header&& header) : header{std::move(header)} {}
@@ -87,11 +70,12 @@ MBC::MBC(Header&& header) : Cartridge_{std::move(header)} {}
 
 MBC1::MBC1(const std::string& filePath, Header&& header)
     : MBC{std::move(header)},
-      ramEnable{0},
+      ramEnabled{false},
+      advancedMode{false},
       bankLow{1},
       bankHigh{0},
-      modeSelect{0},
-      romBitMask{0} {
+      romBitMask{0},
+      ramBitMask{0} {
     constexpr auto romBankSize{0x4000};
     constexpr auto ramBankSize{0x2000};
     const auto numRomBanks{this->header.RomBanks()};
@@ -104,11 +88,11 @@ MBC1::MBC1(const std::string& filePath, Header&& header)
     }
 
     for (auto i{0u}; i < numRamBanks; ++i) {
-        const auto offset{i * ramBankSize};
-        this->ramBanks.push_back(file.ReadBytes(offset, ramBankSize));
+        this->ramBanks.push_back(MemBlock(ramBankSize));
     }
 
-    this->romBitMask = GetRomBitMask(numRomBanks);
+    this->romBitMask = static_cast<u8>(numRomBanks - 1);
+    this->ramBitMask = numRamBanks != 0 ? static_cast<u8>(numRamBanks - 1) : 0;
 }
 
 u8 MBC1::Read(const u16 address) const {
@@ -121,7 +105,7 @@ u8 MBC1::Read(const u16 address) const {
     }
 
     if (address >= 0xA000 && address <= 0xBFFF) {
-        if (!RamEnabled()) {
+        if (!this->ramEnabled) {
             log::Warning("MBC1 - RAM read when disabled: " + log::Hex(address));
             return 0xFF;
         }
@@ -134,27 +118,28 @@ u8 MBC1::Read(const u16 address) const {
 
 void MBC1::Write(const u16 address, const u8 byte) {
     if (address <= 0x1FFF) {
-        this->ramEnable = byte;
+        this->ramEnabled = !this->ramBanks.empty() && ((byte & 0x0F) == 0x0A);
         return;
     }
 
     if (address >= 0x2000 && address <=0x3FFF) {
-        this->bankLow = byte;
+        this->bankLow = byte & 0x1F;
+        if (this->bankLow == 0) this->bankLow = 1;
         return;
     }
 
     if (address >= 0x4000 && address <= 0x5FFF) {
-        this->bankHigh = byte;
+        this->bankHigh = byte & 0x03;
         return;
     }
 
     if (address >= 0x6000 && address <= 0x7FFF) {
-        this->modeSelect = byte;
+        this->advancedMode = (byte & 0x01) != 0;
         return;
     }
 
     if (address >= 0xA000 && address <= 0xBFFF) {
-        if (!RamEnabled()) {
+        if (!this->ramEnabled) {
             log::Warning("MBC1 - RAM written when disabled: " + log::Hex(address));
             return;
         }
@@ -165,36 +150,22 @@ void MBC1::Write(const u16 address, const u8 byte) {
     log::Warning("MBC1 - Invalid write address: " + log::Hex(address));
 }
 
-
-bool MBC1::RamEnabled() const {
-    return (this->ramEnable & 0x0F) == 0x0A;
-}
-
 uint MBC1::RomBankLow() const {
-    if (!AdvancedMode()) {
+    if (!this->advancedMode) {
         return 0;
     }
-    return (this->bankHigh & 0x03u) << 5;
+    return static_cast<uint>((this->bankHigh << 5) & this->romBitMask);
 }
 
 uint MBC1::RomBankHigh() const {
-    auto lowFive{(this->bankLow & this->romBitMask) & 0x1Fu};
-    if (lowFive == 0) {
-        lowFive = 1;
-    }
-    const auto upperTwo{this->bankHigh & 0x03u};
-    return (upperTwo << 5) | lowFive;
+    return static_cast<uint>(((this->bankHigh << 5) | this->bankLow) & this->romBitMask);
 }
 
 uint MBC1::RamBank() const {
-    if (!AdvancedMode()) {
+    if (!this->advancedMode) {
         return 0;
     }
-    return this->bankHigh & 0x03;
-}
-
-bool MBC1::AdvancedMode() const {
-    return (this->modeSelect & 0x01) != 0;
+    return static_cast<uint>(this->bankHigh & this->ramBitMask);
 }
 
 u16 MBC1::Checksum() const {

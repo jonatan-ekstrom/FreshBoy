@@ -48,17 +48,16 @@ public:
     u8 Read(u16 address) const override;
     void Write(u16 address, u8 byte) override;
 private:
-    bool RamEnabled() const;
     uint RomBankLow() const;
     uint RomBankHigh() const;
     uint RamBank() const;
-    bool AdvancedMode() const;
     u16 Checksum() const override;
-    u8 ramEnable;
+    bool ramEnabled;
+    bool advancedMode;
     u8 bankLow;
     u8 bankHigh;
-    u8 modeSelect;
     u8 romBitMask;
+    u8 ramBitMask;
 };
 
 }
