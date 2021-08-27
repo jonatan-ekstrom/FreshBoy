@@ -66,15 +66,15 @@ ColorIndex BgBase::GetColor(const uint mapX, const uint mapY) const {
     const auto tileY{mapY / tileSize};
     const auto dotY{mapY % tileSize};
 
-    const auto tileMap{this->activeMap == TileMap::Low ?
-                       this->maps->LowMap() :
-                       this->maps->HighMap()};
+    const auto& tileMap{this->activeMap == TileMap::Low ?
+                        this->maps->LowMap() :
+                        this->maps->HighMap()};
     const auto mapIndex{tileY * tilesPerLine + tileX};
     const auto tileIndex{tileMap[mapIndex]};
 
-    const auto tile{this->activeBank == TileBank::Low ?
-                    this->banks->GetTileLow(tileIndex) :
-                    this->banks->GetTileHigh(tileIndex)};
+    const auto& tile{this->activeBank == TileBank::Low ?
+                     this->banks->GetTileLow(tileIndex) :
+                     this->banks->GetTileHigh(tileIndex)};
 
     return tile.Color(dotX, dotY);
 }
