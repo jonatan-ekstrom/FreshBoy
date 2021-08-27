@@ -31,19 +31,15 @@ std::vector<Dot> Window::RenderScanline(const uint line) const {
     }
 
     auto scanline{GetLine()};
-
-    const auto originY{Y()};
-    if (originY > line) return scanline;
+    if (line < Y()) return scanline;
 
     constexpr auto width{static_cast<int>(lcd::DisplayWidth)};
     const auto originX{X() - 7};
     if (originX >= width) return scanline;
 
-    const auto displayY{line};
-    const auto mapY{displayY - originY};
+    const auto mapY{line - Y()};
     const auto startX{originX > 0 ? originX : 0};
-    const auto endX{originX > 0 ? width : width + originX};
-    for (auto displayX{startX}; displayX < endX; ++displayX) {
+    for (auto displayX{startX}; displayX < width; ++displayX) {
         const auto mapX{static_cast<uint>(displayX - originX)};
         const auto index{GetColor(mapX, mapY)};
         const auto shade{GetShade(index)};
