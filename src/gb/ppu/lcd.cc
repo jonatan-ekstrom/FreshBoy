@@ -182,8 +182,6 @@ void Lcd_::Tick(const uint cycles) {
     }
 }
 
-
-
 bool Lcd_::Accessible(const u16 address) const {
     if (!Enabled()) return true;
 
@@ -197,6 +195,11 @@ bool Lcd_::Accessible(const u16 address) const {
     // OAM
     if (address >= 0xFE00 && address <= 0xFE9F) {
         return mode == LcdMode::HBlank || mode == LcdMode::VBlank;
+    }
+
+    // Palettes
+    if (address >= 0xFF47 && address <= 0xFF49) {
+        return mode != LcdMode::Transfer;
     }
 
     return true;
