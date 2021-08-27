@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include <unordered_map>
 #include "color.h"
 #include "types.h"
 
@@ -16,15 +15,13 @@ using Palette = std::shared_ptr<Palette_>;
 
 class Palette_ {
 public:
-    static Palette Create(bool obj);
+    static Palette Create();
     u8 Read() const;
     void Write(u8 byte);
     Shade Map(ColorIndex index) const;
 private:
-    explicit Palette_(bool object);
-    std::unordered_map<ColorIndex, Shade> map;
+    explicit Palette_();
     u8 data;
-    bool object;
 };
 
 class Palettes {

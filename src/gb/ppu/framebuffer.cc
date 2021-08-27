@@ -20,30 +20,21 @@ namespace gb {
 
 constexpr auto Size{lcd::DisplayWidth * lcd::DisplayHeight};
 
-Framebuffer::Framebuffer() : buffer(Size, ShadeToPixel(Shade::Screen)) {}
+Framebuffer::Framebuffer()
+    : dots(Size), pixels(Size, ShadeToPixel(Shade::Screen)) {}
 
-const Framebuffer::Pixels& Framebuffer::Buffer() const {
-    return this->buffer;
+const Framebuffer::Pixels& Framebuffer::LockFrame() {
+    std::transform(this->dots.cbegin(), this->dots.cend(),
+                   this->pixels.begin(), DotToPixel);
+    return this->pixels;
 }
 
-void Framebuffer::WriteLine(const Scanline& line,
-                            const uint index) {
-    if (line.size() != lcd::DisplayWidth) {
-        throw std::runtime_error{"Invalid scanline written to framebuffer"};
-    }
-
+Dot* Framebuffer::ScanlinePtr(const uint index) {
     if (index >= lcd::DisplayHeight) {
-        throw std::runtime_error{"Invalid index into framebuffer"};
+        throw std::runtime_error{"Framebuffer - Invalid scanline index."};
     }
-
     const auto offset{index * lcd::DisplayWidth};
-    const auto pos{this->buffer.begin() + offset};
-    std::transform(line.cbegin(), line.cend(), pos, DotToPixel);
-}
-
-Framebuffer::Scanline Framebuffer::GetScreenLine() {
-    const Dot dot{ColorIndex::Zero, Shade::Screen, Layer::Screen};
-    return Scanline{lcd::DisplayWidth, dot};
+    return &this->dots[0] + offset;
 }
 
 }

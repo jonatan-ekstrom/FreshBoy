@@ -26,19 +26,19 @@ public:
     void Write(u16 address, u8 byte);
     void Tick(uint cycles);
 private:
-    using Scanline = Framebuffer::Scanline;
     Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler);
     bool Enabled() const;
     bool Accessible(u16 address) const;
-    void FrameReady() const;
+    void FrameReady();
     void HandleOam();
     void HandleTransfer();
     void HandleHBlank();
     void HandleVBlank();
-    void WriteScanline();
-    Scanline GetBgLine();
-    Scanline GetWindowLine();
-    Scanline GetSpriteLine();
+    void RenderScanline();
+    void RenderScreenLine(Dot* line);
+    void RenderBgLine(uint ly, Dot* line);
+    void RenderWindowLine(uint ly, Dot* line);
+    void RenderSpriteLine(uint ly, Dot* line);
     FrameHandler frameHandler;
     TileBanks banks;
     TileMaps maps;

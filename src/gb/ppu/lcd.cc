@@ -3,21 +3,8 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
+#include "display.h"
 #include "log.h"
-
-namespace {
-
-void Merge(std::vector<gb::Dot>& dst, const std::vector<gb::Dot>& src) {
-    using namespace gb;
-    if (dst.size() != src.size()) {
-        throw std::runtime_error{"Scanlines must be equal length."};
-    }
-    std::transform(src.cbegin(), src.cend(),
-                   dst.begin(), dst.begin(),
-                   [] (const Dot& s, const Dot& d) { return Fuse(d, s); });
-}
-
-}
 
 namespace gb {
 
@@ -209,8 +196,8 @@ bool Lcd_::Enabled() const {
     return this->lcdc.LcdEnabled();
 }
 
-void Lcd_::FrameReady() const {
-    this->frameHandler(this->frame.Buffer());
+void Lcd_::FrameReady() {
+    this->frameHandler(this->frame.LockFrame());
 }
 
 void Lcd_::HandleOam() {
@@ -218,8 +205,8 @@ void Lcd_::HandleOam() {
     if (this->cycleCount < cyclesPerOam) return;
     this->cycleCount %= cyclesPerOam;
 
-    // OAM search is done, time to write the scanline.
-    WriteScanline();
+    // OAM search is done, time to render the scanline.
+    RenderScanline();
 
     // Switch to scanline transfer.
     this->stat.SetMode(LcdMode::Transfer);
@@ -269,44 +256,46 @@ void Lcd_::HandleVBlank() {
     this->stat.SetLy(newLy);
 }
 
-void Lcd_::WriteScanline() {
+void Lcd_::RenderScanline() {
     const auto ly{this->stat.Ly()};
-    auto scanline{Framebuffer::GetScreenLine()};
+    const auto line{this->frame.ScanlinePtr(ly)};
 
+    RenderScreenLine(line);
     if (!Enabled()) {
-        this->frame.WriteLine(scanline, ly);
         return;
     }
 
     if (this->lcdc.BackgroundEnabled()) {
-        Merge(scanline, GetBgLine());
+        RenderBgLine(ly, line);
         if (this->lcdc.WindowEnabled()) {
-            Merge(scanline, GetWindowLine());
+            RenderWindowLine(ly, line);
         }
     }
 
     if (this->lcdc.ObjectsEnabled()) {
-        Merge(scanline, GetSpriteLine());
+        RenderSpriteLine(ly, line);
     }
-
-    this->frame.WriteLine(scanline, ly);
 }
 
-Lcd_::Scanline Lcd_::GetBgLine() {
+void Lcd_::RenderScreenLine(Dot *const line) {
+    std::fill(line, line + lcd::DisplayWidth, Dot{});
+}
+
+void Lcd_::RenderBgLine(const uint ly, Dot *const line) {
     this->bg.UseBank(this->lcdc.BackgroundBank());
     this->bg.UseMap(this->lcdc.BackgroundMap());
-    return this->bg.RenderScanline(this->stat.Ly());
+    this->bg.RenderScanline(ly, line);
 }
 
-Lcd_::Scanline Lcd_::GetWindowLine() {
+void Lcd_::RenderWindowLine(const uint ly, Dot *const line) {
     this->window.UseBank(this->lcdc.BackgroundBank());
     this->window.UseMap(this->lcdc.WindowMap());
-    return this->window.RenderScanline(this->stat.Ly());
+    this->window.RenderScanline(ly, line);
 }
 
-Lcd_::Scanline Lcd_::GetSpriteLine() {
+void Lcd_::RenderSpriteLine(const uint ly, Dot *const line) {
     this->sprites.SetSize(this->lcdc.ObjectSize());
-    return this->sprites.RenderScanline(this->stat.Ly());
+    this->sprites.RenderScanline(ly, line);
 }
 
 }

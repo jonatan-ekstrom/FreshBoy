@@ -7,14 +7,6 @@ namespace {
 
 constexpr auto Size{8};
 
-auto GetLine() {
-    using namespace gb;
-    return std::vector<Dot>{lcd::DisplayWidth,
-                            Dot{ColorIndex::Zero,
-                                Shade::Transparent,
-                                Layer::Object}};
-}
-
 bool OverlapX(const gb::Sprite& sprite, const uint displayX) {
     const auto x{static_cast<int>(displayX)};
     const auto low{sprite.X()};
@@ -41,32 +33,27 @@ SpriteRenderer::SpriteRenderer(TileBanks banks, SpriteTable table, Palette obp0,
       obp1{std::move(obp1)},
       spriteSize{SpriteSize::Small} {}
 
-
 void SpriteRenderer::SetSize(const SpriteSize size) {
     this->spriteSize = size;
 }
 
-std::vector<Dot> SpriteRenderer::RenderScanline(const uint line) const {
-    if (line >= lcd::DisplayHeight) {
+void SpriteRenderer::RenderScanline(const uint ly, Dot *const line) const {
+    if (ly >= lcd::DisplayHeight) {
         throw std::runtime_error{"SpriteRenderer - invalid scanline."};
     }
 
-    auto scanline{GetLine()};
-
     // Get (up to 10) sprites matching this scanline sorted in priority order.
-    const auto sprites{this->table->GetSpritesToRender(line, this->spriteSize)};
-    if (sprites.empty()) return scanline;
+    const auto sprites{this->table->GetSpritesToRender(ly, this->spriteSize)};
+    if (sprites.empty()) return;
 
     for (auto displayX{0u}; displayX < lcd::DisplayWidth; ++displayX) {
-        scanline[displayX] = GetDot(sprites, displayX, line);
+        WriteDot(line[displayX], sprites, displayX, ly);
     }
-    return scanline;
 }
 
-Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
-                           const uint displayX,
-                           const uint displayY) const {
-    Dot dot{ColorIndex::Zero, Shade::Transparent, Layer::Object};
+void SpriteRenderer::WriteDot(Dot& dot, const std::vector<const Sprite*>& sprites,
+                              const uint displayX,
+                              const uint displayY) const {
     for (const auto s : sprites) {
         // If the current pixel does not overlap this sprite, move to the next.
         if (!OverlapX(*s, displayX)) continue;
@@ -75,19 +62,23 @@ Dot SpriteRenderer::GetDot(const std::vector<const Sprite*>& sprites,
         auto dotY{DotY(*s, displayY)};
         const auto& tile{GetTile(*s, dotY)};
         const auto index{tile.Color(dotX, dotY)};
-        const auto zero{s->Palette() == SpritePalette::Zero};
-        const auto& palette{zero ? this->obp0 : this->obp1};
-        const auto shade = palette->Map(index);
 
         // If we've found a non-transparent pixel, we're done.
-        if (shade != Shade::Transparent) {
+        if (index != ColorIndex::Zero) {
+            // Skip the pixel if the sprite is low-prio and the current color index is non-zero.
+            const auto skip{s->Hidden() &&
+                            dot.Index != ColorIndex::None &&
+                            dot.Index != ColorIndex::Zero};
+            if (skip) return;
+
+            const auto z{s->Palette() == SpritePalette::Zero};
+            const auto& palette{z ? this->obp0 : this->obp1};
+            const auto shade = palette->Map(index);
             dot.Index = index;
             dot.Tone = shade;
-            dot.Level = s->Hidden() ? Layer::Hidden : Layer::Object;
-            break;
+            return;
         }
     }
-    return dot;
 }
 
 uint SpriteRenderer::DotX(const Sprite& sprite,

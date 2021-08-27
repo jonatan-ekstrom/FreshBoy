@@ -10,16 +10,11 @@ constexpr auto Obj1Addr{0xFF49};
 
 constexpr gb::Shade NumToShade(const int number) {
     switch (number) {
-        case 0:
-            return gb::Shade::Lightest;
-        case 1:
-            return gb::Shade::Light;
-        case 2:
-            return gb::Shade::Dark;
-        case 3:
-            return gb::Shade::Darkest;
-        default:
-            throw std::runtime_error{"Unknown color code."};
+        case 0: return gb::Shade::Lightest;
+        case 1: return gb::Shade::Light;
+        case 2: return gb::Shade::Dark;
+        case 3: return gb::Shade::Darkest;
+        default: throw std::runtime_error{"Palettes - Unknown color code."};
     }
 }
 
@@ -27,40 +22,46 @@ constexpr gb::Shade NumToShade(const int number) {
 
 namespace gb {
 
-Palette Palette_::Create(const bool obj) {
-    return Palette{new Palette_{obj}};
+Palette Palette_::Create() {
+    return Palette{new Palette_{}};
 }
 
-Palette_::Palette_(const bool object) : data{}, object{object} {}
+Palette_::Palette_() : data{0} {}
 
 u8 Palette_::Read() const {
     return this->data;
 }
 
 void Palette_::Write(const u8 byte) {
-    const auto shade0{(byte & 0x03)};
-    const auto shade1{(byte & 0x0C) >> 2};
-    const auto shade2{(byte & 0x30) >> 4};
-    const auto shade3{(byte & 0xC0) >> 6};
-    if (this->object) {
-        this->map[ColorIndex::Zero] = Shade::Transparent;
-    } else {
-        this->map[ColorIndex::Zero] = NumToShade(shade0);
-    }
-    this->map[ColorIndex::One] = NumToShade(shade1);
-    this->map[ColorIndex::Two] = NumToShade(shade2);
-    this->map[ColorIndex::Three] = NumToShade(shade3);
     this->data = byte;
 }
 
 Shade Palette_::Map(const ColorIndex index) const {
-    return this->map.at(index);
+    u8 color;
+    switch (index) {
+        case ColorIndex::Zero: color = 0; break;
+        case ColorIndex::One: color = 1; break;
+        case ColorIndex::Two: color = 2; break;
+        case ColorIndex::Three: color = 3; break;
+        case ColorIndex::None:
+        default:
+            throw std::runtime_error{"Palettes - Invalid color index."};
+    }
+
+    const auto shade{static_cast<u8>((this->data >> (color * 2)) & 0x03)};
+    switch (shade) {
+        case 0: return Shade::Lightest;
+        case 1: return Shade::Light;
+        case 2: return Shade::Dark;
+        case 3: return Shade::Darkest;
+        default: throw std::runtime_error{"Palettes - Unknown shade."};
+    }
 }
 
 Palettes::Palettes()
-    : bg{Palette_::Create(false)},
-      obj0{Palette_::Create(true)},
-      obj1{Palette_::Create(true)} {}
+    : bg{Palette_::Create()},
+      obj0{Palette_::Create()},
+      obj1{Palette_::Create()} {}
 
 u8 Palettes::Read(const u16 address) const {
     if (address == BgAddr) {

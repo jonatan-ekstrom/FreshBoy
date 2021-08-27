@@ -4,6 +4,7 @@
 namespace gb {
 
 enum class ColorIndex {
+    None,
     Zero,
     One,
     Two,
@@ -11,7 +12,6 @@ enum class ColorIndex {
 };
 
 enum class Shade {
-    Transparent,
     Screen,
     Darkest,
     Dark,
@@ -19,23 +19,12 @@ enum class Shade {
     Lightest
 };
 
-enum class Layer {
-    Screen,
-    Background,
-    Window,
-    Hidden,
-    Object
-};
-
 struct Dot {
-    Dot(ColorIndex index, Shade tone, Layer level);
-    Dot& Fuse(const Dot& other);
+    Dot();
+    Dot(ColorIndex index, Shade tone);
     ColorIndex Index;
     Shade Tone;
-    Layer Level;
 };
-
-Dot Fuse(Dot target, const Dot& other);
 
 struct Color {
     Color();

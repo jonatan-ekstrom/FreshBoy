@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "bg_base.h"
 #include "color.h"
 #include "palettes.h"
@@ -12,7 +11,7 @@ namespace gb {
 class Window : public BgBase {
 public:
     Window(TileBanks banks, TileMaps maps, Palette palette);
-    std::vector<Dot> RenderScanline(uint line) const;
+    void RenderScanline(uint ly, Dot* line) const;
 };
 
 }
