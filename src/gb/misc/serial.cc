@@ -1,4 +1,5 @@
 #include "serial.h"
+#include <iostream>
 #include <utility>
 #include "bits.h"
 #include "log.h"
@@ -16,6 +17,7 @@ Serial_::Serial_(InterruptManager&& interrupts)
     : interrupts{std::move(interrupts)},
       sb{0},
       sc{0},
+      out{0},
       cycleCount{0},
       shifts{0} {}
 
@@ -70,6 +72,7 @@ void Serial_::StartTransfer() {
 }
 
 void Serial_::Shift() {
+    this->out = static_cast<u8>((this->out << 1) | ((this->sb & (1 << 7)) != 0));
     this->sb = static_cast<u8>((this->sb << 1) | 1);
     if (++this->shifts == 8) {
         TransferDone();
@@ -80,6 +83,7 @@ void Serial_::TransferDone() {
     bit::Clear(this->sc, 7);
     this->shifts = 0;
     this->interrupts->RequestInterrupt(Interrupt::Serial);
+    std::cout << this->out << std::flush;
 }
 
 }

@@ -24,6 +24,7 @@ private:
     InterruptManager interrupts;
     u8 sb;
     u8 sc;
+    u8 out;
     uint cycleCount;
     uint shifts;
 };
