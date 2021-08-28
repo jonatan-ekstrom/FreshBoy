@@ -3,20 +3,20 @@
 
 namespace gb {
 
-enum class ColorIndex {
-    None,
-    Zero,
-    One,
-    Two,
-    Three
+enum class ColorIndex : u8 {
+    Zero = 0,
+    One = 1,
+    Two = 2,
+    Three = 3,
+    None = 255
 };
 
-enum class Shade {
-    Screen,
-    Darkest,
-    Dark,
-    Light,
-    Lightest
+enum class Shade : u8 {
+    Lightest = 0,
+    Light = 1,
+    Dark = 2,
+    Darkest = 3,
+    Screen = 255
 };
 
 struct Dot {

@@ -1,5 +1,4 @@
 #include "tile_banks.h"
-#include <stdexcept>
 #include <tuple>
 #include "bits.h"
 #include "log.h"
@@ -42,13 +41,7 @@ ColorIndex Tile::Color(const uint dotX, const uint dotY) const {
     const auto highBit{bit::Get(highByte, 7 - dotX)};
     const auto lowBit{bit::Get(lowByte, 7 - dotX)};
     const auto color{highBit << 1 | lowBit};
-    switch (color) {
-        case 0: return ColorIndex::Zero;
-        case 1: return ColorIndex::One;
-        case 2: return ColorIndex::Two;
-        case 3: return ColorIndex::Three;
-        default: throw std::runtime_error{"Tile - Unknown color."};
-    }
+    return static_cast<ColorIndex>(color);
 }
 
 TileBanks TileBanks_::Create() {
