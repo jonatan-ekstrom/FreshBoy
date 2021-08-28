@@ -71,7 +71,7 @@ void Serial_::StartTransfer() {
 
 void Serial_::Shift() {
     this->sb = static_cast<u8>((this->sb << 1) | 1);
-    if (this->shifts++ == 8) {
+    if (++this->shifts == 8) {
         TransferDone();
     }
 }
