@@ -10,7 +10,7 @@ Instance_::Instance_() : active{true} {
     if (instanceExists) {
         throw std::runtime_error{"Only one SDL instance is allowed at a time."};
     }
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO) != 0) {
        throw std::runtime_error{SDL_GetError()};
     }
     instanceExists = true;

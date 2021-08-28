@@ -1,5 +1,6 @@
 # List media header and source files.
 set(mediaHeaders
+    audio.h
     event_manager.h
     instance.h
     key.h
@@ -8,6 +9,7 @@ set(mediaHeaders
     window.h)
 
 set(mediaSources
+    audio.cc
     event_manager.cc
     instance.cc
     key.cc
