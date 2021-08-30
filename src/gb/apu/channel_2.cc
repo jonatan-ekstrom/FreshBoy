@@ -59,11 +59,8 @@ void Channel2::Write(const u16 address, const u8 byte) {
     log::Warning("Channel 2 - invalid write address: " + log::Hex(address));
 }
 
-void Channel2::Reset() {
-    this->nr21 = 0;
-    this->nr22 = 0;
-    this->nr23 = 0;
-    this->nr24 = 0;
-}
+bool Channel2::Enabled() const { return false; }
+
+u8 Channel2::Out() const { return 0; }
 
 }

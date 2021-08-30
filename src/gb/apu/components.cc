@@ -3,7 +3,8 @@
 
 namespace gb {
 
-Dac::Dac() : enabled{false} {}
+Dac::Dac()
+    : enabled{false} {}
 
 void Dac::Enable(bool on) {
     this->enabled = on;
@@ -15,7 +16,8 @@ double Dac::Map(const u8 sample) {
     return -1 + 2 * (sample / 15.0);
 }
 
-Mixer::Mixer() : mask{0} {}
+Mixer::Mixer()
+    : mask{0} {}
 
 u8 Mixer::Read() const {
     return mask;
@@ -26,7 +28,8 @@ void Mixer::Write(const u8 byte) {
 }
 
 std::tuple<double, double> Mixer::Mix(const double ch1, const double ch2,
-                                      const double ch3, const double ch4) const {
+                                      const double ch3,
+                                      const double ch4) const {
     double left{0};
     double right{0};
 
@@ -47,7 +50,8 @@ std::tuple<double, double> Mixer::Mix(const double ch1, const double ch2,
     return {left, right};
 }
 
-Amplifier::Amplifier() : ctrl{0} {}
+Amplifier::Amplifier()
+    : ctrl{0} {}
 
 u8 Amplifier::Read() const {
     return this->ctrl;

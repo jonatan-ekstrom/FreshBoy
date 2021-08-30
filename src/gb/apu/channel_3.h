@@ -9,7 +9,8 @@ public:
     Channel3();
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
-    void Reset();
+    bool Enabled() const;
+    u8 Out() const;
 private:
     u8 nr30;
     u8 nr31;

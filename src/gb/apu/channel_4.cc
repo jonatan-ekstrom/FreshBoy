@@ -59,11 +59,8 @@ void Channel4::Write(const u16 address, const u8 byte) {
     log::Warning("Channel 4 - invalid write address: " + log::Hex(address));
 }
 
-void Channel4::Reset() {
-    this->nr41 = 0;
-    this->nr42 = 0;
-    this->nr43 = 0;
-    this->nr44 = 0;
-}
+bool Channel4::Enabled() const { return false; }
+
+u8 Channel4::Out() const { return 0; }
 
 }

@@ -54,10 +54,11 @@ void Gameboy_::Tick() {
 }
 
 void Gameboy_::FrameReady(const Framebuffer::Pixels& pixels) {
-    const auto left{this->apu->SampleLeft()};
-    const auto right{this->apu->SampleRight()};
+    const auto& left{this->apu->LeftChannel()};
+    const auto& right{this->apu->RightChannel()};
     queue(left, right);
     render(pixels);
+    this->apu->ClearSamples();
 }
 
 }

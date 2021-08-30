@@ -1,5 +1,4 @@
 #include "channel_3.h"
-#include <algorithm>
 #include "log.h"
 
 namespace {
@@ -81,13 +80,8 @@ void Channel3::Write(const u16 address, const u8 byte) {
     log::Warning("Channel 3 - invalid write address: " + log::Hex(address));
 }
 
-void Channel3::Reset() {
-    this->nr30 = 0;
-    this->nr31 = 0;
-    this->nr32 = 0;
-    this->nr33 = 0;
-    this->nr34 = 0;
-    std::fill(this->wave.begin(), this->wave.end(), 0);
-}
+bool Channel3::Enabled() const { return false; }
+
+u8 Channel3::Out() const { return 0; }
 
 }
