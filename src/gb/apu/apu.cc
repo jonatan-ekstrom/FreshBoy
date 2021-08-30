@@ -1,4 +1,4 @@
-#include "sound.h"
+#include "apu.h"
 #include "bits.h"
 #include "log.h"
 
@@ -12,11 +12,11 @@ constexpr auto Nr52Address{0xFF26};
 
 namespace gb {
 
-Sound_::Sound_() : ch1{}, ch2{}, ch3{}, ch4{}, nr50{0}, nr51{0}, nr52{0} {}
+Apu_::Apu_() : ch1{}, ch2{}, ch3{}, ch4{}, nr50{0}, nr51{0}, nr52{0} {}
 
-Sound Sound_::Create() { return Sound{new Sound_{}}; }
+Apu Apu_::Create() { return Apu{new Apu_{}}; }
 
-u8 Sound_::Read(const u16 address) const {
+u8 Apu_::Read(const u16 address) const {
     if (!Enabled() && address != Nr52Address) {
         return 0;
     }
@@ -57,7 +57,7 @@ u8 Sound_::Read(const u16 address) const {
     return 0xFF;
 }
 
-void Sound_::Write(const u16 address, const u8 byte) {
+void Apu_::Write(const u16 address, const u8 byte) {
     if (!Enabled() && address != Nr52Address) {
         return;
     }
@@ -105,17 +105,17 @@ void Sound_::Write(const u16 address, const u8 byte) {
     log::Warning("APU - invalid write address: " + log::Hex(address));
 }
 
-void Sound_::Tick(uint) { }
+void Apu_::Tick(uint) { }
 
-Sound_::Samples Sound_::SampleLeft() {
+Apu_::Samples Apu_::SampleLeft() {
     return {};
 }
 
-Sound_::Samples Sound_::SampleRight() {
+Apu_::Samples Apu_::SampleRight() {
     return {};
 }
 
-void Sound_::Write52(const u8 byte) {
+void Apu_::Write52(const u8 byte) {
     const u8 mask{0x80};
     bit::Assign(this->nr52, byte, mask);
     if (!Enabled()) {
@@ -123,11 +123,11 @@ void Sound_::Write52(const u8 byte) {
     }
 }
 
-bool Sound_::Enabled() const {
+bool Apu_::Enabled() const {
     return bit::IsSet(this->nr52, 7);
 }
 
-void Sound_::Reset() {
+void Apu_::Reset() {
     this->ch1.Reset();
     this->ch2.Reset();
     this->ch3.Reset();

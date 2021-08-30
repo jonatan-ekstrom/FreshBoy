@@ -9,20 +9,20 @@
 
 namespace gb {
 
-class Sound_;
-using Sound = std::shared_ptr<Sound_>;
+class Apu_;
+using Apu = std::shared_ptr<Apu_>;
 
-class Sound_ {
+class Apu_ {
 public:
     using Samples = std::vector<u8>;
-    static Sound Create();
+    static Apu Create();
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
     void Tick(uint cycles);
     Samples SampleLeft();
     Samples SampleRight();
 private:
-    Sound_();
+    Apu_();
     bool Enabled() const;
     void Write52(u8 byte);
     void Reset();
