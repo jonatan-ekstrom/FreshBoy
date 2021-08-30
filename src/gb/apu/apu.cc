@@ -16,7 +16,7 @@ constexpr auto SampleTime{1.0 / SamplesPerSecond};
 
 namespace gb {
 
-Apu_::Apu_() : enabled{false}, elapsed{0} {
+Apu_::Apu_() : enabled{false}, elapsed{0}, seq{[this] (const auto step) { SeqTick(step); }} {
     constexpr auto frameSize{SamplesPerSecond / 60};
     constexpr auto bufSize{2 * frameSize};
     bufferLeft.reserve(bufSize);
@@ -157,10 +157,38 @@ void Apu_::ClearSamples() {
 }
 
 void Apu_::Tick() {
+    this->seq.Tick();
+
     this->elapsed += Delta;
     if (this->elapsed > SampleTime) {
         this->elapsed -= SampleTime;
         Sample();
+    }
+}
+
+void Apu_::SeqTick(const uint step) {
+    bool length{false};
+    bool env{false};
+    bool sweep{false};
+    switch (step) {
+        case 0: length = true; break;
+        case 2: length = sweep = true; break;
+        case 4: length = true; break;
+        case 6: length = sweep = true; break;
+        case 7: env = true; break;
+        default: break;
+    }
+    if (sweep) this->ch1.SweepTick();
+    if (length) {
+        this->ch1.LengthTick();
+        this->ch2.LengthTick();
+        this->ch3.LengthTick();
+        this->ch4.LengthTick();
+    }
+    if (env) {
+        this->ch1.EnvTick();
+        this->ch2.EnvTick();
+        this->ch4.EnvTick();
     }
 }
 
@@ -178,6 +206,7 @@ void Apu_::Sample() {
 }
 
 void Apu_::Reset() {
+    this->seq = Sequencer{[this] (const auto step) { SeqTick(step); }};
     this->ch1 = Channel1{};
     this->ch2 = Channel2{};
     this->ch3 = Channel3{};

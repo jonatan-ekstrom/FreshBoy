@@ -26,10 +26,12 @@ public:
 private:
     Apu_();
     void Tick();
+    void SeqTick(uint step);
     void Sample();
     void Reset();
     bool enabled;
     double elapsed;
+    Sequencer seq;
     Channel1 ch1;
     Channel2 ch2;
     Channel3 ch3;

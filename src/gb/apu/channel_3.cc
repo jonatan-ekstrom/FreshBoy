@@ -84,4 +84,6 @@ bool Channel3::Enabled() const { return false; }
 
 u8 Channel3::Out() const { return 0; }
 
+void Channel3::LengthTick() {}
+
 }

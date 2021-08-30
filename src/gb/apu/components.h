@@ -1,8 +1,20 @@
 #pragma once
+#include <functional>
 #include <tuple>
 #include "types.h"
 
 namespace gb {
+
+class Sequencer {
+public:
+    using Callback = std::function<void(uint)>;
+    explicit Sequencer(const Callback& callback);
+    void Tick();
+private:
+    Callback callback;
+    uint counter;
+    uint step;
+};
 
 class Dac {
 public:

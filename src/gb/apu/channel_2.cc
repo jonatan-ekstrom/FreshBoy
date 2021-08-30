@@ -63,4 +63,8 @@ bool Channel2::Enabled() const { return false; }
 
 u8 Channel2::Out() const { return 0; }
 
+void Channel2::LengthTick() {}
+
+void Channel2::EnvTick() {}
+
 }
