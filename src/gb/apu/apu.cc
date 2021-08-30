@@ -159,6 +159,11 @@ void Apu_::ClearSamples() {
 void Apu_::Tick() {
     this->seq.Tick();
 
+    this->ch1.Tick();
+    this->ch2.Tick();
+    this->ch3.Tick();
+    this->ch4.Tick();
+
     this->elapsed += Delta;
     if (this->elapsed > SampleTime) {
         this->elapsed -= SampleTime;

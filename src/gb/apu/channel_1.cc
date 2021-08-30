@@ -73,6 +73,8 @@ bool Channel1::Enabled() const { return false; }
 
 u8 Channel1::Out() const { return 0; }
 
+void Channel1::Tick() {}
+
 void Channel1::SweepTick() {}
 
 void Channel1::LengthTick() {}

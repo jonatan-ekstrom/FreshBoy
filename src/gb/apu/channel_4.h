@@ -10,6 +10,7 @@ public:
     void Write(u16 address, u8 byte);
     bool Enabled() const;
     u8 Out() const;
+    void Tick();
     void LengthTick();
     void EnvTick();
 private:
