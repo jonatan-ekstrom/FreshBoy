@@ -23,14 +23,20 @@ class Gameboy_ {
 public:
     using ContinueCallback = std::function<bool(void)>;
     using RenderCallback = std::function<void(const Framebuffer::Pixels&)>;
-    static Gameboy Create(const std::string& filePath, const RenderCallback& render, bool log = false);
+    using QueueCallback = std::function<void(const Sound_::Samples&, const Sound_::Samples&)>;
+    static Gameboy Create(const std::string& filePath, const RenderCallback& render,
+                          const QueueCallback& queue, bool log = false);
     std::string Header() const;
     void Run(const ContinueCallback& cont);
     void ButtonPressed(Button button);
     void ButtonReleased(Button button);
 private:
-    Gameboy_(const std::string& filePath, const RenderCallback& render, bool log);
+    Gameboy_(const std::string& filePath, const RenderCallback& render,
+             const QueueCallback& queue, bool log);
     void Tick();
+    void FrameReady(const Framebuffer::Pixels& pixels);
+    RenderCallback render;
+    QueueCallback queue;
     Cartridge cart;
     InterruptManager interrupts;
     Input input;

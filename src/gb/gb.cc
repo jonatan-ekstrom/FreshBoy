@@ -3,13 +3,16 @@
 
 namespace gb {
 
-Gameboy_::Gameboy_(const std::string& filePath, const RenderCallback& render, const bool log)
-    : cart{Cartridge_::Create(filePath)},
+Gameboy_::Gameboy_(const std::string& filePath, const RenderCallback& render,
+                   const QueueCallback& queue, const bool log)
+    : render{render},
+      queue{queue},
+      cart{Cartridge_::Create(filePath)},
       interrupts{InterruptManager_::Create()},
       input{Input_::Create(this->interrupts)},
       serial{Serial_::Create(this->interrupts)},
       timer{Timer_::Create(this->interrupts)},
-      ppu{Lcd_::Create(this->interrupts, render)},
+      ppu{Lcd_::Create(this->interrupts, [this] (const auto& pixels) { FrameReady(pixels); })},
       apu{Sound_::Create()},
       mmu{Memory_::Create(this->cart, this->input, this->interrupts,
                           this->ppu, this->serial, this->apu, this->timer)},
@@ -18,9 +21,10 @@ Gameboy_::Gameboy_(const std::string& filePath, const RenderCallback& render, co
 }
 
 Gameboy Gameboy_::Create(const std::string& filePath,
-                         const Gameboy_::RenderCallback& render,
+                         const RenderCallback& render,
+                         const QueueCallback& queue,
                          const bool log) {
-    return Gameboy{new Gameboy_{filePath, render, log}};
+    return Gameboy{new Gameboy_{filePath, render, queue, log}};
 }
 
 std::string Gameboy_::Header() const {
@@ -46,6 +50,14 @@ void Gameboy_::Tick() {
     this->timer->Tick(cycles);
     this->serial->Tick(cycles);
     this->ppu->Tick(cycles);
+    this->apu->Tick(cycles);
+}
+
+void Gameboy_::FrameReady(const Framebuffer::Pixels& pixels) {
+    const auto left{this->apu->SampleLeft()};
+    const auto right{this->apu->SampleRight()};
+    queue(left, right);
+    render(pixels);
 }
 
 }

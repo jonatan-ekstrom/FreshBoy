@@ -105,6 +105,16 @@ void Sound_::Write(const u16 address, const u8 byte) {
     log::Warning("APU - invalid write address: " + log::Hex(address));
 }
 
+void Sound_::Tick(uint) { }
+
+Sound_::Samples Sound_::SampleLeft() {
+    return {};
+}
+
+Sound_::Samples Sound_::SampleRight() {
+    return {};
+}
+
 void Sound_::Write52(const u8 byte) {
     const u8 mask{0x80};
     bit::Assign(this->nr52, byte, mask);

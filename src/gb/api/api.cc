@@ -36,8 +36,9 @@ void GameboyDeleter::operator()(gb::Gameboy_* p) {
     delete p;
 }
 
-Gameboy Create(const std::string& filePath, const RenderCallback& render, const bool log) {
-    auto gb{gb::Gameboy_::Create(filePath, render, log)};
+Gameboy Create(const std::string& filePath, const RenderCallback& render,
+               const QueueCallback& queue, const bool log) {
+    auto gb{gb::Gameboy_::Create(filePath, render, queue, log)};
     return Gameboy{gb.release()};
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include "channel_1.h"
 #include "channel_2.h"
 #include "channel_3.h"
@@ -13,9 +14,13 @@ using Sound = std::shared_ptr<Sound_>;
 
 class Sound_ {
 public:
+    using Samples = std::vector<u8>;
     static Sound Create();
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
+    void Tick(uint cycles);
+    Samples SampleLeft();
+    Samples SampleRight();
 private:
     Sound_();
     bool Enabled() const;

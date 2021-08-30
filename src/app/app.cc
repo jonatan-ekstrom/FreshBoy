@@ -51,6 +51,7 @@ Emulator::Emulator()
       renderer{Renderer_::Create(this->instance, this->window)},
       texture{this->instance, this->renderer, DisplayWidth, DisplayHeight},
       eventManager{this->instance},
+      audio{this->instance},
       running{false} {
     eventManager.RegisterKeyHandler([this] (const auto& key) { KeyHandler(key); });
     eventManager.RegisterQuitHandler([this] { QuitHandler(); });
@@ -58,12 +59,14 @@ Emulator::Emulator()
 
 void Emulator::Run(const std::string& filePath) {
     const auto renderCb{[this] (const auto& p) { Render(p); }};
+    const auto queueCb{[this] (const auto& left, const auto& right) { Queue(left, right); }};
     const auto contCb{[this] { return Continue(); }};
 
-    gb = api::Create(filePath, renderCb);
+    gb = api::Create(filePath, renderCb, queueCb);
     std::cout << api::Header(gb) << std::endl;
 
     this->window->Show();
+    this->audio.Play();
     this->running = true;
     api::Run(gb, contCb);
 }
@@ -101,6 +104,10 @@ void Emulator::Render(const api::Pixels& pixels) {
     this->renderer->Clear();
     this->renderer->Copy(this->texture);
     this->renderer->Present();
+}
+
+void Emulator::Queue(const api::Samples& left, const api::Samples& right) {
+    this->audio.Queue(left, right);
 }
 
 void Emulator::KeyUp(const Key& key) {
