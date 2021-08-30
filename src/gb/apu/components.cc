@@ -47,4 +47,30 @@ std::tuple<double, double> Mixer::Mix(const double ch1, const double ch2,
     return {left, right};
 }
 
+Amplifier::Amplifier() : ctrl{0} {}
+
+u8 Amplifier::Read() const {
+    return this->ctrl;
+}
+
+void Amplifier::Write(const u8 byte) {
+    this->ctrl = byte;
+}
+
+std::tuple<double, double> Amplifier::Amplify(const double left,
+                                              const double right) const {
+    const auto leftLevel{static_cast<u8>((this->ctrl >> 4) & 0x07)};
+    const auto rightLevel{static_cast<u8>(this->ctrl & 0x07)};
+
+    // Amplify
+    double ampLeft{left * (leftLevel + 1)};
+    double ampRight{right * (rightLevel + 1)};
+
+    // Normalize
+    ampLeft /= 8;
+    ampRight /= 8;
+
+    return {ampLeft, ampRight};
+}
+
 }

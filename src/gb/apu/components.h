@@ -24,4 +24,14 @@ private:
     u8 mask;
 };
 
+class Amplifier {
+public:
+    Amplifier();
+    u8 Read() const;
+    void Write(u8 byte);
+    std::tuple<double, double> Amplify(double left, double right) const;
+private:
+    u8 ctrl;
+};
+
 }
