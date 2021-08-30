@@ -73,4 +73,15 @@ std::tuple<double, double> Amplifier::Amplify(const double left,
     return {ampLeft, ampRight};
 }
 
+namespace apu {
+
+u8 Digitize(const double input) {
+    const auto digitized{255 * input};
+    const auto clampedLow{digitized < 0 ? 0 : digitized};
+    const auto clampedHigh{clampedLow > 255 ? 255 : digitized};
+    return static_cast<u8>(clampedHigh);
+}
+
+}
+
 }

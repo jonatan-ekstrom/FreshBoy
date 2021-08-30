@@ -34,4 +34,10 @@ private:
     u8 ctrl;
 };
 
+namespace apu {
+
+u8 Digitize(double input);
+
+}
+
 }
