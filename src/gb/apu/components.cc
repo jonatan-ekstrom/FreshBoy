@@ -78,6 +78,37 @@ void LengthUnit::Tick() {
     }
 }
 
+EnvelopeUnit::EnvelopeUnit() : data{0}, volume{0}, counter{0} {}
+
+u8 EnvelopeUnit::Volume(const u8 input) const {
+    return input != 0 ? this->volume : 0;
+}
+
+u8 EnvelopeUnit::Read() const {
+    return this->data;
+}
+
+void EnvelopeUnit::Write(const u8 byte) {
+    this->data = byte;
+}
+
+void EnvelopeUnit::Trigger() {
+    this->volume = static_cast<u8>((this->data >> 4) & 0x0F);
+    this->counter = this->data & 0x07;
+}
+
+void EnvelopeUnit::Tick() {
+    if (this->counter == 0) return;
+    if (--this->counter == 0) {
+        const auto add{(this->data & 0x08) != 0};
+        const auto next{this->volume + (add ? 1 : -1)};
+        if (next >= 0 && next <= 15) {
+            this->volume = static_cast<u8>(next);
+            this->counter = this->data & 0x07;
+        }
+    }
+}
+
 Dac::Dac() : enabled{false} {}
 
 void Dac::Enable(bool on) {

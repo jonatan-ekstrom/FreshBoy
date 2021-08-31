@@ -63,6 +63,20 @@ private:
     uint counter;
 };
 
+class EnvelopeUnit {
+public:
+    EnvelopeUnit();
+    u8 Volume(u8 input) const;
+    u8 Read() const;
+    void Write(u8 byte);
+    void Trigger();
+    void Tick();
+private:
+    u8 data;
+    u8 volume;
+    uint counter;
+};
+
 class Dac {
 public:
     Dac();
