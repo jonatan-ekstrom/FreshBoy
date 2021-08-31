@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include <functional>
 #include <tuple>
 #include "types.h"
@@ -14,6 +15,25 @@ private:
     Callback callback;
     uint counter;
     uint step;
+};
+
+enum class SquareDuty : u8 {
+    OneEighth = 0,
+    Quarter = 1,
+    Half = 2,
+    ThreeQuarters = 3
+};
+
+class SquareUnit {
+public:
+    SquareUnit();
+    void Tick();
+    u8 Out() const;
+    void SetDuty(SquareDuty newDuty);
+private:
+    SquareDuty duty;
+    std::array<std::array<u8, 8>, 4> pattern;
+    uint pos;
 };
 
 class Dac {

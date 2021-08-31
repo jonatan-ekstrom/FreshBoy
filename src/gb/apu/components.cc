@@ -14,6 +14,26 @@ void Sequencer::Tick() {
     }
 }
 
+SquareUnit::SquareUnit()
+    : duty{SquareDuty::OneEighth},
+      pattern{{{0, 0, 0, 0, 0, 0, 0, 1},
+               {1, 0, 0, 0, 0, 0, 0, 1},
+               {1, 0, 0, 0, 0, 1, 1, 1},
+               {0, 1, 1, 1, 1, 1, 1, 0}}},
+      pos{0} {}
+
+void SquareUnit::Tick() {
+    this->pos = (this->pos + 1) % 8;
+}
+
+u8 SquareUnit::Out() const {
+    return this->pattern[static_cast<u8>(this->duty)][this->pos];
+}
+
+void SquareUnit::SetDuty(const SquareDuty newDuty) {
+    this->duty = newDuty;
+}
+
 Dac::Dac() : enabled{false} {}
 
 void Dac::Enable(bool on) {
