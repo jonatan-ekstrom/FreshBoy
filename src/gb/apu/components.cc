@@ -50,6 +50,34 @@ void FreqUnit::Tick() {
     }
 }
 
+LengthUnit::LengthUnit(const Callback& callback)
+    : callback{callback}, enabled{false}, counter{0} {}
+
+bool LengthUnit::Enabled() const {
+    return this->enabled;
+}
+
+void LengthUnit::SetEnabled(const bool on) {
+    this->enabled = on;
+}
+
+void LengthUnit::SetCounter(const uint count) {
+    this->counter = count;
+}
+
+void LengthUnit::Trigger() {
+    if (this->counter == 0) {
+        this->counter = 64;
+    }
+}
+
+void LengthUnit::Tick() {
+    if (!this->enabled || this->counter == 0) return;
+    if (--this->counter == 0) {
+        this->callback();
+    }
+}
+
 Dac::Dac() : enabled{false} {}
 
 void Dac::Enable(bool on) {

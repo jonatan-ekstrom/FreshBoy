@@ -48,6 +48,21 @@ private:
     uint counter;
 };
 
+class LengthUnit {
+public:
+    using Callback = std::function<void()>;
+    explicit LengthUnit(const Callback& callback);
+    bool Enabled() const;
+    void SetEnabled(bool on);
+    void SetCounter(uint count);
+    void Trigger();
+    void Tick();
+private:
+    Callback callback;
+    bool enabled;
+    uint counter;
+};
+
 class Dac {
 public:
     Dac();
