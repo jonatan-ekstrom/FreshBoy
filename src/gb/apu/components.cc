@@ -34,6 +34,22 @@ void SquareUnit::SetDuty(const SquareDuty newDuty) {
     this->duty = newDuty;
 }
 
+FreqUnit::FreqUnit(const Callback& callback, const uint period)
+    : callback{callback},
+      period{period},
+      counter{period} {}
+
+void FreqUnit::SetPeriod(const uint newPeriod) {
+    this->period = newPeriod;
+}
+
+void FreqUnit::Tick() {
+    if (--this->counter == 0) {
+        this->counter = this->period;
+        this->callback();
+    }
+}
+
 Dac::Dac() : enabled{false} {}
 
 void Dac::Enable(bool on) {

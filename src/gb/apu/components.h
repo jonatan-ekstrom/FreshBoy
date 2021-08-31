@@ -36,6 +36,18 @@ private:
     uint pos;
 };
 
+class FreqUnit {
+public:
+    using Callback = std::function<void()>;
+    FreqUnit(const Callback& callback, uint period);
+    void SetPeriod(uint newPeriod);
+    void Tick();
+private:
+    Callback callback;
+    uint period;
+    uint counter;
+};
+
 class Dac {
 public:
     Dac();
