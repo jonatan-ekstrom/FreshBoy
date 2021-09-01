@@ -8,8 +8,8 @@ public:
     Channel4();
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
-    bool Enabled() const;
-    u8 Out() const;
+    bool Active() const;
+    double Out() const;
     void Tick();
     void LengthTick();
     void EnvTick();

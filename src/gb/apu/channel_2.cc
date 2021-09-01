@@ -1,4 +1,5 @@
 #include "channel_2.h"
+#include "bits.h"
 #include "log.h"
 
 namespace {
@@ -12,15 +13,20 @@ constexpr auto Nr24Address{0xFF19};
 
 namespace gb {
 
-Channel2::Channel2() : nr21{0}, nr22{0}, nr23{0}, nr24{0} {}
+Channel2::Channel2()
+    : freq{[this]{Step();}, 8192},
+      length{[this]{Disable();}},
+      enabled{false},
+      rawFreq{0} {}
 
 u8 Channel2::Read(const u16 address) const {
     if (address == Nr21Address) {
-        return this->nr21 & 0xC0;
+        const auto duty{static_cast<u8>(this->square.Duty())};
+        return static_cast<u8>(duty << 6);
     }
 
     if (address == Nr22Address) {
-        return this->nr22;
+        return this->envelope.Read();
     }
 
     if (address == Nr23Address) {
@@ -28,7 +34,8 @@ u8 Channel2::Read(const u16 address) const {
     }
 
     if (address == Nr24Address) {
-        return this->nr24 & 0x40;
+        const auto le{this->length.Enabled() ? 1 : 0};
+        return static_cast<u8>(le << 6);
     }
 
     log::Warning("Channel 2 - invalid read address: " + log::Hex(address));
@@ -37,36 +44,73 @@ u8 Channel2::Read(const u16 address) const {
 
 void Channel2::Write(const u16 address, const u8 byte) {
     if (address == Nr21Address) {
-        this->nr21 = byte;
+        this->square.SetDuty(static_cast<SquareDuty>((byte >> 6) & 0x03));
+        this->length.SetCounter(byte & 0x3F);
         return;
     }
 
     if (address == Nr22Address) {
-        this->nr22 = byte;
+        this->dac.Enable((byte & 0xF8) != 0);
+        this->envelope.Write(byte);
         return;
     }
 
     if (address == Nr23Address) {
-        this->nr23 = byte;
+        this->rawFreq = static_cast<u16>((this->rawFreq & 0x0700) | byte);
+        this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 4));
         return;
     }
 
     if (address == Nr24Address) {
-        this->nr24 = byte & 0xC7;
+        this->rawFreq = static_cast<u16>((this->rawFreq & 0x00FF) | ((byte & 0x07) << 8));
+        this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 4));
+        this->length.SetEnabled(bit::IsSet(byte, 6));
+        if (bit::IsSet(byte, 7)) {
+            Trigger();
+        }
         return;
     }
 
     log::Warning("Channel 2 - invalid write address: " + log::Hex(address));
 }
 
-bool Channel2::Enabled() const { return false; }
+bool Channel2::Active() const {
+    return this->enabled && this->dac.Enabled();
+}
 
-u8 Channel2::Out() const { return 0; }
+double Channel2::Out() const {
+    if (!this->enabled) return 0;
+    return this->dac.Map(this->envelope.Volume(this->square.Out()));
+}
 
-void Channel2::Tick() {}
+void Channel2::Tick() {
+    this->freq.Tick();
+}
 
-void Channel2::LengthTick() {}
+void Channel2::LengthTick() {
+    this->length.Tick();
+}
 
-void Channel2::EnvTick() {}
+void Channel2::EnvTick() {
+    this->envelope.Tick();
+}
+
+void Channel2::Trigger() {
+    this->enabled = true;
+    this->freq.Trigger();
+    this->length.Trigger();
+    this->envelope.Trigger();
+    if (!this->dac.Enabled()) {
+        this->enabled = false;
+    }
+}
+
+void Channel2::Step() {
+    this->square.Tick();
+}
+
+void Channel2::Disable() {
+    this->enabled = false;
+}
 
 }

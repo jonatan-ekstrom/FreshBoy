@@ -69,9 +69,9 @@ void Channel1::Write(const u16 address, const u8 byte) {
     log::Warning("Channel 1 - invalid write address: " + log::Hex(address));
 }
 
-bool Channel1::Enabled() const { return false; }
+bool Channel1::Active() const { return false; }
 
-u8 Channel1::Out() const { return 0; }
+double Channel1::Out() const { return 0; }
 
 void Channel1::Tick() {}
 

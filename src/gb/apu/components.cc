@@ -22,16 +22,20 @@ SquareUnit::SquareUnit()
                {0, 1, 1, 1, 1, 1, 1, 0}}},
       pos{0} {}
 
-void SquareUnit::Tick() {
-    this->pos = (this->pos + 1) % 8;
-}
-
 u8 SquareUnit::Out() const {
     return this->pattern[static_cast<u8>(this->duty)][this->pos];
 }
 
+SquareDuty SquareUnit::Duty() const {
+    return this->duty;
+}
+
 void SquareUnit::SetDuty(const SquareDuty newDuty) {
     this->duty = newDuty;
+}
+
+void SquareUnit::Tick() {
+    this->pos = (this->pos + 1) % 8;
 }
 
 FreqUnit::FreqUnit(const Callback& callback, const uint period)
@@ -41,6 +45,10 @@ FreqUnit::FreqUnit(const Callback& callback, const uint period)
 
 void FreqUnit::SetPeriod(const uint newPeriod) {
     this->period = newPeriod;
+}
+
+void FreqUnit::Trigger() {
+    this->counter = this->period;
 }
 
 void FreqUnit::Tick() {
@@ -81,7 +89,7 @@ void LengthUnit::Tick() {
 EnvelopeUnit::EnvelopeUnit() : data{0}, volume{0}, counter{0} {}
 
 u8 EnvelopeUnit::Volume(const u8 input) const {
-    return input != 0 ? this->volume : 0;
+    return input * this->volume;
 }
 
 u8 EnvelopeUnit::Read() const {
@@ -111,14 +119,18 @@ void EnvelopeUnit::Tick() {
 
 Dac::Dac() : enabled{false} {}
 
-void Dac::Enable(bool on) {
-    this->enabled = on;
+bool Dac::Enabled() const {
+    return this->enabled;
 }
 
-double Dac::Map(const u8 sample) {
+double Dac::Map(const u8 sample) const {
     if (!this->enabled) return 0;
     if (sample >= 15) return 1;
-    return -1 + 2 * (sample / 15.0);
+    return sample / 15.0;
+}
+
+void Dac::Enable(bool on) {
+    this->enabled = on;
 }
 
 Mixer::Mixer()
@@ -133,8 +145,7 @@ void Mixer::Write(const u8 byte) {
 }
 
 std::tuple<double, double> Mixer::Mix(const double ch1, const double ch2,
-                                      const double ch3,
-                                      const double ch4) const {
+                                      const double ch3, const double ch4) const {
     double left{0};
     double right{0};
 

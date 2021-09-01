@@ -27,9 +27,10 @@ enum class SquareDuty : u8 {
 class SquareUnit {
 public:
     SquareUnit();
-    void Tick();
     u8 Out() const;
+    SquareDuty Duty() const;
     void SetDuty(SquareDuty newDuty);
+    void Tick();
 private:
     SquareDuty duty;
     std::array<std::array<u8, 8>, 4> pattern;
@@ -41,6 +42,7 @@ public:
     using Callback = std::function<void()>;
     FreqUnit(const Callback& callback, uint period);
     void SetPeriod(uint newPeriod);
+    void Trigger();
     void Tick();
 private:
     Callback callback;
@@ -80,8 +82,9 @@ private:
 class Dac {
 public:
     Dac();
+    bool Enabled() const;
+    double Map(u8 sample) const;
     void Enable(bool on);
-    double Map(u8 sample);
 private:
     bool enabled;
 };

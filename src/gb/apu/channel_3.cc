@@ -80,9 +80,9 @@ void Channel3::Write(const u16 address, const u8 byte) {
     log::Warning("Channel 3 - invalid write address: " + log::Hex(address));
 }
 
-bool Channel3::Enabled() const { return false; }
+bool Channel3::Active() const { return false; }
 
-u8 Channel3::Out() const { return 0; }
+double Channel3::Out() const { return 0; }
 
 void Channel3::Tick() {}
 
