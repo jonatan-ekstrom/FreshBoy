@@ -4,11 +4,11 @@
 namespace gb {
 
 Sequencer::Sequencer(const Callback& callback)
-    : callback{callback}, counter{0}, step{7} {}
+    : callback{callback}, counter{8192}, step{7} {}
 
 void Sequencer::Tick() {
-    if (++this->counter == 8192) {
-        this->counter = 0;
+    if (--this->counter == 0) {
+        this->counter = 8192;
         this->step = (this->step + 1) % 8;
         callback(this->step);
     }
