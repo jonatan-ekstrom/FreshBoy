@@ -4,9 +4,8 @@
 
 namespace gb {
 
-class Tone {
+class ToneBase {
 public:
-    explicit Tone(u16 baseAddress);
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
     bool Active() const;
@@ -14,6 +13,8 @@ public:
     void Tick();
     void LengthTick();
     void EnvTick();
+protected:
+    explicit ToneBase(u16 baseAddress);
 private:
     void Trigger();
     void Step();
@@ -26,6 +27,11 @@ private:
     LengthUnit length;
     EnvelopeUnit envelope;
     Dac dac;
+};
+
+class Tone : public ToneBase {
+public:
+    Tone();
 };
 
 }

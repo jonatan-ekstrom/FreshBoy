@@ -4,14 +4,14 @@
 
 namespace gb {
 
-Tone::Tone(const u16 baseAddress)
+ToneBase::ToneBase(const u16 baseAddress)
     : baseAddress{baseAddress},
       enabled{false},
       rawFreq{0},
       freq{[this]{Step();}, 8192},
       length{[this]{Disable();}} {}
 
-u8 Tone::Read(const u16 address) const {
+u8 ToneBase::Read(const u16 address) const {
     if (address == this->baseAddress) {
         const auto duty{static_cast<u8>(this->square.Duty())};
         return static_cast<u8>(duty << 6);
@@ -30,11 +30,11 @@ u8 Tone::Read(const u16 address) const {
         return static_cast<u8>(le << 6);
     }
 
-    log::Warning("Tone - invalid read address: " + log::Hex(address));
+    log::Warning("ToneBase - invalid read address: " + log::Hex(address));
     return 0xFF;
 }
 
-void Tone::Write(const u16 address, const u8 byte) {
+void ToneBase::Write(const u16 address, const u8 byte) {
     if (address == this->baseAddress) {
         this->square.SetDuty(static_cast<SquareDuty>((byte >> 6) & 0x03));
         this->length.SetCounter(byte & 0x3F);
@@ -63,31 +63,31 @@ void Tone::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    log::Warning("Tone - invalid write address: " + log::Hex(address));
+    log::Warning("ToneBase - invalid write address: " + log::Hex(address));
 }
 
-bool Tone::Active() const {
+bool ToneBase::Active() const {
     return this->enabled && this->dac.Enabled();
 }
 
-double Tone::Out() const {
+double ToneBase::Out() const {
     if (!this->enabled) return 0;
     return this->dac.Map(this->envelope.Volume(this->square.Out()));
 }
 
-void Tone::Tick() {
+void ToneBase::Tick() {
     this->freq.Tick();
 }
 
-void Tone::LengthTick() {
+void ToneBase::LengthTick() {
     this->length.Tick();
 }
 
-void Tone::EnvTick() {
+void ToneBase::EnvTick() {
     this->envelope.Tick();
 }
 
-void Tone::Trigger() {
+void ToneBase::Trigger() {
     this->enabled = true;
     this->freq.Trigger();
     this->length.Trigger();
@@ -97,12 +97,14 @@ void Tone::Trigger() {
     }
 }
 
-void Tone::Step() {
+void ToneBase::Step() {
     this->square.Tick();
 }
 
-void Tone::Disable() {
+void ToneBase::Disable() {
     this->enabled = false;
 }
+
+Tone::Tone() : ToneBase{0xFF16} {}
 
 }

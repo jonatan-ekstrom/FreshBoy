@@ -19,9 +19,7 @@ namespace gb {
 Apu_::Apu_()
     : enabled{false},
       elapsed{0},
-      seq{[this](auto step){SeqTick(step);}},
-      ch1{0xFF11},
-      ch2{0xFF16} {
+      seq{[this](auto step){SeqTick(step);}} {
     constexpr auto frameSize{SamplesPerSecond / 60};
     constexpr auto bufSize{2 * frameSize};
     bufferLeft.reserve(bufSize);
@@ -188,7 +186,7 @@ void Apu_::SeqTick(const uint step) {
         case 7: env = true; break;
         default: break;
     }
-    // if (sweep) this->ch1.SweepTick();
+    if (sweep) this->ch1.SweepTick();
     if (length) {
         this->ch1.LengthTick();
         this->ch2.LengthTick();
@@ -217,8 +215,8 @@ void Apu_::Sample() {
 
 void Apu_::Reset() {
     this->seq = Sequencer{[this] (const auto step) { SeqTick(step); }};
-    this->ch1 = Tone{0xFF11};
-    this->ch2 = Tone{0xFF16};
+    this->ch1 = Sweep{};
+    this->ch2 = Tone{};
     this->ch3 = Channel3{};
     this->ch4 = Channel4{};
     this->mixer = Mixer{};

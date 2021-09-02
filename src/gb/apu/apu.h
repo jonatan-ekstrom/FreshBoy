@@ -4,6 +4,7 @@
 #include "channel_3.h"
 #include "channel_4.h"
 #include "components.h"
+#include "sweep.h"
 #include "tone.h"
 #include "types.h"
 
@@ -31,7 +32,7 @@ private:
     bool enabled;
     double elapsed;
     Sequencer seq;
-    Tone ch1;
+    Sweep ch1;
     Tone ch2;
     Channel3 ch3;
     Channel4 ch4;
