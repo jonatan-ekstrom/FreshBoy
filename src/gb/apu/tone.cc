@@ -48,14 +48,14 @@ void ToneBase::Write(const u16 address, const u8 byte) {
     }
 
     if (address == (this->baseAddress + 2)) {
-        this->rawFreq = static_cast<u16>((this->rawFreq & 0x0700) | byte);
-        this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 4));
+        const auto newFreq{static_cast<u16>((this->rawFreq & 0x0700) | byte)};
+        SetFrequency(newFreq);
         return;
     }
 
     if (address == (this->baseAddress + 3)) {
-        this->rawFreq = static_cast<u16>((this->rawFreq & 0x00FF) | ((byte & 0x07) << 8));
-        this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 4));
+        const auto newFreq{static_cast<u16>((this->rawFreq & 0x00FF) | ((byte & 0x07) << 8))};
+        SetFrequency(newFreq);
         this->length.SetEnabled(bit::IsSet(byte, 6));
         if (bit::IsSet(byte, 7)) {
             Trigger();
@@ -87,6 +87,17 @@ void ToneBase::EnvTick() {
     this->envelope.Tick();
 }
 
+u16 ToneBase::GetFrequency() const { return this->rawFreq; }
+
+void ToneBase::SetFrequency(const u16 newFreq) {
+    this->rawFreq = newFreq;
+    this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 4));
+}
+
+void ToneBase::Disable() {
+    this->enabled = false;
+}
+
 void ToneBase::Trigger() {
     this->enabled = true;
     this->freq.Trigger();
@@ -99,10 +110,6 @@ void ToneBase::Trigger() {
 
 void ToneBase::Step() {
     this->square.Tick();
-}
-
-void ToneBase::Disable() {
-    this->enabled = false;
 }
 
 Tone::Tone() : ToneBase{0xFF16} {}

@@ -15,10 +15,12 @@ public:
     void EnvTick();
 protected:
     explicit ToneBase(u16 baseAddress);
+    u16 GetFrequency() const;
+    void SetFrequency(u16 newFreq);
+    void Disable();
 private:
     void Trigger();
     void Step();
-    void Disable();
     u16 baseAddress;
     bool enabled;
     u16 rawFreq;
