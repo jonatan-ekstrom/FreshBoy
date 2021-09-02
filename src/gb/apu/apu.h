@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "channel_1.h"
 #include "channel_3.h"
 #include "channel_4.h"
 #include "components.h"
@@ -32,7 +31,7 @@ private:
     bool enabled;
     double elapsed;
     Sequencer seq;
-    Channel1 ch1;
+    Tone ch1;
     Tone ch2;
     Channel3 ch3;
     Channel4 ch4;
