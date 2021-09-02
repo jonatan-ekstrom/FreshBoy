@@ -79,6 +79,29 @@ private:
     uint counter;
 };
 
+class SweepUnit {
+public:
+    using Getter = std::function<u16()>;
+    using Setter = std::function<void(u16)>;
+    using Disabler = std::function<void()>;
+    SweepUnit(const Getter& getter,
+              const Setter& setter,
+              const Disabler& disabler);
+    u8 Read() const;
+    void Write(u8 byte);
+    void Trigger();
+    void Tick();
+private:
+    u16 Calc() const;
+    Getter getter;
+    Setter setter;
+    Disabler disabler;
+    bool enabled;
+    uint counter;
+    u16 freq;
+    u8 data;
+};
+
 class Dac {
 public:
     Dac();

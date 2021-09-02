@@ -115,6 +115,68 @@ void EnvelopeUnit::Tick() {
     }
 }
 
+SweepUnit::SweepUnit(const SweepUnit::Getter& getter,
+                     const SweepUnit::Setter& setter,
+                     const SweepUnit::Disabler& disabler)
+    : getter{getter},
+      setter{setter},
+      disabler{disabler},
+      enabled{false},
+      counter{0},
+      freq{0},
+      data{0} {}
+
+u8 SweepUnit::Read() const {
+    return this->data;
+}
+
+void SweepUnit::Write(const u8 byte) {
+    this->data = byte;
+}
+
+void SweepUnit::Trigger() {
+    const auto period{(this->data >> 4) & 0x07u};
+    const auto shift{this->data & 0x07};
+    this->freq = this->getter();
+    this->counter = period;
+    this->enabled = period != 0 || shift != 0;
+    if (shift != 0) {
+        if (Calc() > 2047) {
+            this->disabler();
+        }
+    }
+}
+
+void SweepUnit::Tick() {
+    const auto period{(this->data >> 4) & 0x07u};
+    if (!this->enabled || period == 0) return;
+    if (--this->counter != 0) return;
+
+    const auto newFreq{Calc()};
+    if (newFreq > 2047) {
+        this->disabler();
+        return;
+    }
+
+    const auto shift{this->data & 0x07};
+    if (shift == 0) return;
+
+    this->freq = newFreq;
+    this->setter(newFreq);
+
+    if (Calc() > 2047) {
+        this->disabler();
+    } else {
+        this->counter = period;
+    }
+}
+
+u16 SweepUnit::Calc() const {
+    const auto shift{this->data & 0x07};
+    const auto neg{(this->data & 0x08) != 0};
+    return static_cast<u16>(this->freq + (neg ? -1 : 1) * (this->freq >> shift));
+}
+
 Dac::Dac() : enabled{false} {}
 
 bool Dac::Enabled() const {
