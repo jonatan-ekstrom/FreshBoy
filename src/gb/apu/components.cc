@@ -7,11 +7,10 @@ Sequencer::Sequencer(const Callback& callback)
     : callback{callback}, counter{8192}, step{7} {}
 
 void Sequencer::Tick() {
-    if (--this->counter == 0) {
-        this->counter = 8192;
-        this->step = (this->step + 1) % 8;
-        callback(this->step);
-    }
+    if (--this->counter != 0) return;
+    this->counter = 8192;
+    this->step = (this->step + 1) % 8;
+    callback(this->step);
 }
 
 SquareUnit::SquareUnit()
@@ -52,10 +51,9 @@ void FreqUnit::Trigger() {
 }
 
 void FreqUnit::Tick() {
-    if (--this->counter == 0) {
-        this->counter = this->period;
-        this->callback();
-    }
+    if (--this->counter != 0) return;
+    this->counter = this->period;
+    this->callback();
 }
 
 LengthUnit::LengthUnit(const Callback& callback)
@@ -107,13 +105,13 @@ void EnvelopeUnit::Trigger() {
 
 void EnvelopeUnit::Tick() {
     if (this->counter == 0) return;
-    if (--this->counter == 0) {
-        const auto add{(this->data & 0x08) != 0};
-        const auto next{this->volume + (add ? 1 : -1)};
-        if (next >= 0 && next <= 15) {
-            this->volume = static_cast<u8>(next);
-            this->counter = this->data & 0x07;
-        }
+    if (--this->counter != 0) return;
+
+    const auto add{(this->data & 0x08) != 0};
+    const auto next{this->volume + (add ? 1 : -1)};
+    if (next >= 0 && next <= 15) {
+        this->volume = static_cast<u8>(next);
+        this->counter = this->data & 0x07;
     }
 }
 
