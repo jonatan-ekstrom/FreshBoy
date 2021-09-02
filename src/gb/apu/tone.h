@@ -1,12 +1,12 @@
 #pragma once
 #include "components.h"
-#include "types.h"
+#include "tone.h"
 
 namespace gb {
 
-class Channel2 {
+class Tone {
 public:
-    Channel2();
+    explicit Tone(u16 baseAddress);
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
     bool Active() const;
@@ -18,13 +18,14 @@ private:
     void Trigger();
     void Step();
     void Disable();
+    u16 baseAddress;
+    bool enabled;
+    u16 rawFreq;
     FreqUnit freq;
     SquareUnit square;
     LengthUnit length;
     EnvelopeUnit envelope;
     Dac dac;
-    bool enabled;
-    u16 rawFreq;
 };
 
 }

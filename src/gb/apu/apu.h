@@ -2,10 +2,10 @@
 #include <memory>
 #include <vector>
 #include "channel_1.h"
-#include "channel_2.h"
 #include "channel_3.h"
 #include "channel_4.h"
 #include "components.h"
+#include "tone.h"
 #include "types.h"
 
 namespace gb {
@@ -33,7 +33,7 @@ private:
     double elapsed;
     Sequencer seq;
     Channel1 ch1;
-    Channel2 ch2;
+    Tone ch2;
     Channel3 ch3;
     Channel4 ch4;
     Mixer mixer;

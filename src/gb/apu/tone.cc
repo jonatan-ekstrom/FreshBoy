@@ -1,67 +1,59 @@
-#include "channel_2.h"
+#include "tone.h"
 #include "bits.h"
 #include "log.h"
 
-namespace {
-
-constexpr auto Nr21Address{0xFF16};
-constexpr auto Nr22Address{0xFF17};
-constexpr auto Nr23Address{0xFF18};
-constexpr auto Nr24Address{0xFF19};
-
-}
-
 namespace gb {
 
-Channel2::Channel2()
-    : freq{[this]{Step();}, 8192},
-      length{[this]{Disable();}},
+Tone::Tone(const u16 baseAddress)
+    : baseAddress{baseAddress},
       enabled{false},
-      rawFreq{0} {}
+      rawFreq{0},
+      freq{[this]{Step();}, 8192},
+      length{[this]{Disable();}} {}
 
-u8 Channel2::Read(const u16 address) const {
-    if (address == Nr21Address) {
+u8 Tone::Read(const u16 address) const {
+    if (address == this->baseAddress) {
         const auto duty{static_cast<u8>(this->square.Duty())};
         return static_cast<u8>(duty << 6);
     }
 
-    if (address == Nr22Address) {
+    if (address == (this->baseAddress + 1)) {
         return this->envelope.Read();
     }
 
-    if (address == Nr23Address) {
+    if (address == (this->baseAddress + 2)) {
         return 0; // Write-only.
     }
 
-    if (address == Nr24Address) {
+    if (address == (this->baseAddress + 3)) {
         const auto le{this->length.Enabled() ? 1 : 0};
         return static_cast<u8>(le << 6);
     }
 
-    log::Warning("Channel 2 - invalid read address: " + log::Hex(address));
+    log::Warning("Tone - invalid read address: " + log::Hex(address));
     return 0xFF;
 }
 
-void Channel2::Write(const u16 address, const u8 byte) {
-    if (address == Nr21Address) {
+void Tone::Write(const u16 address, const u8 byte) {
+    if (address == this->baseAddress) {
         this->square.SetDuty(static_cast<SquareDuty>((byte >> 6) & 0x03));
         this->length.SetCounter(byte & 0x3F);
         return;
     }
 
-    if (address == Nr22Address) {
+    if (address == (this->baseAddress + 1)) {
         this->dac.Enable((byte & 0xF8) != 0);
         this->envelope.Write(byte);
         return;
     }
 
-    if (address == Nr23Address) {
+    if (address == (this->baseAddress + 2)) {
         this->rawFreq = static_cast<u16>((this->rawFreq & 0x0700) | byte);
         this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 4));
         return;
     }
 
-    if (address == Nr24Address) {
+    if (address == (this->baseAddress + 3)) {
         this->rawFreq = static_cast<u16>((this->rawFreq & 0x00FF) | ((byte & 0x07) << 8));
         this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 4));
         this->length.SetEnabled(bit::IsSet(byte, 6));
@@ -71,31 +63,31 @@ void Channel2::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    log::Warning("Channel 2 - invalid write address: " + log::Hex(address));
+    log::Warning("Tone - invalid write address: " + log::Hex(address));
 }
 
-bool Channel2::Active() const {
+bool Tone::Active() const {
     return this->enabled && this->dac.Enabled();
 }
 
-double Channel2::Out() const {
+double Tone::Out() const {
     if (!this->enabled) return 0;
     return this->dac.Map(this->envelope.Volume(this->square.Out()));
 }
 
-void Channel2::Tick() {
+void Tone::Tick() {
     this->freq.Tick();
 }
 
-void Channel2::LengthTick() {
+void Tone::LengthTick() {
     this->length.Tick();
 }
 
-void Channel2::EnvTick() {
+void Tone::EnvTick() {
     this->envelope.Tick();
 }
 
-void Channel2::Trigger() {
+void Tone::Trigger() {
     this->enabled = true;
     this->freq.Trigger();
     this->length.Trigger();
@@ -105,11 +97,11 @@ void Channel2::Trigger() {
     }
 }
 
-void Channel2::Step() {
+void Tone::Step() {
     this->square.Tick();
 }
 
-void Channel2::Disable() {
+void Tone::Disable() {
     this->enabled = false;
 }
 
