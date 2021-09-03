@@ -1,4 +1,4 @@
-#include "channel_3.h"
+#include "wave.h"
 #include "log.h"
 
 namespace {
@@ -15,9 +15,9 @@ constexpr auto WaveTop{0xFF3F};
 
 namespace gb {
 
-Channel3::Channel3() : nr30{0}, nr31{0}, nr32{0}, nr33{0}, nr34{0}, wave{} {}
+Wave::Wave() : nr30{0}, nr31{0}, nr32{0}, nr33{0}, nr34{0}, wave{} {}
 
-u8 Channel3::Read(const u16 address) const {
+u8 Wave::Read(const u16 address) const {
     if (address == Nr30Address) {
         return this->nr30;
     }
@@ -42,11 +42,11 @@ u8 Channel3::Read(const u16 address) const {
         return this->wave[address - WaveBase];
     }
 
-    log::Warning("Channel 3 - invalid read address: " + log::Hex(address));
+    log::Warning("Wave - invalid read address: " + log::Hex(address));
     return 0xFF;
 }
 
-void Channel3::Write(const u16 address, const u8 byte) {
+void Wave::Write(const u16 address, const u8 byte) {
     if (address == Nr30Address) {
         this->nr30 = byte & 0x80;
         return;
@@ -77,15 +77,15 @@ void Channel3::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    log::Warning("Channel 3 - invalid write address: " + log::Hex(address));
+    log::Warning("Wave - invalid write address: " + log::Hex(address));
 }
 
-bool Channel3::Active() const { return false; }
+bool Wave::Active() const { return false; }
 
-double Channel3::Out() const { return 0; }
+double Wave::Out() const { return 0; }
 
-void Channel3::Tick() {}
+void Wave::Tick() {}
 
-void Channel3::LengthTick() {}
+void Wave::LengthTick() {}
 
 }

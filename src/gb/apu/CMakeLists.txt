@@ -1,5 +1,5 @@
 # List APU source files.
-set(apuSources apu.cc channel_3.cc channel_4.cc components.cc sweep.cc tone.cc)
+set(apuSources apu.cc channel_4.cc components.cc sweep.cc tone.cc wave.cc)
 
 # Add cartridge sources to 'gb' target.
 target_sources(gb PRIVATE ${apuSources})

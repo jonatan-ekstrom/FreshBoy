@@ -217,7 +217,7 @@ void Apu_::Reset() {
     this->seq = Sequencer{[this] (const auto step) { SeqTick(step); }};
     this->ch1 = Sweep{};
     this->ch2 = Tone{};
-    this->ch3 = Channel3{};
+    this->ch3 = Wave{};
     this->ch4 = Channel4{};
     this->mixer = Mixer{};
     this->amp = Amplifier{};

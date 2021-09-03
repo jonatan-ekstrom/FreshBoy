@@ -1,12 +1,12 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "channel_3.h"
 #include "channel_4.h"
 #include "components.h"
 #include "sweep.h"
 #include "tone.h"
 #include "types.h"
+#include "wave.h"
 
 namespace gb {
 
@@ -34,7 +34,7 @@ private:
     Sequencer seq;
     Sweep ch1;
     Tone ch2;
-    Channel3 ch3;
+    Wave ch3;
     Channel4 ch4;
     Mixer mixer;
     Amplifier amp;

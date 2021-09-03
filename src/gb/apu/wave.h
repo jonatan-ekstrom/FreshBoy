@@ -4,9 +4,9 @@
 
 namespace gb {
 
-class Channel3 {
+class Wave {
 public:
-    Channel3();
+    Wave();
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
     bool Active() const;
