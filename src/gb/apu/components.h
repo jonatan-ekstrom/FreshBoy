@@ -126,6 +126,19 @@ private:
     uint pos;
 };
 
+class NoiseUnit {
+public:
+    NoiseUnit();
+    u8 Out() const;
+    bool AltMode() const;
+    void SetMode(bool mode);
+    void Trigger();
+    void Tick();
+private:
+    bool altMode;
+    u16 reg;
+};
+
 class Dac {
 public:
     Dac();

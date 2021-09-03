@@ -224,6 +224,35 @@ void WaveUnit::Tick() {
     this->pos = (this->pos + 1) % 32;
 }
 
+NoiseUnit::NoiseUnit() : altMode{false}, reg{0x7FFF} {}
+
+u8 NoiseUnit::Out() const {
+    return bit::IsSet(this->reg, 0) ? 0 : 1;
+}
+
+bool NoiseUnit::AltMode() const {
+    return this->altMode;
+}
+
+void NoiseUnit::SetMode(const bool mode) {
+    this->altMode = mode;
+}
+
+void NoiseUnit::Trigger() {
+    this->reg = 0x7FFF;
+}
+
+void NoiseUnit::Tick() {
+    const auto zero{bit::Get(this->reg, 0)};
+    const auto one{bit::Get(this->reg, 1)};
+    const auto x{(zero ^ one) == 1};
+    this->reg = static_cast<u16>(this->reg >> 1);
+    bit::Update(this->reg, 14, x);
+    if (this->altMode) {
+        bit::Update(this->reg, 6, x);
+    }
+}
+
 Dac::Dac() : enabled{false} {}
 
 bool Dac::Enabled() const {
