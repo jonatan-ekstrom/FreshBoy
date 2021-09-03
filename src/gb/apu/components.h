@@ -102,6 +102,29 @@ private:
     u8 data;
 };
 
+enum class WaveLevel : u8 {
+    Mute = 0,
+    Full = 1,
+    Half = 2,
+    Quarter = 3
+};
+
+class WaveUnit {
+public:
+    WaveUnit();
+    u8 Out() const;
+    WaveLevel Level() const;
+    u8 ReadRam(uint offset) const;
+    void WriteRam(uint offset, u8 byte);
+    void SetLevel(WaveLevel newLevel);
+    void Trigger();
+    void Tick();
+private:
+    std::array<u8, 16> ram;
+    WaveLevel level;
+    uint pos;
+};
+
 class Dac {
 public:
     Dac();

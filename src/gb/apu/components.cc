@@ -1,4 +1,5 @@
 #include "components.h"
+#include <stdexcept>
 #include "bits.h"
 
 namespace gb {
@@ -51,6 +52,7 @@ void FreqUnit::Trigger() {
 }
 
 void FreqUnit::Tick() {
+    if (this->counter == 0) return;
     if (--this->counter != 0) return;
     this->counter = this->period;
     this->callback();
@@ -175,6 +177,51 @@ u16 SweepUnit::Calc() const {
     const auto shift{this->data & 0x07};
     const auto neg{(this->data & 0x08) != 0};
     return static_cast<u16>(this->freq + (neg ? -1 : 1) * (this->freq >> shift));
+}
+
+WaveUnit::WaveUnit()
+    : ram{},
+      level{WaveLevel::Mute},
+      pos{0} {}
+
+u8 WaveUnit::Out() const {
+    const auto base{pos / 2};
+    const auto high{pos % 2 == 0};
+    const auto data{high ? bit::HighNibble(this->ram[base]) :
+                           bit::LowNibble(this->ram[base])};
+    const auto lvl{static_cast<u8>(this->level)};
+    const auto shift{lvl == 0 ? 4 : lvl - 1};
+    return static_cast<u8>(data >> shift);
+}
+
+WaveLevel WaveUnit::Level() const {
+    return this->level;
+}
+
+u8 WaveUnit::ReadRam(const uint offset) const {
+    if (offset > 15) {
+        throw std::runtime_error{"WaveUnit - invalid offset."};
+    }
+    return this->ram[offset];
+}
+
+void WaveUnit::WriteRam(const uint offset, const u8 byte) {
+    if (offset > 15) {
+        throw std::runtime_error{"WaveUnit - invalid offset."};
+    }
+    this->ram[offset] = byte;
+}
+
+void WaveUnit::SetLevel(const WaveLevel newLevel) {
+    this->level = newLevel;
+}
+
+void WaveUnit::Trigger() {
+    this->pos = 0;
+}
+
+void WaveUnit::Tick() {
+    this->pos = (this->pos + 1) % 32;
 }
 
 Dac::Dac() : enabled{false} {}
