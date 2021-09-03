@@ -37,7 +37,7 @@ u8 ToneBase::Read(const u16 address) const {
 void ToneBase::Write(const u16 address, const u8 byte) {
     if (address == this->baseAddress) {
         this->square.SetDuty(static_cast<SquareDuty>((byte >> 6) & 0x03));
-        this->length.SetCounter(byte & 0x3F);
+        this->length.SetCounter(64 - (byte & 0x3F));
         return;
     }
 
