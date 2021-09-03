@@ -1,5 +1,5 @@
 #pragma once
-#include <array>
+#include "components.h"
 #include "types.h"
 
 namespace gb {
@@ -14,12 +14,15 @@ public:
     void Tick();
     void LengthTick();
 private:
-    u8 nr30;
-    u8 nr31;
-    u8 nr32;
-    u8 nr33;
-    u8 nr34;
-    std::array<u8, 16> wave;
+    void Trigger();
+    void Step();
+    void Disable();
+    bool enabled;
+    u16 rawFreq;
+    FreqUnit freq;
+    LengthUnit length;
+    WaveUnit wave;
+    Dac dac;
 };
 
 }

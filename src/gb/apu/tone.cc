@@ -9,7 +9,7 @@ ToneBase::ToneBase(const u16 baseAddress)
       enabled{false},
       rawFreq{0},
       freq{[this]{Step();}, 8192},
-      length{[this]{Disable();}} {}
+      length{[this]{Disable();}, 64} {}
 
 u8 ToneBase::Read(const u16 address) const {
     if (address == this->baseAddress) {

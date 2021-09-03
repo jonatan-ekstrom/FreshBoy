@@ -53,7 +53,7 @@ private:
 class LengthUnit {
 public:
     using Callback = std::function<void()>;
-    explicit LengthUnit(const Callback& callback);
+    LengthUnit(const Callback& callback, uint period);
     bool Enabled() const;
     void SetEnabled(bool on);
     void SetCounter(uint count);
@@ -62,6 +62,7 @@ public:
 private:
     Callback callback;
     bool enabled;
+    uint period;
     uint counter;
 };
 

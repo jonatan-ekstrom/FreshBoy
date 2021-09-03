@@ -58,8 +58,8 @@ void FreqUnit::Tick() {
     this->callback();
 }
 
-LengthUnit::LengthUnit(const Callback& callback)
-    : callback{callback}, enabled{false}, counter{0} {}
+LengthUnit::LengthUnit(const Callback& callback, const uint period)
+    : callback{callback}, enabled{false}, period{period}, counter{0} {}
 
 bool LengthUnit::Enabled() const {
     return this->enabled;
@@ -75,7 +75,7 @@ void LengthUnit::SetCounter(const uint count) {
 
 void LengthUnit::Trigger() {
     if (this->counter == 0) {
-        this->counter = 64;
+        this->counter = period;
     }
 }
 
