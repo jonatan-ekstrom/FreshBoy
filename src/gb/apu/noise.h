@@ -3,9 +3,9 @@
 
 namespace gb {
 
-class Channel4 {
+class Noise {
 public:
-    Channel4();
+    Noise();
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
     bool Active() const;

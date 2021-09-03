@@ -1,4 +1,4 @@
-#include "channel_4.h"
+#include "noise.h"
 #include "log.h"
 
 namespace {
@@ -12,9 +12,9 @@ constexpr auto Nr44Address{0xFF23};
 
 namespace gb {
 
-Channel4::Channel4() : nr41{0}, nr42{0}, nr43{0}, nr44{0} {}
+Noise::Noise() : nr41{0}, nr42{0}, nr43{0}, nr44{0} {}
 
-u8 Channel4::Read(const u16 address) const {
+u8 Noise::Read(const u16 address) const {
     if (address == Nr41Address) {
         return this->nr41;
     }
@@ -35,7 +35,7 @@ u8 Channel4::Read(const u16 address) const {
     return 0xFF;
 }
 
-void Channel4::Write(const u16 address, const u8 byte) {
+void Noise::Write(const u16 address, const u8 byte) {
     if (address == Nr41Address) {
         this->nr41 = byte & 0x3F;
         return;
@@ -59,14 +59,14 @@ void Channel4::Write(const u16 address, const u8 byte) {
     log::Warning("Channel 4 - invalid write address: " + log::Hex(address));
 }
 
-bool Channel4::Active() const { return false; }
+bool Noise::Active() const { return false; }
 
-double Channel4::Out() const { return 0; }
+double Noise::Out() const { return 0; }
 
-void Channel4::Tick() {}
+void Noise::Tick() {}
 
-void Channel4::LengthTick() {}
+void Noise::LengthTick() {}
 
-void Channel4::EnvTick() {}
+void Noise::EnvTick() {}
 
 }

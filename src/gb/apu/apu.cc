@@ -218,7 +218,7 @@ void Apu_::Reset() {
     this->ch1 = Sweep{};
     this->ch2 = Tone{};
     this->ch3 = Wave{};
-    this->ch4 = Channel4{};
+    this->ch4 = Noise{};
     this->mixer = Mixer{};
     this->amp = Amplifier{};
 }

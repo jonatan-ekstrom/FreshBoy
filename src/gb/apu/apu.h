@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "channel_4.h"
+#include "noise.h"
 #include "components.h"
 #include "sweep.h"
 #include "tone.h"
@@ -35,7 +35,7 @@ private:
     Sweep ch1;
     Tone ch2;
     Wave ch3;
-    Channel4 ch4;
+    Noise ch4;
     Mixer mixer;
     Amplifier amp;
     Samples bufferLeft;
