@@ -1,4 +1,5 @@
 #pragma once
+#include "components.h"
 #include "types.h"
 
 namespace gb {
@@ -14,10 +15,17 @@ public:
     void LengthTick();
     void EnvTick();
 private:
-    u8 nr41;
-    u8 nr42;
-    u8 nr43;
-    u8 nr44;
+    void Trigger();
+    void Step();
+    void Disable();
+    bool enabled;
+    u8 code;
+    u8 shift;
+    FreqUnit freq;
+    NoiseUnit noise;
+    LengthUnit length;
+    EnvelopeUnit envelope;
+    Dac dac;
 };
 
 }
