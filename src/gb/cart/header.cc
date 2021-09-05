@@ -119,14 +119,6 @@ std::string Header::Title() const {
     return Stringify(0x134, 0x143);
 }
 
-std::string Header::ManufacturerCode() const {
-    return Stringify(0x13F, 0x142);
-}
-
-std::string Header::CgbFlag() const {
-    return Hexdump(0x143, 0x143);
-}
-
 std::string Header::NewLicenseeCode() const {
     return Stringify(0x144, 0x145);
 }
@@ -295,11 +287,14 @@ std::string Header::PrettyPrint() const {
        << "ROM Size: " << RomStr() << '\n'
        << "RAM Size: " << RamStr() << '\n'
        << "Japanese: " << (Japanese() ? "Yes" : "No") << '\n'
-       << "Licensee: " << Licensee() << '\n'
-       << "New Licensee: " << NewLicenseeCode() << '\n'
-       << "Manufacturer: " << ManufacturerCode() << '\n'
-       << "CGB Flag: " << CgbFlag() << '\n'
-       << "SGB Flag: " << SgbFlag() << '\n'
+       << "Licensee: " << Licensee() << '\n';
+
+    const auto code{NewLicenseeCode()};
+    if (!code.empty()) {
+        ss << "New Licensee: " << code << '\n';
+    }
+
+    ss << "SGB Flag: " << SgbFlag() << '\n'
        << "Entry: " << Entry() << '\n'
        << "--------------------- Logo ---------------------\n"
        << Logo()

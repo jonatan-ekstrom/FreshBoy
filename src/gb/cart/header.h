@@ -37,8 +37,6 @@ public:
     std::string Entry() const;
     std::string Logo() const;
     std::string Title() const;
-    std::string ManufacturerCode() const;
-    std::string CgbFlag() const;
     std::string NewLicenseeCode() const;
     std::string SgbFlag() const;
     CartridgeType Type() const;
