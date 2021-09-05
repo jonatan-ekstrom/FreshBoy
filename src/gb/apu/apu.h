@@ -1,5 +1,7 @@
 #pragma once
+#include <functional>
 #include <memory>
+#include <tuple>
 #include <vector>
 #include "noise.h"
 #include "components.h"
@@ -16,19 +18,20 @@ using Apu = std::shared_ptr<Apu_>;
 class Apu_ {
 public:
     using Samples = std::vector<u8>;
-    static Apu Create();
+    using QueueHandler = std::function<void(const Samples&, const Samples&)>;
+    static Apu Create(const QueueHandler& queue);
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
     void Tick(uint cycles);
-    const Samples& LeftChannel() const;
-    const Samples& RightChannel() const;
-    void ClearSamples();
 private:
-    Apu_();
+    explicit Apu_(const QueueHandler& queue);
+    uint SampleCount() const;
     void Tick();
     void SeqTick(uint step);
     void Sample();
+    std::tuple<u8, u8> GetSample();
     void Reset();
+    QueueHandler queue;
     bool enabled;
     double elapsed;
     Sequencer seq;

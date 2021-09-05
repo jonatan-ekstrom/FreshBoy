@@ -172,7 +172,7 @@ private:
 
 namespace apu {
 
-u8 Digitize(double input);
+std::tuple<u8, u8> Digitize(double left, double right);
 
 }
 

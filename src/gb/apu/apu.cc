@@ -4,32 +4,28 @@
 
 namespace {
 
-constexpr auto Nr50Address{0xFF24};
-constexpr auto Nr51Address{0xFF25};
-constexpr auto Nr52Address{0xFF26};
+constexpr auto BaseAddress{0xFF24};
 constexpr auto ClocksPerSecond{4194304};
 constexpr auto SamplesPerSecond{44100};
-constexpr auto Delta{1.0 / ClocksPerSecond};
-constexpr auto SampleTime{1.0 / SamplesPerSecond};
+constexpr auto BufferSize{1024};
 
 }
 
 namespace gb {
 
-Apu_::Apu_()
-    : enabled{false},
+Apu_::Apu_(const QueueHandler& queue)
+    : queue{queue},
+      enabled{false},
       elapsed{0},
       seq{[this](auto step){SeqTick(step);}} {
-    constexpr auto frameSize{SamplesPerSecond / 60};
-    constexpr auto bufSize{2 * frameSize};
-    bufferLeft.reserve(bufSize);
-    bufferRight.reserve(bufSize);
+    bufferLeft.reserve(BufferSize);
+    bufferRight.reserve(BufferSize);
 }
 
-Apu Apu_::Create() { return Apu{new Apu_{}}; }
+Apu Apu_::Create(const QueueHandler& queue) { return Apu{new Apu_{queue}}; }
 
 u8 Apu_::Read(const u16 address) const {
-    if (!this->enabled && address != Nr52Address) {
+    if (!this->enabled && address != (BaseAddress + 2)) {
         return 0xFF;
     }
 
@@ -59,17 +55,17 @@ u8 Apu_::Read(const u16 address) const {
     }
 
     // Amp
-    if (address == Nr50Address) {
+    if (address == BaseAddress) {
         return this->amp.Read();
     }
 
     // Mixer
-    if (address == Nr51Address) {
+    if (address == (BaseAddress + 1)) {
         return this->mixer.Read();
     }
 
     // Power
-    if (address == Nr52Address) {
+    if (address == (BaseAddress + 2)) {
         u8 res{0};
         bit::Update(res, 7, this->enabled);
         bit::Update(res, 3, this->ch1.Active());
@@ -84,7 +80,7 @@ u8 Apu_::Read(const u16 address) const {
 }
 
 void Apu_::Write(const u16 address, const u8 byte) {
-    if (!this->enabled && address != Nr52Address) {
+    if (!this->enabled && address != (BaseAddress + 2)) {
         return;
     }
 
@@ -119,19 +115,19 @@ void Apu_::Write(const u16 address, const u8 byte) {
     }
 
     // Amp
-    if (address == Nr50Address) {
+    if (address == BaseAddress) {
         this->amp.Write(byte);
         return;
     }
 
     // Mixer
-    if (address == Nr51Address) {
+    if (address == (BaseAddress + 1)) {
         this->mixer.Write(byte);
         return;
     }
 
     // Power
-    if (address == Nr52Address) {
+    if (address == (BaseAddress + 2)) {
         const auto prev{this->enabled};
         this->enabled = bit::IsSet(byte, 7);
         const auto curr{this->enabled};
@@ -150,13 +146,8 @@ void Apu_::Tick(const uint cycles) {
     }
 }
 
-const Apu_::Samples& Apu_::LeftChannel() const { return this->bufferLeft; }
-
-const Apu_::Samples& Apu_::RightChannel() const { return this->bufferRight; }
-
-void Apu_::ClearSamples() {
-    this->bufferLeft.clear();
-    this->bufferRight.clear();
+uint Apu_::SampleCount() const {
+    return static_cast<uint>(this->bufferLeft.size());
 }
 
 void Apu_::Tick() {
@@ -167,6 +158,8 @@ void Apu_::Tick() {
     this->ch3.Tick();
     this->ch4.Tick();
 
+    constexpr auto Delta{1.0 / ClocksPerSecond};
+    constexpr auto SampleTime{1.0 / SamplesPerSecond};
     this->elapsed += Delta;
     if (this->elapsed > SampleTime) {
         this->elapsed -= SampleTime;
@@ -201,16 +194,26 @@ void Apu_::SeqTick(const uint step) {
 }
 
 void Apu_::Sample() {
+    if (SampleCount() == BufferSize) {
+        this->queue(this->bufferLeft, this->bufferRight);
+        this->bufferLeft.clear();
+        this->bufferRight.clear();
+    }
+
+    const auto [l, r] = GetSample();
+    this->bufferLeft.push_back(l);
+    this->bufferRight.push_back(r);
+}
+
+std::tuple<u8, u8> Apu_::GetSample() {
     if (!this->enabled) {
-        this->bufferLeft.push_back(0);
-        this->bufferRight.push_back(0);
-        return;
+        return {0, 0};
     }
     const auto [lm, rm] = this->mixer.Mix(this->ch1.Out(), this->ch2.Out(),
                                           this->ch3.Out(), this->ch4.Out());
     const auto [la, ra] = this->amp.Amplify(lm, rm);
-    this->bufferLeft.push_back(apu::Digitize(la));
-    this->bufferRight.push_back(apu::Digitize(ra));
+    const auto [ld, rd] = apu::Digitize(la, ra);
+    return {ld, rd};
 }
 
 void Apu_::Reset() {

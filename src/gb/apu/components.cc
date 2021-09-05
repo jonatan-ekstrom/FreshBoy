@@ -2,6 +2,17 @@
 #include <stdexcept>
 #include "bits.h"
 
+namespace {
+
+gb::u8 Digitize(const double input) {
+    const auto digitized{255 * input};
+    const auto clampedLow{digitized < 0 ? 0 : digitized};
+    const auto clampedHigh{clampedLow > 255 ? 255 : digitized};
+    return static_cast<gb::u8>(clampedHigh);
+}
+
+}
+
 namespace gb {
 
 Sequencer::Sequencer(const Callback& callback)
@@ -331,11 +342,8 @@ std::tuple<double, double> Amplifier::Amplify(const double left,
 
 namespace apu {
 
-u8 Digitize(const double input) {
-    const auto digitized{255 * input};
-    const auto clampedLow{digitized < 0 ? 0 : digitized};
-    const auto clampedHigh{clampedLow > 255 ? 255 : digitized};
-    return static_cast<u8>(clampedHigh);
+std::tuple<u8, u8> Digitize(const double left, const double right) {
+    return {::Digitize(left), ::Digitize(right)};
 }
 
 }
