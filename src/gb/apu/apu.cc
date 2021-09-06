@@ -13,7 +13,7 @@ constexpr auto BufferSize{1024};
 
 namespace gb {
 
-Apu_::Apu_(const QueueHandler& queue)
+Apu_::Apu_(const QueueHandler& queue, uint)
     : queue{queue},
       enabled{false},
       elapsed{0},
@@ -22,7 +22,9 @@ Apu_::Apu_(const QueueHandler& queue)
     bufferRight.reserve(BufferSize);
 }
 
-Apu Apu_::Create(const QueueHandler& queue) { return Apu{new Apu_{queue}}; }
+Apu Apu_::Create(const QueueHandler& queue, const uint refreshRate) {
+    return Apu{new Apu_{queue, refreshRate}};
+}
 
 u8 Apu_::Read(const u16 address) const {
     if (!this->enabled && address != (BaseAddress + 2)) {

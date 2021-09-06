@@ -24,14 +24,14 @@ public:
     using FrameCallback = Lcd_::FrameHandler;
     using QueueCallback = Apu_::QueueHandler;
     static Gameboy Create(const std::string& filePath, const FrameCallback& render,
-                          const QueueCallback& queue, bool log = false);
+                          const QueueCallback& queue, uint refreshRate, bool log = false);
     std::string Header() const;
     void Run(const ContinueCallback& cont);
     void ButtonPressed(Button button);
     void ButtonReleased(Button button);
 private:
     Gameboy_(const std::string& filePath, const FrameCallback& render,
-             const QueueCallback& queue, bool log);
+             const QueueCallback& queue, uint refreshRate, bool log);
     void Tick();
     Cartridge cart;
     Apu apu;

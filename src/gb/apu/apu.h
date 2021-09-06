@@ -19,12 +19,12 @@ class Apu_ {
 public:
     using Samples = std::vector<u8>;
     using QueueHandler = std::function<void(const Samples&, const Samples&)>;
-    static Apu Create(const QueueHandler& queue);
+    static Apu Create(const QueueHandler& queue, uint refreshRate);
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte);
     void Tick(uint cycles);
 private:
-    explicit Apu_(const QueueHandler& queue);
+    Apu_(const QueueHandler& queue, uint refreshRate);
     uint SampleCount() const;
     void Tick();
     void SeqTick(uint step);

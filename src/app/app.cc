@@ -62,7 +62,7 @@ void Emulator::Run(const std::string& filePath) {
     const auto queueCb{[this] (const auto& left, const auto& right) { Queue(left, right); }};
     const auto contCb{[this] { return Continue(); }};
 
-    gb = api::Create(filePath, renderCb, queueCb);
+    gb = api::Create(filePath, renderCb, queueCb, Instance_::RefreshRate());
     std::cout << api::Header(gb) << std::endl;
 
     this->window->Show();
