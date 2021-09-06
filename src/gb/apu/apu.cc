@@ -5,16 +5,24 @@
 namespace {
 
 constexpr auto BaseAddress{0xFF24};
-constexpr auto ClocksPerSecond{4194304};
-constexpr auto SamplesPerSecond{44100};
 constexpr auto BufferSize{1024};
+
+constexpr double ComputeSampleTime(const gb::uint refreshRate) {
+    constexpr auto clocksPerSec{4194304.0};
+    constexpr auto clocksPerFrame{70224.0};
+    constexpr auto sampleTime{1.0 / 44100.0};
+    constexpr auto frameRate{clocksPerSec / clocksPerFrame};
+    const auto adjustmentFactor{refreshRate / frameRate};
+    return sampleTime * adjustmentFactor;
+}
 
 }
 
 namespace gb {
 
-Apu_::Apu_(const QueueHandler& queue, uint)
+Apu_::Apu_(const QueueHandler& queue, const uint refreshRate)
     : queue{queue},
+      sampleTime{ComputeSampleTime(refreshRate)},
       enabled{false},
       elapsed{0},
       seq{[this](auto step){SeqTick(step);}} {
@@ -160,11 +168,10 @@ void Apu_::Tick() {
     this->ch3.Tick();
     this->ch4.Tick();
 
-    constexpr auto Delta{1.0 / ClocksPerSecond};
-    constexpr auto SampleTime{1.0 / SamplesPerSecond};
-    this->elapsed += Delta;
-    if (this->elapsed > SampleTime) {
-        this->elapsed -= SampleTime;
+    constexpr auto dt{1.0 / 4194304.0};
+    this->elapsed += dt;
+    if (this->elapsed > this->sampleTime) {
+        this->elapsed -= this->sampleTime;
         Sample();
     }
 }

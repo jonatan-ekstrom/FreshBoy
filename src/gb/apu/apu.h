@@ -32,6 +32,7 @@ private:
     std::tuple<u8, u8> GetSample();
     void Reset();
     QueueHandler queue;
+    double sampleTime;
     bool enabled;
     double elapsed;
     Sequencer seq;
