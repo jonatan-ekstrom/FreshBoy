@@ -14,6 +14,7 @@ public:
     Instance_& operator=(const Instance_&) = delete;
     Instance_& operator=(Instance_&& other) noexcept;
     static Instance Create();
+    static unsigned int RefreshRate();
 private:
     Instance_();
     static bool instanceExists;
