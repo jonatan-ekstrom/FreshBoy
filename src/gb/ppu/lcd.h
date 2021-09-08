@@ -37,10 +37,10 @@ private:
     void HandleHBlank();
     void HandleVBlank();
     void RenderScanline();
-    void RenderScreenLine(Dot* line);
-    void RenderBgLine(uint ly, Dot* line);
-    void RenderWindowLine(uint ly, Dot* line);
-    void RenderSpriteLine(uint ly, Dot* line);
+    void RenderDisabled(Dot* line) const;
+    void RenderBg(uint ly, Dot* line);
+    void RenderWindow(uint ly, Dot* line);
+    void RenderSprites(uint ly, Dot* line);
     FrameHandler frameHandler;
     TileBanks banks;
     TileMaps maps;

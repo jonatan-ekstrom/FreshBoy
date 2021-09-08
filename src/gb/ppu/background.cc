@@ -26,4 +26,13 @@ void Background::RenderScanline(const uint ly, Dot *const line) const {
     }
 }
 
+void Background::RenderDisabled(Dot *const line) const {
+    constexpr auto index{ColorIndex::Zero};
+    const auto shade{GetShade(index)};
+    const Dot dot{index, shade};
+    for (auto displayX{0u}; displayX < lcd::DisplayWidth; ++displayX) {
+        line[displayX] = dot;
+    }
+}
+
 }

@@ -12,6 +12,7 @@ class Background : public BgBase {
 public:
     Background(TileBanks banks, TileMaps maps, Palette palette);
     void RenderScanline(uint ly, Dot* line) const;
+    void RenderDisabled(Dot* line) const;
 };
 
 }

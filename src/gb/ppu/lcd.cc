@@ -1,8 +1,6 @@
 #include "lcd.h"
-#include <algorithm>
 #include <stdexcept>
 #include <utility>
-#include <vector>
 #include "display.h"
 #include "log.h"
 
@@ -292,37 +290,37 @@ void Lcd_::RenderScanline() {
     const auto ly{this->stat.Ly()};
     const auto line{this->frame.ScanlinePtr(ly)};
 
-    RenderScreenLine(line);
-
     if (this->lcdc.BackgroundEnabled()) {
-        RenderBgLine(ly, line);
+        RenderBg(ly, line);
         if (this->lcdc.WindowEnabled()) {
-            RenderWindowLine(ly, line);
+            RenderWindow(ly, line);
         }
+    } else {
+        RenderDisabled(line);
     }
 
     if (this->lcdc.ObjectsEnabled()) {
-        RenderSpriteLine(ly, line);
+        RenderSprites(ly, line);
     }
 }
 
-void Lcd_::RenderScreenLine(Dot *const line) {
-    std::fill(line, line + lcd::DisplayWidth, Dot{});
+void Lcd_::RenderDisabled(Dot *const line) const {
+    this->bg.RenderDisabled(line);
 }
 
-void Lcd_::RenderBgLine(const uint ly, Dot *const line) {
+void Lcd_::RenderBg(uint ly, Dot *const line) {
     this->bg.UseBank(this->lcdc.BackgroundBank());
     this->bg.UseMap(this->lcdc.BackgroundMap());
     this->bg.RenderScanline(ly, line);
 }
 
-void Lcd_::RenderWindowLine(const uint ly, Dot *const line) {
+void Lcd_::RenderWindow(uint ly, Dot *const line) {
     this->window.UseBank(this->lcdc.BackgroundBank());
     this->window.UseMap(this->lcdc.WindowMap());
     this->window.RenderScanline(ly, line);
 }
 
-void Lcd_::RenderSpriteLine(const uint ly, Dot *const line) {
+void Lcd_::RenderSprites(uint ly, Dot *const line) {
     this->sprites.SetSize(this->lcdc.ObjectSize());
     this->sprites.RenderScanline(ly, line);
 }
