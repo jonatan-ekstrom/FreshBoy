@@ -31,7 +31,8 @@ Lcd_::Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler)
       stat{std::move(interrupts)},
       lcdc{},
       frame{},
-      cycleCount{0} {}
+      cycleCount{0},
+      firstFrame{false} {}
 
 u8 Lcd_::Read(const u16 address) const {
     if (!Accessible(address)) {
@@ -112,7 +113,15 @@ void Lcd_::Write(const u16 address, const u8 byte) {
 
     // LCDC
     if (address == 0xFF40) {
+        const auto prev{Enabled()};
         this->lcdc.Write(byte);
+        const auto curr{Enabled()};
+        if (!prev && curr) {
+            Enable();
+        }
+        if (prev && !curr) {
+            Disable();
+        }
         return;
     }
 
@@ -151,6 +160,15 @@ void Lcd_::Write(const u16 address, const u8 byte) {
 
 void Lcd_::Tick(const uint cycles) {
     this->cycleCount += cycles;
+
+    if (!Enabled()) {
+        constexpr auto cyclesPerFrame{70224};
+        if (this->cycleCount < cyclesPerFrame) return;
+        this->cycleCount %= cyclesPerFrame;
+        FrameReady();
+        return;
+    }
+
     switch (this->stat.Mode()) {
         case LcdMode::HBlank:
             HandleHBlank();
@@ -167,6 +185,10 @@ void Lcd_::Tick(const uint cycles) {
         default:
             throw std::runtime_error{"Unknown state in PPU state machine."};
     }
+}
+
+bool Lcd_::Enabled() const {
+    return this->lcdc.LcdEnabled();
 }
 
 bool Lcd_::Accessible(const u16 address) const {
@@ -192,12 +214,20 @@ bool Lcd_::Accessible(const u16 address) const {
     return true;
 }
 
-bool Lcd_::Enabled() const {
-    return this->lcdc.LcdEnabled();
+void Lcd_::Enable() {
+    this->cycleCount = 0;
+    this->firstFrame = true;
+}
+
+void Lcd_::Disable() {
+    this->cycleCount = 0;
+    this->frame.Reset();
+    this->stat.Reset();
 }
 
 void Lcd_::FrameReady() {
     this->frameHandler(this->frame.LockFrame());
+    this->firstFrame = false;
 }
 
 void Lcd_::HandleOam() {
@@ -257,13 +287,12 @@ void Lcd_::HandleVBlank() {
 }
 
 void Lcd_::RenderScanline() {
+    if (this->firstFrame) return;
+
     const auto ly{this->stat.Ly()};
     const auto line{this->frame.ScanlinePtr(ly)};
 
     RenderScreenLine(line);
-    if (!Enabled()) {
-        return;
-    }
 
     if (this->lcdc.BackgroundEnabled()) {
         RenderBgLine(ly, line);

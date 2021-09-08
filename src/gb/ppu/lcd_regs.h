@@ -40,6 +40,7 @@ public:
     void Write(u16 address, u8 byte);
     void SetMode(LcdMode mode);
     void SetLy(u8 newLy);
+    void Reset();
 private:
     void Refresh();
     void SetLyFlag(bool flag);

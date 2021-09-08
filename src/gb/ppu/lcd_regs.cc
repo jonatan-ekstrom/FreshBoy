@@ -60,7 +60,7 @@ LcdStat::LcdStat(InterruptManager&& interrupts)
     : interrupts{std::move(interrupts)},
       blankLine{false},
       statLine{false},
-      stat{0x86}, // 1000 0110
+      stat{0x06},
       ly{0},
       lyc{0} {}
 
@@ -82,7 +82,7 @@ u8 LcdStat::Read(const u16 address) const {
 
 void LcdStat::Write(const u16 address, const u8 byte) {
     if (address == StatAddress) {
-        const u8 mask{0x78}; // 0111 1000
+        const u8 mask{0x78};
         bit::Assign(this->stat, byte, mask);
         Refresh();
         return;
@@ -109,6 +109,15 @@ void LcdStat::SetLy(const u8 newLy) {
     }
     this->ly = newLy;
     Refresh();
+}
+
+void LcdStat::Reset() {
+    this->ly = 0;
+    bit::Clear(this->stat, 0);
+    bit::Set(this->stat, 1);
+    if (this->lyc == 0) {
+        bit::Set(this->stat, 2);
+    }
 }
 
 void LcdStat::Refresh() {

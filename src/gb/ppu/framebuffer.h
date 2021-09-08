@@ -11,6 +11,7 @@ public:
     Framebuffer();
     const Pixels& LockFrame();
     Dot* ScanlinePtr(uint index);
+    void Reset();
 private:
     std::vector<Dot> dots;
     Pixels pixels;

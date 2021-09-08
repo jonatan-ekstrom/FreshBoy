@@ -29,6 +29,8 @@ private:
     Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler);
     bool Enabled() const;
     bool Accessible(u16 address) const;
+    void Enable();
+    void Disable();
     void FrameReady();
     void HandleOam();
     void HandleTransfer();
@@ -51,6 +53,7 @@ private:
     LcdControl lcdc;
     Framebuffer frame;
     uint cycleCount;
+    bool firstFrame;
 };
 
 }

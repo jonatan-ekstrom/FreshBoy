@@ -37,4 +37,9 @@ Dot* Framebuffer::ScanlinePtr(const uint index) {
     return &this->dots[0] + offset;
 }
 
+void Framebuffer::Reset() {
+    std::fill(this->dots.begin(), this->dots.end(), Dot{});
+    std::fill(this->pixels.begin(), this->pixels.end(), ShadeToPixel(Shade::Screen));
+}
+
 }
