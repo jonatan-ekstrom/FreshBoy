@@ -125,7 +125,7 @@ void Lcd_::Write(const u16 address, const u8 byte) {
 
     // STAT
     if (address == 0xFF41) {
-        this->stat.Write(address, byte);
+        this->stat.Write(address, byte, Enabled());
         return;
     }
 
@@ -137,7 +137,7 @@ void Lcd_::Write(const u16 address, const u8 byte) {
 
     // LYC
     if (address == 0xFF45) {
-        this->stat.Write(address, byte);
+        this->stat.Write(address, byte, Enabled());
         return;
     }
 

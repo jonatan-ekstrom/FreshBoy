@@ -37,13 +37,12 @@ public:
     LcdMode Mode() const;
     u8 Ly() const;
     u8 Read(u16 address) const;
-    void Write(u16 address, u8 byte);
+    void Write(u16 address, u8 byte, bool allowInterrupts);
     void SetMode(LcdMode mode);
     void SetLy(u8 newLy);
     void Reset();
 private:
-    void Refresh();
-    void SetLyFlag(bool flag);
+    void Refresh(bool allowInterrupts = true);
     bool UpdateBlankLine();
     bool UpdateStatLine();
     void FireBlank() const;

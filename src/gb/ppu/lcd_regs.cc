@@ -80,17 +80,18 @@ u8 LcdStat::Read(const u16 address) const {
     return 0xFF;
 }
 
-void LcdStat::Write(const u16 address, const u8 byte) {
+void LcdStat::Write(const u16 address, const u8 byte,
+                    const bool allowInterrupts) {
     if (address == StatAddress) {
         const u8 mask{0x78};
         bit::Assign(this->stat, byte, mask);
-        Refresh();
+        Refresh(allowInterrupts);
         return;
     }
 
     if (address == LycAddress) {
         this->lyc = byte;
-        Refresh();
+        Refresh(allowInterrupts);
         return;
     }
 
@@ -115,23 +116,19 @@ void LcdStat::Reset() {
     this->ly = 0;
     bit::Clear(this->stat, 0);
     bit::Set(this->stat, 1);
-    if (this->lyc == 0) {
-        bit::Set(this->stat, 2);
-    }
+    Refresh(false);
 }
 
-void LcdStat::Refresh() {
-    SetLyFlag(this->ly == this->lyc);
-    if (UpdateBlankLine()) {
+void LcdStat::Refresh(const bool allowInterrupts) {
+    bit::Update(this->stat, 2, this->ly == this->lyc);
+
+    if (UpdateBlankLine() && allowInterrupts) {
         FireBlank();
     }
-    if (UpdateStatLine()) {
+
+    if (UpdateStatLine() && allowInterrupts) {
         FireStat();
     }
-}
-
-void LcdStat::SetLyFlag(const bool flag) {
-    bit::Update(this->stat, 2, flag);
 }
 
 bool LcdStat::UpdateBlankLine() {
