@@ -5,13 +5,9 @@
 namespace {
 
 constexpr bool ShouldFire(const gb::u8 prev, const gb::u8 curr) {
-    using namespace gb;
-    for (auto i{0u}; i < 4; ++i) {
-        if (bit::IsSet(prev, i) && bit::IsClear(curr, i)) {
-            return true;
-        }
-    }
-    return false;
+    const auto prevHigh{(prev & 0x0F) == 0x0F};
+    const auto currHigh{(curr & 0x0F) == 0x0F};
+    return prevHigh && !currHigh;
 }
 
 }
@@ -28,11 +24,7 @@ Input Input_::Create(InterruptManager interrupts) {
 }
 
 u8 Input_::Read() const {
-    u8 res{0x3F};
-    if (!(this->action || this->direction)) {
-        return res;
-    }
-
+    u8 res{0xFF};
     if (this->action) {
         bit::Clear(res, 5);
         if (Pressed(Button::A)) bit::Clear(res, 0);
