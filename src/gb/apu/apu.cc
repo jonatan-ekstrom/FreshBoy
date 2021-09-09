@@ -1,4 +1,5 @@
 #include "apu.h"
+#include <array>
 #include "bits.h"
 #include "log.h"
 
@@ -35,6 +36,12 @@ Apu Apu_::Create(const QueueHandler& queue, const uint refreshRate) {
 }
 
 u8 Apu_::Read(const u16 address) const {
+    // Wave RAM is always readable.
+    if (address >= 0xFF30 && address <= 0xFF3F) {
+        return this->ch3.Read(address);
+    }
+
+    // Other registers require power on.
     if (!this->enabled && address != (BaseAddress + 2)) {
         return 0xFF;
     }
@@ -57,11 +64,6 @@ u8 Apu_::Read(const u16 address) const {
     // CH4
     if (address >= 0xFF20 && address <= 0xFF23) {
         return this->ch4.Read(address);
-    }
-
-    // Wave RAM
-    if (address >= 0xFF30 && address <= 0xFF3F) {
-        return this->ch3.Read(address);
     }
 
     // Amp
@@ -90,6 +92,13 @@ u8 Apu_::Read(const u16 address) const {
 }
 
 void Apu_::Write(const u16 address, const u8 byte) {
+    // Wave RAM is always writeable.
+    if (address >= 0xFF30 && address <= 0xFF3F) {
+        this->ch3.Write(address, byte);
+        return;
+    }
+
+    // Other registers require power on.
     if (!this->enabled && address != (BaseAddress + 2)) {
         return;
     }
@@ -118,12 +127,6 @@ void Apu_::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    // Wave RAM
-    if (address >= 0xFF30 && address <= 0xFF3F) {
-        this->ch3.Write(address, byte);
-        return;
-    }
-
     // Amp
     if (address == BaseAddress) {
         this->amp.Write(byte);
@@ -139,11 +142,11 @@ void Apu_::Write(const u16 address, const u8 byte) {
     // Power
     if (address == (BaseAddress + 2)) {
         const auto prev{this->enabled};
-        this->enabled = bit::IsSet(byte, 7);
-        const auto curr{this->enabled};
-        if (prev && !curr) {
+        const auto next{bit::IsSet(byte, 7)};
+        if (prev && !next) {
             Reset();
         }
+        this->enabled = next;
         return;
     }
 
@@ -161,19 +164,20 @@ uint Apu_::SampleCount() const {
 }
 
 void Apu_::Tick() {
-    this->seq.Tick();
-
-    this->ch1.Tick();
-    this->ch2.Tick();
-    this->ch3.Tick();
-    this->ch4.Tick();
-
     constexpr auto dt{1.0 / 4194304.0};
     this->elapsed += dt;
     if (this->elapsed > this->sampleTime) {
         this->elapsed -= this->sampleTime;
         Sample();
     }
+
+    if (!this->enabled) return;
+
+    this->seq.Tick();
+    this->ch1.Tick();
+    this->ch2.Tick();
+    this->ch3.Tick();
+    this->ch4.Tick();
 }
 
 void Apu_::SeqTick(const uint step) {
@@ -226,13 +230,17 @@ std::tuple<u8, u8> Apu_::GetSample() {
 }
 
 void Apu_::Reset() {
-    this->seq = Sequencer{[this] (const auto step) { SeqTick(step); }};
-    this->ch1 = Sweep{};
-    this->ch2 = Tone{};
-    this->ch3 = Wave{};
-    this->ch4 = Noise{};
-    this->mixer = Mixer{};
-    this->amp = Amplifier{};
+    constexpr std::array<u16, 20> regs {
+        0xFF10, 0xFF11, 0xFF12, 0xFF13, 0xFF14,
+        0xFF16, 0xFF17, 0xFF18, 0xFF19,
+        0xFF1A, 0xFF1B, 0xFF1C, 0xFF1D, 0xFF1E,
+        0xFF20, 0xFF21, 0xFF22, 0xFF23,
+        0xFF24, 0xFF25
+    };
+    for (const auto r : regs) {
+        Write(r, 0);
+    }
+    this->seq.Reset();
 }
 
 }

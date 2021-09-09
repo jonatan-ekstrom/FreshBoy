@@ -25,6 +25,10 @@ void Sequencer::Tick() {
     callback(this->step);
 }
 
+void Sequencer::Reset() {
+    this->step = 7;
+}
+
 SquareUnit::SquareUnit()
     : duty{SquareDuty::OneEighth},
       pattern{{{0, 0, 0, 0, 0, 0, 0, 1},

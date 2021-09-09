@@ -11,6 +11,7 @@ public:
     using Callback = std::function<void(uint)>;
     explicit Sequencer(const Callback& callback);
     void Tick();
+    void Reset();
 private:
     Callback callback;
     uint counter;
