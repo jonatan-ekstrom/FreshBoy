@@ -34,13 +34,14 @@ enum class LcdMode {
 class LcdStat {
 public:
     explicit LcdStat(InterruptManager&& interrupts);
-    LcdMode Mode() const;
-    u8 Ly() const;
     u8 Read(u16 address) const;
     void Write(u16 address, u8 byte, bool allowInterrupts);
-    void SetMode(LcdMode mode);
+    u8 Ly() const;
+    LcdMode Mode() const;
     void SetLy(u8 newLy);
-    void Reset();
+    void SetMode(LcdMode mode);
+    void Enable();
+    void Disable();
 private:
     void Refresh(bool allowInterrupts = true);
     bool UpdateBlankLine();

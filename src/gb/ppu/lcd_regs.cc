@@ -60,17 +60,9 @@ LcdStat::LcdStat(InterruptManager&& interrupts)
     : interrupts{std::move(interrupts)},
       blankLine{false},
       statLine{false},
-      stat{0x06},
+      stat{0},
       ly{0},
       lyc{0} {}
-
-LcdMode LcdStat::Mode() const {
-    return static_cast<LcdMode>(this->stat & 0x03);
-}
-
-u8 LcdStat::Ly() const {
-    return this->ly;
-}
 
 u8 LcdStat::Read(const u16 address) const {
     if (address == StatAddress) return this->stat;
@@ -98,10 +90,12 @@ void LcdStat::Write(const u16 address, const u8 byte,
     log::Warning("LcdStat - invalid write address: " + log::Hex(address));
 }
 
-void LcdStat::SetMode(const LcdMode mode) {
-    const u8 mask{0x03};
-    bit::Assign(this->stat, static_cast<u8>(mode), mask);
-    Refresh();
+u8 LcdStat::Ly() const {
+    return this->ly;
+}
+
+LcdMode LcdStat::Mode() const {
+    return static_cast<LcdMode>(this->stat & 0x03);
 }
 
 void LcdStat::SetLy(const u8 newLy) {
@@ -112,10 +106,21 @@ void LcdStat::SetLy(const u8 newLy) {
     Refresh();
 }
 
-void LcdStat::Reset() {
-    this->ly = 0;
-    bit::Clear(this->stat, 0);
+void LcdStat::SetMode(const LcdMode mode) {
+    const u8 mask{0x03};
+    bit::Assign(this->stat, static_cast<u8>(mode), mask);
+    Refresh();
+}
+
+void LcdStat::Enable() {
     bit::Set(this->stat, 1);
+    Refresh(false);
+}
+
+void LcdStat::Disable() {
+    this->ly = 0;
+    bit::Clear(this->stat, 1);
+    bit::Clear(this->stat, 0);
     Refresh(false);
 }
 

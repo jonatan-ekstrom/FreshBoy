@@ -215,12 +215,13 @@ bool Lcd_::Accessible(const u16 address) const {
 void Lcd_::Enable() {
     this->cycleCount = 0;
     this->firstFrame = true;
+    this->stat.Enable();
 }
 
 void Lcd_::Disable() {
     this->cycleCount = 0;
     this->frame.Reset();
-    this->stat.Reset();
+    this->stat.Disable();
 }
 
 void Lcd_::FrameReady() {
