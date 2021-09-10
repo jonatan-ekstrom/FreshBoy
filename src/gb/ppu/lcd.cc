@@ -211,11 +211,6 @@ bool Lcd_::Accessible(const u16 address) const {
         return mode == LcdMode::HBlank || mode == LcdMode::VBlank;
     }
 
-    // Palettes
-    if (address >= 0xFF47 && address <= 0xFF49) {
-        return mode != LcdMode::Transfer;
-    }
-
     return true;
 }
 
