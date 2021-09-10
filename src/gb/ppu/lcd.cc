@@ -4,6 +4,12 @@
 #include "display.h"
 #include "log.h"
 
+namespace {
+
+constexpr auto Inactive{static_cast<uint>(-1)};
+
+}
+
 namespace gb {
 
 Lcd Lcd_::Create(InterruptManager interrupts, const FrameHandler& frameHandler) {
@@ -30,6 +36,7 @@ Lcd_::Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler)
       lcdc{},
       frame{},
       cycleCount{0},
+      wly{Inactive},
       firstFrame{false} {}
 
 u8 Lcd_::Read(const u16 address) const {
@@ -220,6 +227,7 @@ void Lcd_::Enable() {
 
 void Lcd_::Disable() {
     this->cycleCount = 0;
+    this->wly = Inactive;
     this->frame.Reset();
     this->stat.Disable();
 }
@@ -280,6 +288,7 @@ void Lcd_::HandleVBlank() {
     if (newLy == 0) {
         // VBlank is done, switch to OAM search.
         this->stat.SetMode(LcdMode::Oam);
+        this->wly = Inactive;
     }
     // Start a new scanline.
     this->stat.SetLy(newLy);
@@ -319,7 +328,7 @@ void Lcd_::RenderBg(uint ly, Dot *const line) {
 void Lcd_::RenderWindow(uint ly, Dot *const line) {
     this->window.UseBank(this->lcdc.BackgroundBank());
     this->window.UseMap(this->lcdc.WindowMap());
-    this->window.RenderScanline(ly, line);
+    this->window.RenderScanline(ly, this->wly, line);
 }
 
 void Lcd_::RenderSprites(uint ly, Dot *const line) {

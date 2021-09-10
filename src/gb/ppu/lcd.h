@@ -53,6 +53,7 @@ private:
     LcdControl lcdc;
     Framebuffer frame;
     uint cycleCount;
+    uint wly;
     bool firstFrame;
 };
 
