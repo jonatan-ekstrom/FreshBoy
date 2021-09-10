@@ -292,11 +292,12 @@ void Lcd_::RenderScanline() {
 
     if (this->lcdc.BackgroundEnabled()) {
         RenderBg(ly, line);
-        if (this->lcdc.WindowEnabled()) {
-            RenderWindow(ly, line);
-        }
     } else {
         RenderDisabled(line);
+    }
+
+    if (this->lcdc.WindowEnabled()) {
+        RenderWindow(ly, line);
     }
 
     if (this->lcdc.ObjectsEnabled()) {
