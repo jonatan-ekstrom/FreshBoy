@@ -19,11 +19,11 @@ InterruptManager InterruptManager_::Create() {
 
 u8 InterruptManager_::Read(const u16 address) const {
     if (address == FlagsAddress) {
-        return this->flags;
+        return this->flags | 0xE0;
     }
 
     if (address == EnableAddress) {
-        return this->enabled;
+        return this->enabled | 0xE0;
     }
 
     throw std::runtime_error{"InterruptManager - invalid read address."};
