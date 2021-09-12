@@ -21,25 +21,25 @@ Wave::Wave()
 u8 Wave::Read(const u16 address) const {
     if (address == BaseAddress) {
         const auto bit{this->dac.Enabled() ? 1 : 0};
-        return static_cast<u8>(bit << 7);
+        return static_cast<u8>((bit << 7) | 0x7F);
     }
 
     if (address == (BaseAddress + 1)) {
-        return 0; // Write-only
+        return 0xFF; // Write-only
     }
 
     if (address == (BaseAddress + 2)) {
         const auto level{static_cast<u8>(this->wave.Level())};
-        return static_cast<u8>(level << 5);
+        return static_cast<u8>((level << 5) | 0x9F);
     }
 
     if (address == (BaseAddress + 3)) {
-        return 0; // Write-only
+        return 0xFF; // Write-only
     }
 
     if (address == (BaseAddress + 4)) {
         const auto le{this->length.Enabled() ? 1 : 0};
-        return static_cast<u8>(le << 6);
+        return static_cast<u8>((le << 6) | 0xBF);
     }
 
     if (address >= WaveBase && address <= WaveTop) {

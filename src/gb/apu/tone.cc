@@ -14,7 +14,7 @@ ToneBase::ToneBase(const u16 baseAddress)
 u8 ToneBase::Read(const u16 address) const {
     if (address == this->baseAddress) {
         const auto duty{static_cast<u8>(this->square.Duty())};
-        return static_cast<u8>(duty << 6);
+        return static_cast<u8>((duty << 6) | 0x3F);
     }
 
     if (address == (this->baseAddress + 1)) {
@@ -22,12 +22,12 @@ u8 ToneBase::Read(const u16 address) const {
     }
 
     if (address == (this->baseAddress + 2)) {
-        return 0; // Write-only.
+        return 0xFF; // Write-only.
     }
 
     if (address == (this->baseAddress + 3)) {
         const auto le{this->length.Enabled() ? 1 : 0};
-        return static_cast<u8>(le << 6);
+        return static_cast<u8>((le << 6) | 0xBF);
     }
 
     log::Warning("ToneBase - invalid read address: " + log::Hex(address));

@@ -22,7 +22,7 @@ Noise::Noise()
 
 u8 Noise::Read(const u16 address) const {
     if (address == BaseAddress) {
-        return 0; // Write-only
+        return 0xFF; // Write-only
     }
 
     if (address == (BaseAddress + 1)) {
@@ -40,7 +40,7 @@ u8 Noise::Read(const u16 address) const {
 
     if (address == (BaseAddress + 3)) {
         const auto le{this->length.Enabled() ? 1 : 0};
-        return static_cast<u8>(le << 6);
+        return static_cast<u8>((le << 6) | 0xBF);
     }
 
     log::Warning("Noise - invalid read address: " + log::Hex(address));

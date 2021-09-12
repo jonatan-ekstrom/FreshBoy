@@ -144,11 +144,11 @@ SweepUnit::SweepUnit(const SweepUnit::Getter& getter,
       data{0} {}
 
 u8 SweepUnit::Read() const {
-    return this->data;
+    return this->data | 0x80;
 }
 
 void SweepUnit::Write(const u8 byte) {
-    this->data = byte;
+    this->data = byte & 0x7F;
 }
 
 void SweepUnit::Trigger() {

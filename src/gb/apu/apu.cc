@@ -78,7 +78,7 @@ u8 Apu_::Read(const u16 address) const {
 
     // Power
     if (address == (BaseAddress + 2)) {
-        u8 res{0};
+        u8 res{0xFF};
         bit::Update(res, 7, this->enabled);
         bit::Update(res, 3, this->ch1.Active());
         bit::Update(res, 2, this->ch2.Active());
