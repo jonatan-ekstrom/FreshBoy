@@ -42,7 +42,7 @@ u8 Timer_::Read(const u16 address) const {
     }
 
     if (address == TacAddress) {
-        return this->tac;
+        return this->tac | 0xF8;
     }
 
     log::Warning("Timer - invalid read address: " + log::Hex(address));
