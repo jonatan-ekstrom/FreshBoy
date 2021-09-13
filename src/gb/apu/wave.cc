@@ -52,7 +52,7 @@ u8 Wave::Read(const u16 address) const {
 
 void Wave::Write(const u16 address, const u8 byte) {
     if (address == BaseAddress) {
-        this->dac.Enable(bit::IsSet(byte, 7));
+        SetDacPower(byte);
         return;
     }
 
@@ -106,6 +106,13 @@ void Wave::Tick() {
 
 void Wave::LengthTick() {
     this->length.Tick();
+}
+
+void Wave::SetDacPower(const u8 byte) {
+    this->dac.Enable(bit::IsSet(byte, 7));
+    if (!this->dac.Enabled()) {
+        this->enabled = false;
+    }
 }
 
 void Wave::Trigger() {

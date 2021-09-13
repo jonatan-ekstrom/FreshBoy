@@ -15,6 +15,7 @@ public:
     void LengthTick();
     void EnvTick();
 private:
+    void SetDacPower(u8 byte);
     void Trigger();
     void Step();
     void Disable();

@@ -17,6 +17,7 @@ protected:
     explicit ToneBase(u16 baseAddress);
     u16 GetFrequency() const;
     void SetFrequency(u16 newFreq);
+    void SetDacPower(u8 byte);
     void Disable();
 private:
     void Trigger();

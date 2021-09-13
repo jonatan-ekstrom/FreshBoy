@@ -42,7 +42,7 @@ void ToneBase::Write(const u16 address, const u8 byte) {
     }
 
     if (address == (this->baseAddress + 1)) {
-        this->dac.Enable((byte & 0xF8) != 0);
+        SetDacPower(byte);
         this->envelope.Write(byte);
         return;
     }
@@ -92,6 +92,13 @@ u16 ToneBase::GetFrequency() const { return this->rawFreq; }
 void ToneBase::SetFrequency(const u16 newFreq) {
     this->rawFreq = newFreq;
     this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 4));
+}
+
+void ToneBase::SetDacPower(const u8 byte) {
+    this->dac.Enable((byte & 0xF8) != 0);
+    if (!this->dac.Enabled()) {
+        this->enabled = false;
+    }
 }
 
 void ToneBase::Disable() {

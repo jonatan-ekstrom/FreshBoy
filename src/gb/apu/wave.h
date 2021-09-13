@@ -14,6 +14,7 @@ public:
     void Tick();
     void LengthTick();
 private:
+    void SetDacPower(u8 byte);
     void Trigger();
     void Step();
     void Disable();

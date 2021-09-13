@@ -54,7 +54,7 @@ void Noise::Write(const u16 address, const u8 byte) {
     }
 
     if (address == (BaseAddress + 1)) {
-        this->dac.Enable((byte & 0xF8) != 0);
+        SetDacPower(byte);
         this->envelope.Write(byte);
         return;
     }
@@ -99,6 +99,13 @@ void Noise::LengthTick() {
 
 void Noise::EnvTick() {
     this->envelope.Tick();
+}
+
+void Noise::SetDacPower(const u8 byte) {
+    this->dac.Enable((byte & 0xF8) != 0);
+    if (!this->dac.Enabled()) {
+        this->enabled = false;
+    }
 }
 
 void Noise::Trigger() {
