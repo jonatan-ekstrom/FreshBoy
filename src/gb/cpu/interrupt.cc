@@ -1,6 +1,6 @@
 #include "interrupt.h"
-#include <stdexcept>
 #include "bits.h"
+#include "log.h"
 
 namespace {
 
@@ -26,7 +26,8 @@ u8 InterruptManager_::Read(const u16 address) const {
         return this->enabled | 0xE0;
     }
 
-    throw std::runtime_error{"InterruptManager - invalid read address."};
+    log::Warning("InterruptManager - invalid read address: " + log::Hex(address));
+    return 0xFF;
 }
 
 void InterruptManager_::Write(const u16 address, const u8 byte) {
@@ -40,7 +41,7 @@ void InterruptManager_::Write(const u16 address, const u8 byte) {
         return;
     }
 
-    throw std::runtime_error{"InterruptManager - invalid write address."};
+    log::Warning("InterruptManager - invalid write address: " + log::Hex(address));
 }
 
 std::vector<Interrupt> InterruptManager_::PendingInterrupts() const {
