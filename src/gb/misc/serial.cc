@@ -27,7 +27,7 @@ Serial Serial_::Create(InterruptManager interrupts) {
 
 u8 Serial_::Read(const u16 address) const {
     if (address == SbAddress) return this->sb;
-    if (address == ScAddress) return this->sc;
+    if (address == ScAddress) return this->sc | 0x7C;
     log::Warning("Serial - invalid read address: " + log::Hex(address));
     return 0xFF;
 }
