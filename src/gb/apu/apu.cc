@@ -36,16 +36,6 @@ Apu Apu_::Create(const QueueHandler& queue, const uint refreshRate) {
 }
 
 u8 Apu_::Read(const u16 address) const {
-    // Wave RAM is always readable.
-    if (address >= 0xFF30 && address <= 0xFF3F) {
-        return this->ch3.Read(address);
-    }
-
-    // Other registers require power on.
-    if (!this->enabled && address != (BaseAddress + 2)) {
-        return 0xFF;
-    }
-
     // CH1
     if (address >= 0xFF10 && address <= 0xFF14) {
         return this->ch1.Read(address);
@@ -64,6 +54,11 @@ u8 Apu_::Read(const u16 address) const {
     // CH4
     if (address >= 0xFF20 && address <= 0xFF23) {
         return this->ch4.Read(address);
+    }
+
+    // Wave RAM
+    if (address >= 0xFF30 && address <= 0xFF3F) {
+        return this->ch3.Read(address);
     }
 
     // Amp
