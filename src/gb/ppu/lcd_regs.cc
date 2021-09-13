@@ -65,7 +65,7 @@ LcdStat::LcdStat(InterruptManager&& interrupts)
       lyc{0} {}
 
 u8 LcdStat::Read(const u16 address) const {
-    if (address == StatAddress) return this->stat;
+    if (address == StatAddress) return this->stat | 0x80;
     if (address == LyAddress) return this->ly;
     if (address == LycAddress) return this->lyc;
     log::Warning("LcdStat - invalid read address: " + log::Hex(address));
