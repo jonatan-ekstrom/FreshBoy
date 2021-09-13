@@ -75,10 +75,10 @@ u8 Apu_::Read(const u16 address) const {
     if (address == (BaseAddress + 2)) {
         u8 res{0xFF};
         bit::Update(res, 7, this->enabled);
-        bit::Update(res, 3, this->ch1.Active());
-        bit::Update(res, 2, this->ch2.Active());
-        bit::Update(res, 1, this->ch3.Active());
-        bit::Update(res, 0, this->ch4.Active());
+        bit::Update(res, 3, this->ch4.Active());
+        bit::Update(res, 2, this->ch3.Active());
+        bit::Update(res, 1, this->ch2.Active());
+        bit::Update(res, 0, this->ch1.Active());
         return res;
     }
 
