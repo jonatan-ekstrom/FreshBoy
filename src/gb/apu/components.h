@@ -95,6 +95,8 @@ public:
     void Tick();
 private:
     u16 Calc() const;
+    void Calc(bool update);
+    bool ReloadCounter();
     Getter getter;
     Setter setter;
     Disabler disabler;

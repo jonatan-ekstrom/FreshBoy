@@ -152,39 +152,33 @@ void SweepUnit::Write(const u8 byte) {
 }
 
 void SweepUnit::Trigger() {
-    const auto period{(this->data >> 4) & 0x07u};
+    const auto period{(this->data >> 4) & 0x07};
     const auto shift{this->data & 0x07};
+    this->enabled = (period != 0) || (shift != 0);
     this->freq = this->getter();
-    this->counter = period;
-    this->enabled = period != 0 || shift != 0;
+    ReloadCounter();
     if (shift != 0) {
-        if (Calc() > 2047) {
-            this->disabler();
-        }
+        Calc(false);
     }
 }
 
 void SweepUnit::Tick() {
-    const auto period{(this->data >> 4) & 0x07u};
-    if (!this->enabled || period == 0) return;
+    if (!this->enabled || this->counter == 0) return;
     if (--this->counter != 0) return;
+    if (ReloadCounter()) {
+        Calc(true);
+        Calc(false);
+    }
+}
 
+void SweepUnit::Calc(const bool update) {
+    const auto shift{this->data & 0x07};
     const auto newFreq{Calc()};
     if (newFreq > 2047) {
         this->disabler();
-        return;
-    }
-
-    const auto shift{this->data & 0x07};
-    if (shift == 0) return;
-
-    this->freq = newFreq;
-    this->setter(newFreq);
-
-    if (Calc() > 2047) {
-        this->disabler();
-    } else {
-        this->counter = period;
+    } else if ((shift != 0) && update) {
+        this->freq = newFreq;
+        this->setter(newFreq);
     }
 }
 
@@ -192,6 +186,13 @@ u16 SweepUnit::Calc() const {
     const auto shift{this->data & 0x07};
     const auto neg{(this->data & 0x08) != 0};
     return static_cast<u16>(this->freq + (neg ? -1 : 1) * (this->freq >> shift));
+}
+
+bool SweepUnit::ReloadCounter() {
+    const auto period{(this->data >> 4) & 0x07u};
+    const auto nonZero{period != 0};
+    this->counter = nonZero ? period : 8;
+    return nonZero;
 }
 
 WaveUnit::WaveUnit()
