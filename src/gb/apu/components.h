@@ -94,13 +94,14 @@ public:
     void Trigger();
     void Tick();
 private:
-    u16 Calc() const;
+    u16 Calc();
     void Calc(bool update);
     bool ReloadCounter();
     Getter getter;
     Setter setter;
     Disabler disabler;
     bool enabled;
+    bool negUsed;
     uint counter;
     u16 freq;
     u8 data;

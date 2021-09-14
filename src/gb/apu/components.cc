@@ -139,6 +139,7 @@ SweepUnit::SweepUnit(const SweepUnit::Getter& getter,
       setter{setter},
       disabler{disabler},
       enabled{false},
+      negUsed{false},
       counter{0},
       freq{0},
       data{0} {}
@@ -149,6 +150,9 @@ u8 SweepUnit::Read() const {
 
 void SweepUnit::Write(const u8 byte) {
     this->data = byte & 0x7F;
+    if (this->enabled && this->negUsed && bit::IsClear(byte, 3)) {
+        this->disabler();
+    }
 }
 
 void SweepUnit::Trigger() {
@@ -156,6 +160,7 @@ void SweepUnit::Trigger() {
     const auto shift{this->data & 0x07};
     this->enabled = (period != 0) || (shift != 0);
     this->freq = this->getter();
+    this->negUsed = false;
     ReloadCounter();
     if (shift != 0) {
         Calc(false);
@@ -182,9 +187,10 @@ void SweepUnit::Calc(const bool update) {
     }
 }
 
-u16 SweepUnit::Calc() const {
+u16 SweepUnit::Calc() {
     const auto shift{this->data & 0x07};
-    const auto neg{(this->data & 0x08) != 0};
+    const auto neg{bit::IsSet(this->data, 3)};
+    this->negUsed = neg;
     return static_cast<u16>(this->freq + (neg ? -1 : 1) * (this->freq >> shift));
 }
 
