@@ -5,7 +5,6 @@
 
 namespace {
 
-constexpr auto BaseAddress{0xFF24};
 constexpr auto BufferSize{1024};
 
 constexpr double ComputeSampleTime(const gb::uint refreshRate) {
@@ -62,17 +61,17 @@ u8 Apu_::Read(const u16 address) const {
     }
 
     // Amp
-    if (address == BaseAddress) {
+    if (address == 0xFF24) {
         return this->amp.Read();
     }
 
     // Mixer
-    if (address == (BaseAddress + 1)) {
+    if (address == 0xFF25) {
         return this->mixer.Read();
     }
 
     // Power
-    if (address == (BaseAddress + 2)) {
+    if (address == 0xFF26) {
         u8 res{0xFF};
         bit::Update(res, 7, this->enabled);
         bit::Update(res, 3, this->ch4.Active());
@@ -86,16 +85,23 @@ u8 Apu_::Read(const u16 address) const {
     return 0xFF;
 }
 
-void Apu_::Write(const u16 address, const u8 byte) {
+void Apu_::Write(const u16 address, u8 byte) {
     // Wave RAM is always writeable.
     if (address >= 0xFF30 && address <= 0xFF3F) {
         this->ch3.Write(address, byte);
         return;
     }
 
-    // Other registers require power on.
-    if (!this->enabled && address != (BaseAddress + 2)) {
+    // If power is off, only length counters and NR52 is writeable.
+    if (!this->enabled && address != 0xFF11 && address != 0xFF16
+                       && address != 0xFF1B && address != 0xFF20
+                       && address != 0xFF26) {
         return;
+    }
+
+    // If power is off, mask the duty bits.
+    if (!this->enabled && (address == 0xFF11 || address == 0xFF16)) {
+        byte = static_cast<u8>(byte & 0x3F);
     }
 
     // CH1
@@ -123,19 +129,19 @@ void Apu_::Write(const u16 address, const u8 byte) {
     }
 
     // Amp
-    if (address == BaseAddress) {
+    if (address == 0xFF24) {
         this->amp.Write(byte);
         return;
     }
 
     // Mixer
-    if (address == (BaseAddress + 1)) {
+    if (address == 0xFF25) {
         this->mixer.Write(byte);
         return;
     }
 
     // Power
-    if (address == (BaseAddress + 2)) {
+    if (address == 0xFF26) {
         const auto prev{this->enabled};
         const auto next{bit::IsSet(byte, 7)};
         if (prev && !next) {
