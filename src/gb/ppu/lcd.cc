@@ -4,12 +4,6 @@
 #include "display.h"
 #include "log.h"
 
-namespace {
-
-constexpr auto Inactive{static_cast<uint>(-1)};
-
-}
-
 namespace gb {
 
 Lcd Lcd_::Create(InterruptManager interrupts, const FrameHandler& frameHandler) {
@@ -35,8 +29,8 @@ Lcd_::Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler)
       stat{std::move(interrupts)},
       lcdc{},
       frame{},
+      wly{},
       cycleCount{0},
-      wly{Inactive},
       firstFrame{false} {}
 
 u8 Lcd_::Read(const u16 address) const {
@@ -222,7 +216,7 @@ void Lcd_::Enable() {
 
 void Lcd_::Disable() {
     this->cycleCount = 0;
-    this->wly = Inactive;
+    this->wly.reset();
     this->frame.Reset();
     this->stat.Disable();
 }
@@ -283,7 +277,7 @@ void Lcd_::HandleVBlank() {
     if (newLy == 0) {
         // VBlank is done, switch to OAM search.
         this->stat.SetMode(LcdMode::Oam);
-        this->wly = Inactive;
+        this->wly.reset();
     }
     // Start a new scanline.
     this->stat.SetLy(newLy);

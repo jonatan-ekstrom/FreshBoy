@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <memory>
+#include <optional>
 #include "background.h"
 #include "framebuffer.h"
 #include "interrupt.h"
@@ -52,8 +53,8 @@ private:
     LcdStat stat;
     LcdControl lcdc;
     Framebuffer frame;
+    std::optional<uint> wly;
     uint cycleCount;
-    uint wly;
     bool firstFrame;
 };
 

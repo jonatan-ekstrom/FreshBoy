@@ -10,11 +10,8 @@ namespace gb {
 Window::Window(TileBanks banks, TileMaps maps, Palette palette)
     : BgBase{std::move(banks), std::move(maps), std::move(palette), Address} {}
 
-void Window::RenderScanline(const uint ly, uint& wly, Dot *const line) const {
-    constexpr auto inactive{static_cast<uint>(-1)};
-    const auto windowActivated{wly != inactive};
-
-    const auto l{windowActivated ? wly : ly};
+void Window::RenderScanline(const uint ly, std::optional<uint>& wly, Dot *const line) const {
+    const auto l{wly.value_or(ly)};
     if (l >= lcd::DisplayHeight) {
         throw std::runtime_error{"Window - invalid scanline."};
     }
@@ -35,8 +32,8 @@ void Window::RenderScanline(const uint ly, uint& wly, Dot *const line) const {
     }
 
     if (rendered) {
-        if (windowActivated) {
-            ++wly;
+        if (wly.has_value()) {
+            ++(wly.value());
         } else {
             wly = ly + 1;
         }
