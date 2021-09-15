@@ -5,7 +5,7 @@ namespace gb {
 
 Gameboy_::Gameboy_(const std::string& filePath, const FrameCallback& render,
                    const QueueCallback& queue, const uint refreshRate, const bool log)
-    : cart{Cartridge_::Create(filePath)},
+    : cart{Cartridge_::Create(filePath, refreshRate)},
       apu{Apu_::Create(queue, refreshRate)},
       interrupts{InterruptManager_::Create()},
       input{Input_::Create(this->interrupts)},

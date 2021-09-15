@@ -12,7 +12,7 @@ using Cartridge = std::shared_ptr<Cartridge_>;
 
 class Cartridge_ {
 public:
-    static Cartridge Create(const std::string& filePath);
+    static Cartridge Create(const std::string& filePath, uint refreshRate);
     virtual ~Cartridge_() = default;
     std::string HeaderInfo() const;
     virtual u8 Read(u16 address) const = 0;

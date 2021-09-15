@@ -3,13 +3,14 @@
 #include <utility>
 #include "log.h"
 #include "mbc1.h"
+#include "mbc3.h"
 #include "rom.h"
 
 namespace gb {
 
 Cartridge_::Cartridge_(Header&& header) : header{std::move(header)} {}
 
-Cartridge Cartridge_::Create(const std::string& filePath) {
+Cartridge Cartridge_::Create(const std::string& filePath, const uint refreshRate) {
     Header header{filePath};
     const auto checksum{header.CartridgeChecksum()};
 
@@ -21,8 +22,10 @@ Cartridge Cartridge_::Create(const std::string& filePath) {
         case CartridgeType::MBC1:
             res = std::make_shared<MBC1>(filePath, std::move(header));
             break;
-        case CartridgeType::MBC2:
         case CartridgeType::MBC3:
+            res = std::make_shared<MBC3>(filePath, std::move(header), refreshRate);
+            break;
+        case CartridgeType::MBC2:
         case CartridgeType::MBC5:
         case CartridgeType::MBC6:
         case CartridgeType::MBC7:
