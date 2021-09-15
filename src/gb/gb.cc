@@ -47,6 +47,7 @@ void Gameboy_::ButtonReleased(const Button button) {
 void Gameboy_::Tick() {
     const auto cycles{this->cpu->Tick()};
     this->apu->Tick(cycles);
+    this->cart->Tick(cycles);
     this->serial->Tick(cycles);
     this->timer->Tick(cycles);
     this->ppu->Tick(cycles);

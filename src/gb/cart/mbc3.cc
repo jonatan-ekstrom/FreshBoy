@@ -1,6 +1,10 @@
 #include "mbc3.h"
 #include <stdexcept>
+#include <utility>
 #include "bits.h"
+#include "file.h"
+#include "header.h"
+#include "log.h"
 
 namespace { constexpr auto CyclesPerFrame{70224}; }
 
@@ -92,6 +96,151 @@ void Rtc::Tick() {
         this->curr.Days = static_cast<u8>(days & 0xFF);
         bit::Update(this->curr.Ctrl, 0, bit::IsSet(days, 8));
     }
+}
+
+MBC3::MBC3(const std::string& filePath, Header&& header, const uint refreshRate)
+    : MBC{std::move(header)},
+      rtc{refreshRate},
+      enabled{false},
+      latchPending{false},
+      romBank{1},
+      selector{0},
+      romBitMask{0},
+      ramBitMask{0} {
+    constexpr auto romBankSize{0x4000};
+    constexpr auto ramBankSize{0x2000};
+    const auto numRomBanks{this->header.RomBanks()};
+    const auto numRamBanks{this->header.RamBanks()};
+
+    File file{filePath};
+    for (auto i{0u}; i < numRomBanks; ++i) {
+        const auto offset{i * romBankSize};
+        this->romBanks.push_back(file.ReadBytes(offset, romBankSize));
+    }
+
+    for (auto i{0u}; i < numRamBanks; ++i) {
+        this->ramBanks.push_back(MemBlock(ramBankSize));
+    }
+
+    this->romBitMask = static_cast<u8>(numRomBanks - 1);
+    this->ramBitMask = numRamBanks != 0 ? static_cast<u8>(numRamBanks - 1) : 0;
+}
+
+u8 MBC3::Read(const u16 address) const {
+    if (address <= 0x3FFF) {
+        return this->romBanks[0][address];
+    }
+
+    if (address >= 0x4000 && address <= 0x7FFF) {
+        return this->romBanks[RomBank()][address - 0x4000];
+    }
+
+    if (address >= 0xA000 && address <= 0xBFFF) {
+        const auto ram{RamBank()};
+        const auto reg{Register()};
+        if (ram) {
+            return this->ramBanks[ram.value()][address - 0xA000];
+        }
+        if (reg) {
+            return this->rtc.Read(reg.value());
+        }
+        log::Warning("MBC3 - Invalid RAM/RTC read: " + log::Hex(address));
+        return 0xFF;
+    }
+
+    log::Warning("MBC3 - Invalid read address: " + log::Hex(address));
+    return 0xFF;
+}
+
+void MBC3::Write(const u16 address, const u8 byte) {
+    if (address <= 0x1FFF) {
+        this->enabled = ((byte & 0x0F) == 0x0A);
+        return;
+    }
+
+    if (address >= 0x2000 && address <=0x3FFF) {
+        this->romBank = byte & 0x7F;
+        if (this->romBank == 0) this->romBank = 1;
+        return;
+    }
+
+    if (address >= 0x4000 && address <= 0x5FFF) {
+        this->selector = byte;
+        return;
+    }
+
+    if (address >= 0x6000 && address <= 0x7FFF) {
+        if (byte == 0) {
+            this->latchPending = true;
+            return;
+        }
+
+        if (byte == 1 && this->latchPending) {
+            this->rtc.Latch();
+        }
+
+        this->latchPending = false;
+        return;
+    }
+
+    if (address >= 0xA000 && address <= 0xBFFF) {
+        const auto ram{RamBank()};
+        const auto reg{Register()};
+        if (ram) {
+            this->ramBanks[ram.value()][address - 0xA000] = byte;
+            return;
+        }
+        if (reg) {
+            this->rtc.Write(reg.value(), byte);
+            return;
+        }
+        log::Warning("MBC3 - Invalid RAM/RTC write: " + log::Hex(address));
+        return;
+    }
+
+    log::Warning("MBC3 - Invalid write address: " + log::Hex(address));
+}
+
+void MBC3::Tick(const uint cycles) {
+    this->rtc.Tick(cycles);
+}
+
+uint MBC3::RomBank() const {
+    return this->romBank & this->romBitMask;
+}
+
+std::optional<uint> MBC3::RamBank() const {
+    if (!this->enabled || this->ramBanks.empty() || this->selector > 0x03) {
+        return {};
+    }
+
+    return this->selector & this->ramBitMask;
+}
+
+std::optional<u8> MBC3::Register() const {
+    if (!this->enabled || this->selector < 0x08 || this->selector > 0x0C) {
+        return {};
+    }
+    return this->selector;
+}
+
+u16 MBC3::Checksum() const {
+    u16 sum{0};
+    const auto& bank0{this->romBanks[0]};
+    for (auto i{0u}; i < bank0.size(); ++i) {
+        if (i != 0x14E && i != 0x14F) {
+            sum += bank0[i];
+        }
+    }
+
+    for (auto b{1u}; b < this->romBanks.size(); ++b) {
+        const auto& bank{this->romBanks[b]};
+        for (const auto byte : bank) {
+            sum += byte;
+        }
+    }
+
+    return sum;
 }
 
 }

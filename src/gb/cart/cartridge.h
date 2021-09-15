@@ -17,6 +17,7 @@ public:
     std::string HeaderInfo() const;
     virtual u8 Read(u16 address) const = 0;
     virtual void Write(u16 address, u8 byte) = 0;
+    virtual void Tick(uint cycles);
 protected:
     using MemBlock = std::vector<u8>;
     explicit Cartridge_(Header&& header);

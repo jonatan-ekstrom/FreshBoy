@@ -1,7 +1,12 @@
 #pragma once
+#include <optional>
+#include <string>
+#include "mbc.h"
 #include "types.h"
 
 namespace gb {
+
+class Header;
 
 class Rtc {
 public:
@@ -24,6 +29,26 @@ private:
     uint cycleCount;
     Regs curr;
     Regs latched;
+};
+
+class MBC3 final : public MBC {
+public:
+    MBC3(const std::string& filePath, Header&& header, uint refreshRate);
+    u8 Read(u16 address) const override;
+    void Write(u16 address, u8 byte) override;
+    void Tick(uint cycles) override;
+private:
+    uint RomBank() const;
+    std::optional<uint> RamBank() const;
+    std::optional<u8> Register() const;
+    u16 Checksum() const override;
+    Rtc rtc;
+    bool enabled;
+    bool latchPending;
+    u8 romBank;
+    u8 selector;
+    u8 romBitMask;
+    u8 ramBitMask;
 };
 
 }

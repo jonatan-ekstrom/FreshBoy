@@ -36,6 +36,8 @@ Cartridge Cartridge_::Create(const std::string& filePath) {
     return res;
 }
 
+void Cartridge_::Tick(uint) {}
+
 std::string Cartridge_::HeaderInfo() const { return this->header.PrettyPrint(); }
 
 }
