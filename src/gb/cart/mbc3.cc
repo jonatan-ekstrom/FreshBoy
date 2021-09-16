@@ -22,16 +22,16 @@ u8 Rtc::Read(const u8 address) const {
         case 0x09: return this->latched.Min;
         case 0x0A: return this->latched.Hrs;
         case 0x0B: return this->latched.Days;
-        case 0x0C: return static_cast<u8>(this->latched.Ctrl | 0x3E);
+        case 0x0C: return this->latched.Ctrl;
         default: throw std::runtime_error{"RTC - invalid read address."};
     }
 }
 
 void Rtc::Write(const u8 address, const u8 byte) {
     switch (address) {
-        case 0x08: this->curr.Sec = byte <= 59 ? byte : 59; break;
-        case 0x09: this->curr.Min = byte <= 59 ? byte : 59; break;
-        case 0x0A: this->curr.Hrs = byte <= 23 ? byte : 23; break;
+        case 0x08: this->curr.Sec = static_cast<u8>(byte & 0x3F); this->cycleCount = 0; break;
+        case 0x09: this->curr.Min = static_cast<u8>(byte & 0x3F); break;
+        case 0x0A: this->curr.Hrs = static_cast<u8>(byte & 0x1F); break;
         case 0x0B: this->curr.Days = byte; break;
         case 0x0C: this->curr.Ctrl = static_cast<u8>(byte & 0xC1); break;
         default: throw std::runtime_error{"RTC - invalid write address."};
@@ -39,11 +39,11 @@ void Rtc::Write(const u8 address, const u8 byte) {
 }
 
 void Rtc::Tick(const uint cycles) {
-    this->cycleCount += cycles;
-    if (this->cycleCount < this->cyclesPerSecond) return;
+    if (!Active()) return;
 
-    this->cycleCount -= this->cyclesPerSecond;
-    if (Active()) {
+    this->cycleCount += cycles;
+    if (this->cycleCount >= this->cyclesPerSecond) {
+        this->cycleCount -= this->cyclesPerSecond;
         Tick();
     }
 }
@@ -62,7 +62,7 @@ void Rtc::Tick() {
         this->curr.Sec = 0;
         carry = true;
     } else {
-        ++this->curr.Sec;
+        this->curr.Sec = static_cast<u8>((this->curr.Sec + 1) % 64);
         carry = false;
     }
 
@@ -71,7 +71,7 @@ void Rtc::Tick() {
     if (this->curr.Min == 59) {
         this->curr.Min = 0;
     } else {
-        ++this->curr.Min;
+        this->curr.Min = static_cast<u8>((this->curr.Min + 1) % 64);
         carry = false;
     }
 
@@ -80,7 +80,7 @@ void Rtc::Tick() {
     if (this->curr.Hrs == 23) {
         this->curr.Hrs = 0;
     } else {
-        ++this->curr.Hrs;
+        this->curr.Hrs = static_cast<u8>((this->curr.Hrs + 1) % 32);
         carry = false;
     }
 
