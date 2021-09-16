@@ -3,30 +3,31 @@
 
 namespace gb {
 
-File::File(const std::string& filePath) : stream{filePath, std::ios::binary} {
+InputFile::InputFile(const std::string& filePath)
+    : stream{filePath, std::ios::binary} {
     if (!this->stream) {
-        throw std::runtime_error{"Failed to open file: " + filePath};
+        throw std::runtime_error{"InputFile - Failed to open file: " + filePath};
     }
 }
 
-std::vector<u8> File::ReadBytes(const std::streampos offset,
-                                const std::streamsize numBytes) {
+std::vector<u8> InputFile::ReadBytes(const std::streampos offset,
+                                     const std::streamsize numBytes) {
     if (offset < 0 || numBytes <= 0) {
-        throw std::runtime_error{"Invalid offset/numBytes"};
+        throw std::runtime_error{"InputFile - Invalid offset/numBytes."};
     }
 
-    using Char = std::ifstream::char_type;
     const auto size{static_cast<std::size_t>(numBytes)};
 
     this->stream.seekg(offset);
     if (!this->stream) {
-        throw std::runtime_error{"Failed to seek to stream offset."};
+        throw std::runtime_error{"InputFile - Failed to seek to stream offset."};
     }
 
+    using Char = std::fstream::char_type;
     std::vector<u8> bytes(size);
     this->stream.read(reinterpret_cast<Char*>(bytes.data()), numBytes);
     if (this->stream.gcount() != numBytes) {
-        throw std::runtime_error{"Failed to read bytes from file."};
+        throw std::runtime_error{"InputFile - Failed to read bytes."};
     }
     return bytes;
 }

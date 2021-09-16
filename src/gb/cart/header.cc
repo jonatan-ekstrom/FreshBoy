@@ -100,7 +100,7 @@ constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
 namespace gb {
 
 Header::Header(const std::string& filePath) {
-    File file{filePath};
+    InputFile file{filePath};
     this->bytes = file.ReadBytes(HeaderOffset, HeaderSize);
     if (Checksum() != ComputedChecksum()) {
         throw std::runtime_error{"Header checksum mismatch."};

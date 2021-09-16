@@ -7,7 +7,7 @@ namespace gb {
 
 RomOnly::RomOnly(const std::string& romPath, Header&& header)
     : Cartridge_{std::move(header)} {
-    File file{romPath};
+    InputFile file{romPath};
     this->rom = file.ReadBytes(0, 0x7FFF);
 }
 

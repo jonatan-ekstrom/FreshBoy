@@ -7,9 +7,9 @@
 
 namespace gb {
 
-class File {
+class InputFile {
 public:
-    explicit File(const std::string& filePath);
+    explicit InputFile(const std::string& filePath);
     std::vector<u8> ReadBytes(std::streampos offset, std::streamsize numBytes);
 private:
     std::ifstream stream;
