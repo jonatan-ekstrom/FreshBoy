@@ -41,7 +41,6 @@ private:
     uint RomBank() const;
     std::optional<uint> RamBank() const;
     std::optional<u8> Register() const;
-    u16 Checksum() const override;
     Rtc rtc;
     bool enabled;
     bool latchPending;

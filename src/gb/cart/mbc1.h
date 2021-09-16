@@ -16,7 +16,6 @@ private:
     uint RomBankLow() const;
     uint RomBankHigh() const;
     uint RamBank() const;
-    u16 Checksum() const override;
     bool ramEnabled;
     bool advancedMode;
     u8 bankLow;

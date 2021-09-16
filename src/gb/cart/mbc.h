@@ -14,6 +14,8 @@ protected:
     explicit MBC(Header&& header);
     std::vector<MemBlock> romBanks;
     std::vector<MemBlock> ramBanks;
+private:
+    u16 Checksum() const override final;
 };
 
 }
