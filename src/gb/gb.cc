@@ -3,9 +3,9 @@
 
 namespace gb {
 
-Gameboy_::Gameboy_(const std::string& filePath, const FrameCallback& render,
+Gameboy_::Gameboy_(const std::string& romPath, const FrameCallback& render,
                    const QueueCallback& queue, const uint refreshRate, const bool log)
-    : cart{Cartridge_::Create(filePath, refreshRate)},
+    : cart{Cartridge_::Create(romPath, refreshRate)},
       apu{Apu_::Create(queue, refreshRate)},
       interrupts{InterruptManager_::Create()},
       input{Input_::Create(this->interrupts)},
@@ -18,12 +18,12 @@ Gameboy_::Gameboy_(const std::string& filePath, const FrameCallback& render,
     if (log) log::Enable();
 }
 
-Gameboy Gameboy_::Create(const std::string& filePath,
+Gameboy Gameboy_::Create(const std::string& romPath,
                          const FrameCallback& render,
                          const QueueCallback& queue,
                          const uint refreshRate,
                          const bool log) {
-    return Gameboy{new Gameboy_{filePath, render, queue, refreshRate, log}};
+    return Gameboy{new Gameboy_{romPath, render, queue, refreshRate, log}};
 }
 
 std::string Gameboy_::Header() const {

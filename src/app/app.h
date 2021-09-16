@@ -15,7 +15,7 @@ namespace app {
 class Emulator {
 public:
     Emulator();
-    void Run(const std::string& filePath);
+    void Run(const std::string& romPath);
 private:
     bool Continue() const;
     void KeyHandler(const sdl::Key& key);

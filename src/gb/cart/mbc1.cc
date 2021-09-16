@@ -6,7 +6,7 @@
 
 namespace gb {
 
-MBC1::MBC1(const std::string& filePath, Header&& header)
+MBC1::MBC1(const std::string& romPath, Header&& header)
     : MBC{std::move(header)},
       ramEnabled{false},
       advancedMode{false},
@@ -19,7 +19,7 @@ MBC1::MBC1(const std::string& filePath, Header&& header)
     const auto numRomBanks{this->header.RomBanks()};
     const auto numRamBanks{this->header.RamBanks()};
 
-    File file{filePath};
+    File file{romPath};
     for (auto i{0u}; i < numRomBanks; ++i) {
         const auto offset{i * romBankSize};
         this->romBanks.push_back(file.ReadBytes(offset, romBankSize));

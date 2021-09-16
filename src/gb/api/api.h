@@ -18,7 +18,7 @@ using RenderCallback = std::function<void(const Pixels&)>;
 using QueueCallback = std::function<void(const Samples&, const Samples&)>;
 enum class Button { Right, Left, Up, Down, A, B, Select, Start };
 
-Gameboy Create(const std::string& filePath, const RenderCallback& render,
+Gameboy Create(const std::string& romPath, const RenderCallback& render,
                const QueueCallback& queue, uint refreshRate, const bool log = false);
 std::string Header(const Gameboy& gb);
 void Run(const Gameboy& gb, const ContinueCallback& cont);
