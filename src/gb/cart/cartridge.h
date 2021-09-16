@@ -18,6 +18,8 @@ public:
     virtual u8 Read(u16 address) const = 0;
     virtual void Write(u16 address, u8 byte) = 0;
     virtual void Tick(uint cycles);
+    virtual void LoadRam(const std::string& ramPath);
+    virtual void SaveRam(const std::string& ramPath);
 protected:
     using MemBlock = std::vector<u8>;
     explicit Cartridge_(Header&& header);

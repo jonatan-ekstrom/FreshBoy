@@ -3,12 +3,12 @@
 #include <iostream>
 #include "app.h"
 
-int main(const int argc, const char *const *const argv) {
+int main(const int argc, const char* argv[]) {
     int exitCode{EXIT_FAILURE};
-    if (argc != 2) return exitCode;
+    if (argc < 2 || argc > 3) return exitCode;
     try {
         app::Emulator emulator;
-        emulator.Run(argv[1]);
+        emulator.Run(argv[1], argc == 3 ? argv[2] : "");
         exitCode = EXIT_SUCCESS;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

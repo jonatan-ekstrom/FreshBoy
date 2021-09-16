@@ -41,6 +41,10 @@ Cartridge Cartridge_::Create(const std::string& romPath, const uint refreshRate)
 
 void Cartridge_::Tick(uint) {}
 
+void Cartridge_::LoadRam(const std::string&) {}
+
+void Cartridge_::SaveRam(const std::string&) {}
+
 std::string Cartridge_::HeaderInfo() const { return this->header.PrettyPrint(); }
 
 }

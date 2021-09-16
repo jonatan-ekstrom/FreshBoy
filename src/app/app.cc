@@ -57,12 +57,12 @@ Emulator::Emulator()
     eventManager.RegisterQuitHandler([this] { QuitHandler(); });
 }
 
-void Emulator::Run(const std::string& romPath) {
+void Emulator::Run(const std::string& romPath, const std::string& ramPath) {
     const auto renderCb{[this] (const auto& p) { Render(p); }};
     const auto queueCb{[this] (const auto& left, const auto& right) { Queue(left, right); }};
     const auto contCb{[this] { return Continue(); }};
 
-    gb = api::Create(romPath, renderCb, queueCb, Instance_::RefreshRate());
+    gb = api::Create(romPath, ramPath, renderCb, queueCb, Instance_::RefreshRate());
     std::cout << api::Header(gb) << std::endl;
 
     this->window->Show();

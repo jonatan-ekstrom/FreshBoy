@@ -3,8 +3,9 @@
 
 namespace gb {
 
-Gameboy_::Gameboy_(const std::string& romPath, const FrameCallback& render,
-                   const QueueCallback& queue, const uint refreshRate, const bool log)
+Gameboy_::Gameboy_(const std::string& romPath, const std::string& ramPath,
+                   const FrameCallback& render, const QueueCallback& queue,
+                   const uint refreshRate, const bool log)
     : cart{Cartridge_::Create(romPath, refreshRate)},
       apu{Apu_::Create(queue, refreshRate)},
       interrupts{InterruptManager_::Create()},
@@ -14,16 +15,19 @@ Gameboy_::Gameboy_(const std::string& romPath, const FrameCallback& render,
       ppu{Lcd_::Create(this->interrupts, render)},
       mmu{Memory_::Create(this->cart, this->input, this->interrupts,
                           this->ppu, this->serial, this->apu, this->timer)},
-      cpu{Cpu_::Create(this->interrupts, this->mmu)} {
+      cpu{Cpu_::Create(this->interrupts, this->mmu)},
+      ramPath{ramPath} {
     if (log) log::Enable();
+    this->cart->LoadRam(this->ramPath);
 }
 
 Gameboy Gameboy_::Create(const std::string& romPath,
+                         const std::string& ramPath,
                          const FrameCallback& render,
                          const QueueCallback& queue,
                          const uint refreshRate,
                          const bool log) {
-    return Gameboy{new Gameboy_{romPath, render, queue, refreshRate, log}};
+    return Gameboy{new Gameboy_{romPath, ramPath, render, queue, refreshRate, log}};
 }
 
 std::string Gameboy_::Header() const {
@@ -34,6 +38,7 @@ void Gameboy_::Run(const ContinueCallback& cont) {
     while (cont()) {
         Tick();
     }
+    this->cart->SaveRam(this->ramPath);
 }
 
 void Gameboy_::ButtonPressed(const Button button) {
