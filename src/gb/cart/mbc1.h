@@ -20,8 +20,6 @@ private:
     bool advancedMode;
     u8 bankLow;
     u8 bankHigh;
-    u8 romBitMask;
-    u8 ramBitMask;
 };
 
 }

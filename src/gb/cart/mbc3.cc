@@ -2,8 +2,6 @@
 #include <stdexcept>
 #include <utility>
 #include "bits.h"
-#include "file.h"
-#include "header.h"
 #include "log.h"
 
 namespace { constexpr auto CyclesPerFrame{70224}; }
@@ -99,32 +97,12 @@ void Rtc::Tick() {
 }
 
 MBC3::MBC3(const std::string& romPath, Header&& header, const uint refreshRate)
-    : MBC{std::move(header)},
+    : MBC{romPath, std::move(header)},
       rtc{refreshRate},
       enabled{false},
       latchPending{false},
       romBank{1},
-      selector{0},
-      romBitMask{0},
-      ramBitMask{0} {
-    constexpr auto romBankSize{0x4000};
-    constexpr auto ramBankSize{0x2000};
-    const auto numRomBanks{this->header.RomBanks()};
-    const auto numRamBanks{this->header.RamBanks()};
-
-    InputFile file{romPath};
-    for (auto i{0u}; i < numRomBanks; ++i) {
-        const auto offset{i * romBankSize};
-        this->romBanks.push_back(file.ReadBytes(offset, romBankSize));
-    }
-
-    for (auto i{0u}; i < numRamBanks; ++i) {
-        this->ramBanks.push_back(MemBlock(ramBankSize));
-    }
-
-    this->romBitMask = static_cast<u8>(numRomBanks - 1);
-    this->ramBitMask = numRamBanks != 0 ? static_cast<u8>(numRamBanks - 1) : 0;
-}
+      selector{0} {}
 
 u8 MBC3::Read(const u16 address) const {
     if (address <= 0x3FFF) {

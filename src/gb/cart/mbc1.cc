@@ -1,37 +1,15 @@
 #include "mbc1.h"
 #include <utility>
-#include "file.h"
-#include "header.h"
 #include "log.h"
 
 namespace gb {
 
 MBC1::MBC1(const std::string& romPath, Header&& header)
-    : MBC{std::move(header)},
+    : MBC{romPath, std::move(header)},
       ramEnabled{false},
       advancedMode{false},
       bankLow{1},
-      bankHigh{0},
-      romBitMask{0},
-      ramBitMask{0} {
-    constexpr auto romBankSize{0x4000};
-    constexpr auto ramBankSize{0x2000};
-    const auto numRomBanks{this->header.RomBanks()};
-    const auto numRamBanks{this->header.RamBanks()};
-
-    InputFile file{romPath};
-    for (auto i{0u}; i < numRomBanks; ++i) {
-        const auto offset{i * romBankSize};
-        this->romBanks.push_back(file.ReadBytes(offset, romBankSize));
-    }
-
-    for (auto i{0u}; i < numRamBanks; ++i) {
-        this->ramBanks.push_back(MemBlock(ramBankSize));
-    }
-
-    this->romBitMask = static_cast<u8>(numRomBanks - 1);
-    this->ramBitMask = numRamBanks != 0 ? static_cast<u8>(numRamBanks - 1) : 0;
-}
+      bankHigh{0} {}
 
 u8 MBC1::Read(const u16 address) const {
     if (address <= 0x3FFF) {

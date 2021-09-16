@@ -46,8 +46,6 @@ private:
     bool latchPending;
     u8 romBank;
     u8 selector;
-    u8 romBitMask;
-    u8 ramBitMask;
 };
 
 }
