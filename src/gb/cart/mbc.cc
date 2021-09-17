@@ -1,4 +1,5 @@
 #include "mbc.h"
+#include <ios>
 #include <utility>
 #include "file.h"
 #include "header.h"
@@ -29,11 +30,29 @@ MBC::MBC(const std::string& romPath, Header&& header)
 }
 
 void MBC::LoadRam(const std::string& ramPath) {
-    Cartridge_::LoadRam(ramPath);
+    if (ramPath.empty()) return;
+
+    InputFile file{ramPath};
+    std::streampos offset{0};
+    for (auto i{0u}; i < this->ramBanks.size(); ++i) {
+        auto& bank{this->ramBanks[i]};
+        const auto size{static_cast<std::streamsize>(bank.size())};
+        bank = file.ReadBytes(offset, size);
+        offset += size;
+    }
 }
 
 void MBC::SaveRam(const std::string& ramPath) {
-    Cartridge_::SaveRam(ramPath);
+    if (ramPath.empty()) return;
+
+    OutputFile file{ramPath};
+    std::streampos offset{0};
+    for (auto i{0u}; i < this->ramBanks.size(); ++i) {
+        const auto& bank{this->ramBanks[i]};
+        const auto size{static_cast<std::streamsize>(bank.size())};
+        file.WriteBytes(offset, bank);
+        offset += size;
+    }
 }
 
 u16 MBC::Checksum() const {
@@ -47,7 +66,7 @@ u16 MBC::Checksum() const {
 
     for (auto b{1u}; b < this->romBanks.size(); ++b) {
         const auto& bank{this->romBanks[b]};
-        for (const auto byte: bank) {
+        for (const auto byte : bank) {
             sum += byte;
         }
     }
