@@ -1,9 +1,11 @@
 #include "gb.h"
 #include "log.h"
 
+namespace fs = std::filesystem;
+
 namespace gb {
 
-Gameboy_::Gameboy_(const std::string& romPath, const std::string& ramPath,
+Gameboy_::Gameboy_(const fs::path& romPath, const fs::path& ramPath,
                    const FrameCallback& render, const QueueCallback& queue,
                    const uint refreshRate, const bool log)
     : cart{Cartridge_::Create(romPath, refreshRate)},
@@ -21,8 +23,8 @@ Gameboy_::Gameboy_(const std::string& romPath, const std::string& ramPath,
     this->cart->LoadRam(this->ramPath);
 }
 
-Gameboy Gameboy_::Create(const std::string& romPath,
-                         const std::string& ramPath,
+Gameboy Gameboy_::Create(const fs::path& romPath,
+                         const fs::path& ramPath,
                          const FrameCallback& render,
                          const QueueCallback& queue,
                          const uint refreshRate,

@@ -4,9 +4,11 @@
 #include "file.h"
 #include "header.h"
 
+namespace fs = std::filesystem;
+
 namespace gb {
 
-MBC::MBC(const std::string& romPath, Header&& header)
+MBC::MBC(const fs::path& romPath, Header&& header)
     : Cartridge_{std::move(header)},
       romBitMask{0},
       ramBitMask{0} {
@@ -29,7 +31,7 @@ MBC::MBC(const std::string& romPath, Header&& header)
     this->ramBitMask = numRamBanks != 0 ? static_cast<u8>(numRamBanks - 1) : 0;
 }
 
-void MBC::LoadRam(const std::string& ramPath) {
+void MBC::LoadRam(const fs::path& ramPath) {
     if (ramPath.empty()) return;
 
     InputFile file{ramPath};
@@ -42,7 +44,7 @@ void MBC::LoadRam(const std::string& ramPath) {
     }
 }
 
-void MBC::SaveRam(const std::string& ramPath) {
+void MBC::SaveRam(const fs::path& ramPath) {
     if (ramPath.empty()) return;
 
     OutputFile file{ramPath};

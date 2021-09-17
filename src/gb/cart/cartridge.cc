@@ -6,11 +6,13 @@
 #include "mbc3.h"
 #include "rom.h"
 
+namespace fs = std::filesystem;
+
 namespace gb {
 
 Cartridge_::Cartridge_(Header&& header) : header{std::move(header)} {}
 
-Cartridge Cartridge_::Create(const std::string& romPath, const uint refreshRate) {
+Cartridge Cartridge_::Create(const fs::path& romPath, const uint refreshRate) {
     Header header{romPath};
     const auto checksum{header.CartridgeChecksum()};
 
@@ -41,9 +43,9 @@ Cartridge Cartridge_::Create(const std::string& romPath, const uint refreshRate)
 
 void Cartridge_::Tick(uint) {}
 
-void Cartridge_::LoadRam(const std::string&) {}
+void Cartridge_::LoadRam(const fs::path&) {}
 
-void Cartridge_::SaveRam(const std::string&) {}
+void Cartridge_::SaveRam(const fs::path&) {}
 
 std::string Cartridge_::HeaderInfo() const { return this->header.PrettyPrint(); }
 

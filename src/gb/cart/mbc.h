@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <filesystem>
 #include <vector>
 #include "cartridge.h"
 
@@ -9,10 +9,10 @@ class Header;
 
 class MBC : public Cartridge_ {
 public:
-    void LoadRam(const std::string& ramPath) override final;
-    void SaveRam(const std::string& ramPath) override final;
+    void LoadRam(const std::filesystem::path& ramPath) override final;
+    void SaveRam(const std::filesystem::path& ramPath) override final;
 protected:
-    MBC(const std::string& romPath, Header&& header);
+    MBC(const std::filesystem::path& romPath, Header&& header);
     std::vector<MemBlock> romBanks;
     std::vector<MemBlock> ramBanks;
     u8 romBitMask;

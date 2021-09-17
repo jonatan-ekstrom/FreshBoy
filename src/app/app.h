@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <filesystem>
 #include "api.h"
 #include "audio.h"
 #include "event_manager.h"
@@ -15,7 +15,7 @@ namespace app {
 class Emulator {
 public:
     Emulator();
-    void Run(const std::string& romPath, const std::string& ramPath);
+    void Run(const std::filesystem::path& romPath, const std::filesystem::path& ramPath);
 private:
     bool Continue() const;
     void KeyHandler(const sdl::Key& key);

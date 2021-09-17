@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <filesystem>
 #include "mbc.h"
 #include "types.h"
 
@@ -9,7 +9,7 @@ class Header;
 
 class MBC1 final : public MBC {
 public:
-    MBC1(const std::string& romPath, Header&& header);
+    MBC1(const std::filesystem::path& romPath, Header&& header);
     u8 Read(u16 address) const override;
     void Write(u16 address, u8 byte) override;
 private:

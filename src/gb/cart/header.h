@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 #include <string>
 #include <vector>
 #include "types.h"
@@ -33,7 +34,7 @@ enum class MemSize {
 
 class Header {
 public:
-    explicit Header(const std::string& filePath);
+    explicit Header(const std::filesystem::path& romPath);
     std::string Entry() const;
     std::string Logo() const;
     std::string Title() const;

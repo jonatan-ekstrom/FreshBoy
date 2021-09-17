@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <filesystem>
 #include <functional>
 #include <memory>
 #include <string>
@@ -18,7 +19,7 @@ using RenderCallback = std::function<void(const Pixels&)>;
 using QueueCallback = std::function<void(const Samples&, const Samples&)>;
 enum class Button { Right, Left, Up, Down, A, B, Select, Start };
 
-Gameboy Create(const std::string& romPath, const std::string& ramPath,
+Gameboy Create(const std::filesystem::path& romPath, const std::filesystem::path& ramPath,
                const RenderCallback& render, const QueueCallback& queue,
                uint refreshRate, const bool log = false);
 std::string Header(const Gameboy& gb);

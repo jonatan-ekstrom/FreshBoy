@@ -3,6 +3,8 @@
 #include "gb.h"
 #include "input.h"
 
+namespace fs = std::filesystem;
+
 namespace {
 
 constexpr gb::Button Map(const api::Button button) {
@@ -36,7 +38,7 @@ void GameboyDeleter::operator()(gb::Gameboy_* p) {
     delete p;
 }
 
-Gameboy Create(const std::string& romPath, const std::string& ramPath,
+Gameboy Create(const fs::path& romPath, const fs::path& ramPath,
                const RenderCallback& render, const QueueCallback& queue,
                const uint refreshRate, const bool log) {
     auto gb{gb::Gameboy_::Create(romPath, ramPath, render, queue, refreshRate, log)};

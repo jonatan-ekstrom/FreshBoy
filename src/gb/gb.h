@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 #include <functional>
 #include <memory>
 #include <string>
@@ -23,7 +24,7 @@ public:
     using ContinueCallback = std::function<bool(void)>;
     using FrameCallback = Lcd_::FrameHandler;
     using QueueCallback = Apu_::QueueHandler;
-    static Gameboy Create(const std::string& romPath, const std::string& ramPath,
+    static Gameboy Create(const std::filesystem::path& romPath, const std::filesystem::path& ramPath,
                           const FrameCallback& render, const QueueCallback& queue,
                           uint refreshRate, bool log = false);
     std::string Header() const;
@@ -31,7 +32,7 @@ public:
     void ButtonPressed(Button button);
     void ButtonReleased(Button button);
 private:
-    Gameboy_(const std::string& romPath, const std::string& ramPath,
+    Gameboy_(const std::filesystem::path& romPath, const std::filesystem::path& ramPath,
              const FrameCallback& render, const QueueCallback& queue,
              uint refreshRate, bool log);
     void Tick();
@@ -44,7 +45,7 @@ private:
     Lcd ppu;
     Memory mmu;
     Cpu cpu;
-    std::string ramPath;
+    std::filesystem::path ramPath;
 };
 
 }

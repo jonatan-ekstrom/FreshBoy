@@ -6,6 +6,7 @@
 
 using namespace gb;
 using namespace sdl;
+namespace fs = std::filesystem;
 
 namespace {
 
@@ -57,7 +58,7 @@ Emulator::Emulator()
     eventManager.RegisterQuitHandler([this] { QuitHandler(); });
 }
 
-void Emulator::Run(const std::string& romPath, const std::string& ramPath) {
+void Emulator::Run(const fs::path& romPath, const fs::path& ramPath) {
     const auto renderCb{[this] (const auto& p) { Render(p); }};
     const auto queueCb{[this] (const auto& left, const auto& right) { Queue(left, right); }};
     const auto contCb{[this] { return Continue(); }};

@@ -2,9 +2,11 @@
 #include <utility>
 #include "log.h"
 
+namespace fs = std::filesystem;
+
 namespace gb {
 
-MBC1::MBC1(const std::string& romPath, Header&& header)
+MBC1::MBC1(const fs::path& romPath, Header&& header)
     : MBC{romPath, std::move(header)},
       ramEnabled{false},
       advancedMode{false},
