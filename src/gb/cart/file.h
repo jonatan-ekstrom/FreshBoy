@@ -15,4 +15,12 @@ private:
     std::ifstream stream;
 };
 
+class OutputFile {
+public:
+    explicit OutputFile(const std::string& filePath);
+    void WriteBytes(std::streampos offset, const std::vector<u8>& bytes);
+private:
+    std::ofstream stream;
+};
+
 }
