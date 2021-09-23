@@ -1,6 +1,7 @@
 #pragma once
 #include <filesystem>
 #include <optional>
+#include <vector>
 #include "mbc.h"
 #include "types.h"
 
@@ -15,6 +16,8 @@ public:
     void Write(u8 address, u8 byte);
     void Tick(uint cycles);
     void Latch();
+    std::vector<u8> Serialize() const;
+    void Deserialize(const std::vector<u8>& bytes);
 private:
     struct Regs {
         u8 Sec;

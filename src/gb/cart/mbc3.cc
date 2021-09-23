@@ -52,6 +52,33 @@ void Rtc::Latch() {
     this->latched = this->curr;
 }
 
+std::vector<u8> Rtc::Serialize() const {
+    std::vector<u8> bytes;
+    bytes.push_back(this->curr.Sec);
+    bytes.push_back(this->curr.Min);
+    bytes.push_back(this->curr.Hrs);
+    bytes.push_back(this->curr.Days);
+    bytes.push_back(this->curr.Ctrl);
+
+    return bytes;
+}
+
+void Rtc::Deserialize(const std::vector<u8>& bytes) {
+    if (bytes.size() != 5) {
+        throw std::runtime_error{"RTC - invalid number of bytes to deserialize from."};
+    }
+
+    this->cycleCount = 0;
+
+    this->curr.Sec = bytes[0];
+    this->curr.Min = bytes[1];
+    this->curr.Hrs = bytes[2];
+    this->curr.Days = bytes[3];
+    this->curr.Ctrl = bytes[4];
+
+    this->latched = Regs{};
+}
+
 bool Rtc::Active() const {
     return bit::IsClear(this->curr.Ctrl, 6);
 }
