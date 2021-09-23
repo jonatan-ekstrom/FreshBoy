@@ -32,8 +32,6 @@ MBC::MBC(const fs::path& romPath, Header&& header)
 }
 
 void MBC::LoadRam(const fs::path& ramPath) {
-    if (ramPath.empty()) return;
-
     InputFile file{ramPath};
     std::streampos offset{0};
     for (auto i{0u}; i < this->ramBanks.size(); ++i) {
@@ -45,8 +43,6 @@ void MBC::LoadRam(const fs::path& ramPath) {
 }
 
 void MBC::SaveRam(const fs::path& ramPath) {
-    if (ramPath.empty()) return;
-
     OutputFile file{ramPath};
     std::streampos offset{0};
     for (auto i{0u}; i < this->ramBanks.size(); ++i) {
