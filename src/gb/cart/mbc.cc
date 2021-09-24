@@ -1,5 +1,4 @@
 #include "mbc.h"
-#include <ios>
 #include <utility>
 #include "file.h"
 #include "header.h"
@@ -40,6 +39,8 @@ void MBC::LoadRam(const fs::path& ramPath) {
         bank = file.ReadBytes(offset, size);
         offset += size;
     }
+
+    LoadHook(file, offset);
 }
 
 void MBC::SaveRam(const fs::path& ramPath) {
@@ -51,6 +52,8 @@ void MBC::SaveRam(const fs::path& ramPath) {
         file.WriteBytes(offset, bank);
         offset += size;
     }
+
+    SaveHook(file, offset);
 }
 
 u16 MBC::Checksum() const {
@@ -71,5 +74,9 @@ u16 MBC::Checksum() const {
 
     return sum;
 }
+
+void MBC::LoadHook(InputFile&, std::streampos) {}
+
+void MBC::SaveHook(OutputFile&, std::streampos) {}
 
 }

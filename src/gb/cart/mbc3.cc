@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <utility>
 #include "bits.h"
+#include "file.h"
 #include "log.h"
 
 namespace fs = std::filesystem;
@@ -52,6 +53,8 @@ void Rtc::Latch() {
     this->latched = this->curr;
 }
 
+const uint Rtc::SerialSize{5};
+
 std::vector<u8> Rtc::Serialize() const {
     std::vector<u8> bytes;
     bytes.push_back(this->curr.Sec);
@@ -64,7 +67,7 @@ std::vector<u8> Rtc::Serialize() const {
 }
 
 void Rtc::Deserialize(const std::vector<u8>& bytes) {
-    if (bytes.size() != 5) {
+    if (bytes.size() != SerialSize) {
         throw std::runtime_error{"RTC - invalid number of bytes to deserialize from."};
     }
 
@@ -229,6 +232,14 @@ std::optional<u8> MBC3::Register() const {
         return {};
     }
     return this->selector;
+}
+
+void MBC3::LoadHook(InputFile& file, const std::streampos offset) {
+    this->rtc.Deserialize(file.ReadBytes(offset, Rtc::SerialSize));
+}
+
+void MBC3::SaveHook(OutputFile& file, const std::streampos offset) {
+    file.WriteBytes(offset, this->rtc.Serialize());
 }
 
 }

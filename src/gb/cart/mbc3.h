@@ -1,4 +1,5 @@
 #pragma once
+#include <ios>
 #include <filesystem>
 #include <optional>
 #include <vector>
@@ -8,6 +9,8 @@
 namespace gb {
 
 class Header;
+class InputFile;
+class OutputFile;
 
 class Rtc {
 public:
@@ -16,6 +19,7 @@ public:
     void Write(u8 address, u8 byte);
     void Tick(uint cycles);
     void Latch();
+    const static uint SerialSize;
     std::vector<u8> Serialize() const;
     void Deserialize(const std::vector<u8>& bytes);
 private:
@@ -41,6 +45,8 @@ public:
     void Write(u16 address, u8 byte) override;
     void Tick(uint cycles) override;
 private:
+    void LoadHook(InputFile& file, std::streampos offset) override final;
+    void SaveHook(OutputFile& file, std::streampos offset) override final;
     uint RomBank() const;
     std::optional<uint> RamBank() const;
     std::optional<u8> Register() const;

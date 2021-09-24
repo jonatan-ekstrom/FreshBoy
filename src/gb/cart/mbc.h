@@ -1,11 +1,14 @@
 #pragma once
 #include <filesystem>
+#include <ios>
 #include <vector>
 #include "cartridge.h"
 
 namespace gb {
 
 class Header;
+class InputFile;
+class OutputFile;
 
 class MBC : public Cartridge_ {
 public:
@@ -19,6 +22,8 @@ protected:
     u8 ramBitMask;
 private:
     u16 Checksum() const override final;
+    virtual void LoadHook(InputFile& file, std::streampos offset);
+    virtual void SaveHook(OutputFile& file, std::streampos offset);
 };
 
 }
