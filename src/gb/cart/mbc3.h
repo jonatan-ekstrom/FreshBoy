@@ -1,8 +1,8 @@
 #pragma once
+#include <array>
 #include <ios>
 #include <filesystem>
 #include <optional>
-#include <vector>
 #include "mbc.h"
 #include "types.h"
 
@@ -14,14 +14,14 @@ class OutputFile;
 
 class Rtc {
 public:
+    using State = std::array<u8, 5>;
     explicit Rtc(uint refreshRate);
     u8 Read(u8 address) const;
     void Write(u8 address, u8 byte);
     void Tick(uint cycles);
     void Latch();
-    const static uint SerialSize;
-    std::vector<u8> Serialize() const;
-    void Deserialize(const std::vector<u8>& bytes);
+    State Serialize() const;
+    void Deserialize(const State& state);
 private:
     struct Regs {
         u8 Sec;

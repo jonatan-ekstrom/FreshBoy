@@ -1,6 +1,8 @@
 #include "mbc3.h"
+#include <algorithm>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 #include "bits.h"
 #include "file.h"
 #include "log.h"
@@ -53,31 +55,25 @@ void Rtc::Latch() {
     this->latched = this->curr;
 }
 
-const uint Rtc::SerialSize{5};
-
-std::vector<u8> Rtc::Serialize() const {
-    std::vector<u8> bytes;
-    bytes.push_back(this->curr.Sec);
-    bytes.push_back(this->curr.Min);
-    bytes.push_back(this->curr.Hrs);
-    bytes.push_back(this->curr.Days);
-    bytes.push_back(this->curr.Ctrl);
-
-    return bytes;
+Rtc::State Rtc::Serialize() const {
+    return {
+        this->curr.Sec,
+        this->curr.Min,
+        this->curr.Hrs,
+        this->curr.Days,
+        this->curr.Ctrl
+    };
 }
 
-void Rtc::Deserialize(const std::vector<u8>& bytes) {
-    if (bytes.size() != SerialSize) {
-        throw std::runtime_error{"RTC - invalid number of bytes to deserialize from."};
-    }
+void Rtc::Deserialize(const State& state) {
 
     this->cycleCount = 0;
 
-    this->curr.Sec = bytes[0];
-    this->curr.Min = bytes[1];
-    this->curr.Hrs = bytes[2];
-    this->curr.Days = bytes[3];
-    this->curr.Ctrl = bytes[4];
+    this->curr.Sec = state[0];
+    this->curr.Min = state[1];
+    this->curr.Hrs = state[2];
+    this->curr.Days = state[3];
+    this->curr.Ctrl = state[4];
 
     this->latched = Regs{};
 }
@@ -235,11 +231,17 @@ std::optional<u8> MBC3::Register() const {
 }
 
 void MBC3::LoadHook(InputFile& file, const std::streampos offset) {
-    this->rtc.Deserialize(file.ReadBytes(offset, Rtc::SerialSize));
+    Rtc::State state{};
+    const auto bytes{file.ReadBytes(offset, std::size(state))};
+    std::copy(bytes.cbegin(), bytes.cend(), state.begin());
+    this->rtc.Deserialize(state);
 }
 
 void MBC3::SaveHook(OutputFile& file, const std::streampos offset) {
-    file.WriteBytes(offset, this->rtc.Serialize());
+    const auto state{this->rtc.Serialize()};
+    std::vector<u8> bytes(std::size(state));
+    std::copy(state.cbegin(), state.cend(), bytes.begin());
+    file.WriteBytes(offset, bytes);
 }
 
 }
