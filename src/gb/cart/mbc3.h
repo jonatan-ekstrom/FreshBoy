@@ -14,7 +14,7 @@ class OutputFile;
 
 class Rtc {
 public:
-    using State = std::array<u8, 5>;
+    using State = std::array<u8, 9>;
     explicit Rtc(uint refreshRate);
     u8 Read(u8 address) const;
     void Write(u8 address, u8 byte);

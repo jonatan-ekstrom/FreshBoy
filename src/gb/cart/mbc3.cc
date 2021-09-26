@@ -1,5 +1,6 @@
 #include "mbc3.h"
 #include <algorithm>
+#include <chrono>
 #include <stdexcept>
 #include <utility>
 #include <vector>
@@ -9,7 +10,18 @@
 
 namespace fs = std::filesystem;
 
-namespace { constexpr auto CyclesPerFrame{70224}; }
+namespace {
+
+constexpr auto CyclesPerFrame{70224};
+
+gb::u32 GetCurrentTime() {
+    using namespace std::chrono;
+    using Sec = duration<gb::u32>;
+    const auto now{steady_clock::now()};
+    return duration_cast<Sec>(now.time_since_epoch()).count();
+}
+
+}
 
 namespace gb {
 
@@ -56,18 +68,25 @@ void Rtc::Latch() {
 }
 
 Rtc::State Rtc::Serialize() const {
-    return {
-        this->curr.Sec,
-        this->curr.Min,
-        this->curr.Hrs,
-        this->curr.Days,
-        this->curr.Ctrl
-    };
+    State state{};
+    state[0] = this->curr.Sec;
+    state[1] = this->curr.Min;
+    state[2] = this->curr.Hrs;
+    state[3] = this->curr.Days;
+    state[4] = this->curr.Ctrl;
+
+    const auto time{GetCurrentTime()};
+    state[5] = static_cast<u8>((time >> 24) & 0xFF);
+    state[6] = static_cast<u8>((time >> 16) & 0xFF);
+    state[7] = static_cast<u8>((time >> 8) & 0xFF);
+    state[8] = static_cast<u8>(time & 0xFF);
+
+    return state;
 }
 
 void Rtc::Deserialize(const State& state) {
-
     this->cycleCount = 0;
+    this->latched = Regs{};
 
     this->curr.Sec = state[0];
     this->curr.Min = state[1];
@@ -75,7 +94,14 @@ void Rtc::Deserialize(const State& state) {
     this->curr.Days = state[3];
     this->curr.Ctrl = state[4];
 
-    this->latched = Regs{};
+    if (!Active()) return;
+
+    const auto stored{static_cast<u32>((state[5] << 24) | (state[6] << 16) | (state[7] << 8) | state[8])};
+    const auto current{GetCurrentTime()};
+    const auto elapsed{current - stored};
+    for (auto i{0u}; i < elapsed; ++i) {
+        Tick();
+    }
 }
 
 bool Rtc::Active() const {
@@ -239,8 +265,7 @@ void MBC3::LoadHook(InputFile& file, const std::streampos offset) {
 
 void MBC3::SaveHook(OutputFile& file, const std::streampos offset) {
     const auto state{this->rtc.Serialize()};
-    std::vector<u8> bytes(std::size(state));
-    std::copy(state.cbegin(), state.cend(), bytes.begin());
+    std::vector<u8> bytes{state.cbegin(), state.cend()};
     file.WriteBytes(offset, bytes);
 }
 
