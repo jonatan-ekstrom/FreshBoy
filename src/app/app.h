@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <filesystem>
 #include "api.h"
 #include "audio.h"
@@ -17,7 +18,10 @@ public:
     Emulator();
     void Run(const std::filesystem::path& romPath, const std::filesystem::path& ramPath);
 private:
+    using Clock = std::chrono::steady_clock;
+    using TimePoint = decltype(Clock::now());
     bool Continue() const;
+    void Sync() const;
     void KeyHandler(const sdl::Key& key);
     void QuitHandler();
     void Render(const api::Pixels& pixels);
@@ -31,7 +35,10 @@ private:
     sdl::Texture texture;
     sdl::EventManager eventManager;
     sdl::Audio audio;
+    unsigned int refreshRate;
+    unsigned int frameCount;
     bool running;
+    TimePoint startTime;
 };
 
 }

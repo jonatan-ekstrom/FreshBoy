@@ -8,7 +8,7 @@ namespace sdl {
 
 Renderer_::Renderer_(Instance instance, Window window)
     : instance{std::move(instance)}, window{std::move(window)} {
-    const auto flags{SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC};
+    const auto flags{SDL_RENDERER_ACCELERATED};
     this->handle = SDL_CreateRenderer(this->window->Handle(), -1, flags);
     if (this->handle == nullptr) {
         throw std::runtime_error{"Failed to create SDL renderer."};
