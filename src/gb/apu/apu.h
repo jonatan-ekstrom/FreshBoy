@@ -32,9 +32,9 @@ private:
     std::tuple<u8, u8> GetSample();
     void Reset();
     QueueHandler queue;
-    double sampleTime;
+    double cyclesPerSample;
+    double cycles;
     bool enabled;
-    double elapsed;
     Sequencer seq;
     Sweep ch1;
     Tone ch2;

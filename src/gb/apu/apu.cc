@@ -7,13 +7,12 @@ namespace {
 
 constexpr auto BufferSize{1024};
 
-constexpr double ComputeSampleTime(const gb::uint refreshRate) {
-    constexpr auto clocksPerSec{4194304.0};
-    constexpr auto clocksPerFrame{70224.0};
-    constexpr auto sampleTime{1.0 / 44100.0};
-    constexpr auto frameRate{clocksPerSec / clocksPerFrame};
-    const auto adjustmentFactor{refreshRate / frameRate};
-    return sampleTime * adjustmentFactor;
+constexpr double CyclesPerSample(const gb::uint refreshRate) {
+    constexpr auto samplesPerSecond{44100.0};
+    constexpr auto cyclesPerFrame{70224};
+    const auto cyclesPerSecond{cyclesPerFrame * refreshRate};
+    const auto cyclesPerSample{cyclesPerSecond / samplesPerSecond};
+    return cyclesPerSample;
 }
 
 }
@@ -22,9 +21,9 @@ namespace gb {
 
 Apu_::Apu_(const QueueHandler& queue, const uint refreshRate)
     : queue{queue},
-      sampleTime{ComputeSampleTime(refreshRate)},
+      cyclesPerSample{CyclesPerSample(refreshRate)},
+      cycles{0},
       enabled{false},
-      elapsed{0},
       seq{[this](auto step){SeqTick(step);}} {
     bufferLeft.reserve(BufferSize);
     bufferRight.reserve(BufferSize);
@@ -165,10 +164,9 @@ uint Apu_::SampleCount() const {
 }
 
 void Apu_::Tick() {
-    constexpr auto dt{1.0 / 4194304.0};
-    this->elapsed += dt;
-    if (this->elapsed > this->sampleTime) {
-        this->elapsed -= this->sampleTime;
+    this->cycles += 1;
+    if (this->cycles > this->cyclesPerSample) {
+        this->cycles -= this->cyclesPerSample;
         Sample();
     }
 
