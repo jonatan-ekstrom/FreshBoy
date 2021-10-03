@@ -1,6 +1,6 @@
 #pragma once
 
-class SDL_KeyboardEvent;
+struct SDL_KeyboardEvent;
 
 namespace sdl {
 

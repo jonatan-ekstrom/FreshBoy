@@ -3,7 +3,7 @@
 #include "instance.h"
 #include "renderer.h"
 
-class SDL_Texture;
+struct SDL_Texture;
 
 namespace sdl {
 

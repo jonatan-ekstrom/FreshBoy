@@ -3,77 +3,89 @@
 # List warning flags.
 set(warningList
     -pedantic
-    -pedantic-errors
     -Wall
-    -Walloca
+    -Wextra
+    -Werror
+    -Wabi
+    -Waligned-new=all
     -Walloc-zero
+    -Walloca
+    -Wanalyzer-too-complex
     -Warray-bounds=2
     -Wattribute-alias=2
     -Wcast-align=strict
     -Wcast-qual
     -Wcatch-value=3
+    -Wclass-conversion
     -Wclass-memaccess
+    -Wcomma-subscript
+    -Wcomments
     -Wconditionally-supported
     -Wconversion
+    -Wconversion-null
     -Wctor-dtor-privacy
     -Wdate-time
+    -Wdelete-incomplete
     -Wdelete-non-virtual-dtor
     -Wdeprecated-copy
     -Wdeprecated-copy-dtor
-    -Wdisabled-optimization
-    -Wdouble-promotion
     -Wduplicated-branches
     -Wduplicated-cond
-    -Werror
-    -Wextra
     -Wextra-semi
     -Wfloat-conversion
     -Wfloat-equal
-    -Wformat=2
     -Wformat-nonliteral
     -Wformat-overflow=2
-    -Wformat-security
     -Wformat-signedness
     -Wformat-truncation=2
     -Wformat-y2k
+    -Wformat=2
     -Wimplicit-fallthrough=5
-    -Winit-self
+    -Winaccessible-base
+    -Winherited-variadic-ctor
+    -Winit-list-lifetime
+    -Winvalid-offsetof
     -Winvalid-pch
+    -Wliteral-suffix
     -Wlogical-op
-    -Wmissing-declarations
+    -Wmismatched-tags
     -Wmissing-format-attribute
     -Wmissing-include-dirs
     -Wmultichar
     -Wmultiple-inheritance
     -Wnoexcept
     -Wnoexcept-type
+    -Wnon-template-friend
     -Wnon-virtual-dtor
-    -Wnormalized
+    -Wnormalized=nfkc
     -Wnull-dereference
     -Wold-style-cast
     -Woverloaded-virtual
     -Wpacked
-    -Wpessimizing-move
     -Wplacement-new=2
+    -Wpmf-conversions
     -Wredundant-decls
     -Wredundant-move
+    -Wredundant-tags
     -Wregister
-    -Wreorder
     -Wscalar-storage-order
     -Wshift-overflow=2
     -Wsign-conversion
     -Wsign-promo
+    -Wsized-deallocation
     -Wstack-protector
     -Wstrict-aliasing=3
     -Wstrict-null-sentinel
     -Wstrict-overflow=2
     -Wstringop-overflow=4
+    -Wsubobject-linkage
     -Wsuggest-final-methods
     -Wsuggest-final-types
     -Wsuggest-override
     -Wswitch-default
     -Wswitch-enum
     -Wsynth
+    -Wterminate
     -Wtrampolines
     -Wundef
     -Wunreachable-code
@@ -83,11 +95,12 @@ set(warningList
     -Wuseless-cast
     -Wvector-operation-performance
     -Wvirtual-inheritance
+    -Wvirtual-move-assign
+    -Wvolatile
     -Wwrite-strings
     -Wzero-as-null-pointer-constant)
 
 set(instrumentationList
-    -fsanitize-address-use-after-scope
     -fsanitize=address
     -fsanitize=leak
     -fsanitize=undefined)
