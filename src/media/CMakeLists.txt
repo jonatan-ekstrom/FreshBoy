@@ -1,3 +1,5 @@
+# SDL2 C++ wrapper library (libmedia).
+
 # List media header and source files.
 set(mediaHeaders
     audio.h
