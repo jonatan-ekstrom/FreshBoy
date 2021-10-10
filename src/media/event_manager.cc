@@ -6,7 +6,7 @@
 
 namespace sdl {
 
-EventManager::EventManager(sdl::Instance instance)
+EventManager::EventManager(Instance instance)
     : instance{std::move(instance)}, active{true} {
     if (InstanceExists) {
         throw std::runtime_error{"Only one event manager may be active at a time."};
@@ -42,14 +42,6 @@ void EventManager::ProcessEvents() const {
     while (SDL_PollEvent(&event)) {
         HandleEvent(event);
     }
-}
-
-void EventManager::WaitForEvent() const {
-    SDL_Event event{};
-    if (SDL_WaitEvent(&event) == 0) {
-        throw std::runtime_error{"SDL event waiting failed."};
-    }
-    HandleEvent(event);
 }
 
 void EventManager::HandleEvent(const SDL_Event& event) const {
