@@ -54,7 +54,7 @@ Emulator::Emulator()
       texture{this->instance, this->renderer, DisplayWidth, DisplayHeight},
       eventManager{this->instance},
       audio{this->instance},
-      refreshRate{Instance_::RefreshRate()},
+      refreshRate{this->instance->RefreshRate()},
       frameCount{0},
       running{false},
       startTime{} {
