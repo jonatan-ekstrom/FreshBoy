@@ -6,6 +6,7 @@ namespace sdl {
 
 Key::Key(const SDL_KeyboardEvent& event)
     : Code{}, Type{}, State{}, Repeat{event.repeat != 0} {
+    // Parse keycode.
     switch (event.keysym.sym) {
         case SDLK_UP:
             Code = Code::Up;
@@ -32,9 +33,11 @@ Key::Key(const SDL_KeyboardEvent& event)
             Code = Code::Return;
             break;
         default:
+            Code = Code::Unknown;
             break;
     }
 
+    // Parse event type.
     switch (event.type) {
         case SDL_KEYUP:
             Type = Type::Up;
@@ -43,9 +46,11 @@ Key::Key(const SDL_KeyboardEvent& event)
             Type = Type::Down;
             break;
         default:
+            Type = Type::Unknown;
             break;
     }
 
+    // Parse event state.
     switch (event.state) {
         case SDL_PRESSED:
             State = State::Pressed;
@@ -54,6 +59,7 @@ Key::Key(const SDL_KeyboardEvent& event)
             State = State::Released;
             break;
         default:
+            State = State::Unknown;
             break;
     }
 }
