@@ -6,11 +6,24 @@
 
 namespace sdl {
 
-Window_::Window_(sdl::Instance instance, const std::string& title,
+Window Window_::Create(Instance instance, const std::string& title,
+                       const int width, const int height) {
+    return Window{new Window_{std::move(instance), title, width, height}};
+}
+
+void Window_::Show() {
+    SDL_ShowWindow(this->handle);
+}
+
+SDL_Window* Window_::Handle() {
+    return this->handle;
+}
+
+Window_::Window_(Instance&& instance, const std::string& title,
                  const int width, const int height)
     : instance{std::move(instance)}, handle{nullptr} {
     if (width <= 0 || height <= 0) {
-        throw std::runtime_error{"Invalid window dimensions."};
+        throw std::runtime_error{"Window - Invalid dimensions."};
     }
     const auto pos{SDL_WINDOWPOS_CENTERED};
     const auto flags{SDL_WINDOW_HIDDEN};
@@ -33,19 +46,6 @@ Window_::Window_(Window_&& other) noexcept : handle{nullptr} {
 Window_& Window_::operator=(Window_&& other) noexcept {
     Swap(*this, other);
     return *this;
-}
-
-void Window_::Show() {
-    SDL_ShowWindow(this->handle);
-}
-
-Window Window_::Create(Instance instance, const std::string& title,
-                       const int width, const int height) {
-    return Window{new Window_{std::move(instance), title, width, height}};
-}
-
-SDL_Window* Window_::Handle() {
-    return this->handle;
 }
 
 void Swap(Window_& lhs, Window_& rhs) noexcept {
