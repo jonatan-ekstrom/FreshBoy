@@ -6,7 +6,7 @@
 #include <SDL_render.h>
 
 namespace {
-    constexpr auto PixelFormat = SDL_PIXELFORMAT_RGBA8888;
+    constexpr auto PixelFormat{SDL_PIXELFORMAT_RGBA8888};
     constexpr auto FormatBytesPerPixel{SDL_BYTESPERPIXEL(PixelFormat)};
     constexpr auto PointerBytesPerPixel{sizeof(std::uint32_t)};
     static_assert(FormatBytesPerPixel == PointerBytesPerPixel);
@@ -30,23 +30,12 @@ Texture::Texture(Instance instance, Renderer renderer,
     }
 }
 
-Texture::~Texture() {
-    if (this->handle != nullptr) {
-        SDL_DestroyTexture(this->handle);
-    }
+int Texture::Width() const {
+    return this->width;
 }
 
-Texture::Texture(Texture&& other) noexcept : width{0}, height{0}, handle{nullptr}  {
-    Swap(*this, other);
-}
-
-Texture& Texture::operator=(Texture&& other) noexcept {
-    Swap(*this, other);
-    return *this;
-}
-
-void Texture::Unlock() {
-    SDL_UnlockTexture(this->handle);
+int Texture::Height() const {
+    return this->height;
 }
 
 std::uint32_t* Texture::Lock() {
@@ -62,16 +51,27 @@ std::uint32_t* Texture::Lock() {
     return static_cast<std::uint32_t*>(data);
 }
 
-int Texture::Width() const {
-    return this->width;
-}
-
-int Texture::Height() const {
-    return this->height;
+void Texture::Unlock() {
+    SDL_UnlockTexture(this->handle);
 }
 
 SDL_Texture* Texture::Handle() {
     return this->handle;
+}
+
+Texture::~Texture() {
+    if (this->handle != nullptr) {
+        SDL_DestroyTexture(this->handle);
+    }
+}
+
+Texture::Texture(Texture&& other) noexcept : width{0}, height{0}, handle{nullptr}  {
+    Swap(*this, other);
+}
+
+Texture& Texture::operator=(Texture&& other) noexcept {
+    Swap(*this, other);
+    return *this;
 }
 
 void Swap(Texture& lhs, Texture& rhs) noexcept {
