@@ -5,7 +5,7 @@
 #include <thread>
 #include "key.h"
 
-using namespace gb;
+using namespace api;
 using namespace sdl;
 namespace fs = std::filesystem;
 
@@ -17,28 +17,18 @@ constexpr auto DisplayHeight{144};
 constexpr auto WindowHeight{600};
 constexpr auto WindowWidth{(WindowHeight * 10) / 9};
 
-constexpr api::Button CodeToButton(const enum Key::Code code) {
-    using api::Button;
+constexpr Button CodeToButton(const enum Key::Code code) {
     switch (code) {
-        case Key::Code::Up:
-            return Button::Up;
-        case Key::Code::Down:
-            return Button::Down;
-        case Key::Code::Left:
-            return Button::Left;
-        case Key::Code::Right:
-            return Button::Right;
-        case Key::Code::Z:
-            return Button::B;
-        case Key::Code::X:
-            return Button::A;
-        case Key::Code::Backspace:
-            return Button::Select;
-        case Key::Code::Return:
-            return Button::Start;
+        case Key::Code::Up: return Button::Up;
+        case Key::Code::Down: return Button::Down;
+        case Key::Code::Left: return Button::Left;
+        case Key::Code::Right: return Button::Right;
+        case Key::Code::Z: return Button::B;
+        case Key::Code::X: return Button::A;
+        case Key::Code::Backspace: return Button::Select;
+        case Key::Code::Return: return Button::Start;
         case Key::Code::Unknown:
-        default:
-            throw std::runtime_error{"APP - Unknown keycode."};
+        default: throw std::runtime_error{"APP - Unknown keycode."};
     }
 }
 
@@ -47,8 +37,7 @@ constexpr api::Button CodeToButton(const enum Key::Code code) {
 namespace app {
 
 Emulator::Emulator()
-    : gb{},
-      instance{Instance_::Create()},
+    : instance{Instance_::Create()},
       window{Window_::Create(this->instance, Title, WindowWidth, WindowHeight)},
       renderer{Renderer_::Create(this->instance, this->window)},
       texture{this->instance, this->renderer, DisplayWidth, DisplayHeight},
@@ -63,18 +52,23 @@ Emulator::Emulator()
 }
 
 void Emulator::Run(const fs::path& romPath, const fs::path& ramPath) {
+    // Setup callbacks.
     const auto renderCb{[this] (const auto& p) { Render(p); }};
     const auto queueCb{[this] (const auto& left, const auto& right) { Queue(left, right); }};
     const auto contCb{[this] { return Continue(); }};
 
-    gb = api::Create(romPath, ramPath, renderCb, queueCb, this->refreshRate);
-    std::cout << api::Header(gb) << std::endl;
+    // Create the API wrapper.
+    this->gb = std::make_unique<Gameboy>(romPath, ramPath, renderCb, queueCb, this->refreshRate);
 
+    // Print header information to stdout.
+    std::cout << gb->Header() << std::endl;
+
+    // Start emulating.
     this->window->Show();
     this->audio.Play();
     this->running = true;
     this->startTime = Clock::now();
-    api::Run(gb, contCb);
+    this->gb->Run(contCb);
 }
 
 void Emulator::KeyHandler(const Key& key) {
@@ -98,26 +92,37 @@ bool Emulator::Continue() const {
 }
 
 void Emulator::Sync() const {
+    // Synchronize to a 50 ms margin.
     using Seconds = std::chrono::duration<double>;
     constexpr Seconds margin{0.05};
+
+    // Compute elapsed (emulated) time in seconds.
     const auto frames{static_cast<double>(this->frameCount)};
     const Seconds elapsed{frames / this->refreshRate};
+
+    // Compute the emulator's current (absolute) time.
     const auto emulated{this->startTime + elapsed};
+
+    // Subtract the margin to get the target (real) time.
     const auto target{emulated - margin};
-    if (target > Clock::now()) {
+
+    // If the emulation is ahead by more than the current margin, sleep.
+    if (Clock::now() < target) {
         std::this_thread::sleep_until(target);
     }
 }
 
-void Emulator::Render(const api::Pixels& pixels) {
+void Emulator::Render(const Pixels& pixels) {
     const auto txSize{static_cast<uint>(this->texture.Width() * this->texture.Height())};
     if (pixels.size() != txSize) {
-        throw std::runtime_error{"APP - framebuffer/texture size mismatch."};
+        throw std::runtime_error{"Emulator - framebuffer/texture size mismatch."};
     }
-
     ++this->frameCount;
+
+    // Process all pending SDL events.
     this->eventManager.ProcessEvents();
 
+    // Render the framebuffer.
     const auto tx{this->texture.Lock()};
     std::copy(pixels.cbegin(), pixels.cend(), tx);
     this->texture.Unlock();
@@ -125,23 +130,24 @@ void Emulator::Render(const api::Pixels& pixels) {
     this->renderer->Copy(this->texture);
     this->renderer->Present();
 
+    // Synchronize, i.e. sleep if we are ahead.
     Sync();
 }
 
-void Emulator::Queue(const api::Samples& left, const api::Samples& right) {
+void Emulator::Queue(const Samples& left, const Samples& right) {
     this->audio.Queue(left, right);
 }
 
 void Emulator::KeyUp(const Key& key) {
     if (key.Code == sdl::Key::Code::Unknown) return;
     const auto button{CodeToButton(key.Code)};
-    api::ButtonReleased(gb, button);
+    this->gb->ButtonReleased(button);
 }
 
 void Emulator::KeyDown(const Key& key) {
     if (key.Code == sdl::Key::Code::Unknown) return;
     const auto button{CodeToButton(key.Code)};
-    api::ButtonPressed(gb, button);
+    this->gb->ButtonPressed(button);
 }
 
 }

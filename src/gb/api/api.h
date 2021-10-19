@@ -8,23 +8,59 @@
 
 namespace gb { class Gameboy_; }
 
+/* Public API of the gb static library. */
 namespace api {
 
-struct GameboyDeleter { void operator()(gb::Gameboy_* p); };
-using Gameboy = std::unique_ptr<gb::Gameboy_, GameboyDeleter>;
+/* A collection of pixels (RGBA). */
 using Pixels = std::vector<std::uint32_t>;
+
+/* A collection of sound samples. 8-bit unsigned, 44.1 kHz. */
 using Samples = std::vector<std::uint8_t>;
+
+/* Function called to determine whether to continue emulating. */
 using ContinueCallback = std::function<bool(void)>;
+
+/* Function called to request a re-render of the screen. */
 using RenderCallback = std::function<void(const Pixels&)>;
+
+/* Function called to queue up new audio samples. */
 using QueueCallback = std::function<void(const Samples&, const Samples&)>;
+
+/* Enumeration of all supported joypad buttons. */
 enum class Button { Right, Left, Up, Down, A, B, Select, Start };
 
-Gameboy Create(const std::filesystem::path& romPath, const std::filesystem::path& ramPath,
-               const RenderCallback& render, const QueueCallback& queue,
-               uint refreshRate, const bool log = false);
-std::string Header(const Gameboy& gb);
-void Run(const Gameboy& gb, const ContinueCallback& cont);
-void ButtonPressed(const Gameboy& gb, Button button);
-void ButtonReleased(const Gameboy& gb, Button button);
+/* Opaque pointer handle. */
+class Handle {
+public:
+    explicit Handle(gb::Gameboy_ *const handle);
+    const gb::Gameboy_* operator->() const;
+    gb::Gameboy_* operator->();
+private:
+    struct GameboyDeleter { void operator()(gb::Gameboy_* p); };
+    std::unique_ptr<gb::Gameboy_, GameboyDeleter> handle;
+};
+
+/* Public gameboy API wrapper class. */
+class Gameboy {
+public:
+    /* Constructs a new instance of the gameboy emulator. */
+    Gameboy(const std::filesystem::path& romPath, const std::filesystem::path& ramPath,
+            const RenderCallback& render, const QueueCallback& queue,
+            unsigned int refreshRate, bool log = false);
+
+    /* Returns a dump of the ROM header as a string. */
+    std::string Header() const;
+
+    /* Runs the emulation until 'cont' returns false */
+    void Run(const ContinueCallback& cont);
+
+    /* Triggers a button press in the emulator. */
+    void ButtonPressed(Button button);
+
+    /* Triggers a button release in the emulator. */
+    void ButtonReleased(Button button);
+private:
+    Handle gb;
+};
 
 }

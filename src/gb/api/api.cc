@@ -3,30 +3,22 @@
 #include "gb.h"
 #include "input.h"
 
+using namespace gb;
 namespace fs = std::filesystem;
 
 namespace {
 
-constexpr gb::Button Map(const api::Button button) {
+constexpr Button Map(const api::Button button) {
     switch (button) {
-        case api::Button::Right:
-            return gb::Button::Right;
-        case api::Button::Left:
-            return gb::Button::Left;
-        case api::Button::Up:
-            return gb::Button::Up;
-        case api::Button::Down:
-            return gb::Button::Down;
-        case api::Button::A:
-            return gb::Button::A;
-        case api::Button::B:
-            return gb::Button::B;
-        case api::Button::Select:
-            return gb::Button::Select;
-        case api::Button::Start:
-            return gb::Button::Start;
-        default:
-            throw std::runtime_error{"API - unmapped button."};
+        case api::Button::Right: return Button::Right;
+        case api::Button::Left: return Button::Left;
+        case api::Button::Up: return Button::Up;
+        case api::Button::Down: return Button::Down;
+        case api::Button::A: return Button::A;
+        case api::Button::B: return Button::B;
+        case api::Button::Select: return Button::Select;
+        case api::Button::Start: return Button::Start;
+        default: throw std::runtime_error{"API - unmapped button."};
     }
 }
 
@@ -34,31 +26,37 @@ constexpr gb::Button Map(const api::Button button) {
 
 namespace api {
 
-void GameboyDeleter::operator()(gb::Gameboy_* p) {
-    delete p;
+Handle::Handle(Gameboy_ *const handle) : handle{handle} {}
+
+const Gameboy_* Handle::operator->() const {
+    return this->handle.get();
 }
 
-Gameboy Create(const fs::path& romPath, const fs::path& ramPath,
-               const RenderCallback& render, const QueueCallback& queue,
-               const uint refreshRate, const bool log) {
-    auto gb{gb::Gameboy_::Create(romPath, ramPath, render, queue, refreshRate, log)};
-    return Gameboy{gb.release()};
+Gameboy_* Handle::operator->() {
+    return this->handle.get();
 }
 
-std::string Header(const Gameboy& gb) {
-    return gb->Header();
+void Handle::GameboyDeleter::operator()(Gameboy_ *const p) { delete p; }
+
+Gameboy::Gameboy(const fs::path& romPath, const fs::path& ramPath,
+                 const RenderCallback& render, const QueueCallback& queue,
+                 const unsigned int refreshRate, const bool log)
+    : gb{Gameboy_::Create(romPath, ramPath, render, queue, refreshRate, log).release()} {}
+
+std::string Gameboy::Header() const {
+    return this->gb->Header();
 }
 
-void Run(const Gameboy& gb, const ContinueCallback& cont) {
-    gb->Run(cont);
+void Gameboy::Run(const ContinueCallback& cont) {
+    this->gb->Run(cont);
 }
 
-void ButtonPressed(const Gameboy& gb, Button button) {
-    gb->ButtonPressed(Map(button));
+void Gameboy::ButtonPressed(const Button button) {
+    this->gb->ButtonPressed(Map(button));
 }
 
-void ButtonReleased(const Gameboy& gb, Button button) {
-    gb->ButtonReleased(Map(button));
+void Gameboy::ButtonReleased(const Button button) {
+    this->gb->ButtonReleased(Map(button));
 }
 
 }
