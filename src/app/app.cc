@@ -36,22 +36,9 @@ constexpr Button CodeToButton(const enum Key::Code code) {
 
 namespace app {
 
-Emulator::Emulator()
-    : instance{Instance_::Create()},
-      window{Window_::Create(this->instance, Title, WindowWidth, WindowHeight)},
-      renderer{Renderer_::Create(this->instance, this->window)},
-      texture{this->instance, this->renderer, DisplayWidth, DisplayHeight},
-      eventManager{this->instance},
-      audio{this->instance},
-      refreshRate{this->instance->RefreshRate()},
-      frameCount{0},
-      running{false},
-      startTime{} {
-    eventManager.RegisterKeyHandler([this] (const auto& key) { KeyHandler(key); });
-    eventManager.RegisterQuitHandler([this] { QuitHandler(); });
-}
+Emulator Emulator_::Create() { return Emulator{new Emulator_}; }
 
-void Emulator::Run(const fs::path& romPath, const fs::path& ramPath) {
+void Emulator_::Run(const fs::path& romPath, const fs::path& ramPath) {
     // Setup callbacks.
     const auto renderCb{[this] (const auto& p) { Render(p); }};
     const auto queueCb{[this] (const auto& left, const auto& right) { Queue(left, right); }};
@@ -71,7 +58,22 @@ void Emulator::Run(const fs::path& romPath, const fs::path& ramPath) {
     this->gb->Run(contCb);
 }
 
-void Emulator::KeyHandler(const Key& key) {
+Emulator_::Emulator_()
+    : instance{Instance_::Create()},
+      window{Window_::Create(this->instance, Title, WindowWidth, WindowHeight)},
+      renderer{Renderer_::Create(this->instance, this->window)},
+      texture{this->instance, this->renderer, DisplayWidth, DisplayHeight},
+      eventManager{this->instance},
+      audio{this->instance},
+      refreshRate{this->instance->RefreshRate()},
+      frameCount{0},
+      running{false},
+      startTime{} {
+    eventManager.RegisterKeyHandler([this] (const auto& key) { KeyHandler(key); });
+    eventManager.RegisterQuitHandler([this] { QuitHandler(); });
+}
+
+void Emulator_::KeyHandler(const Key& key) {
     if (key.Repeat) return;
     if (key.Type == Key::Type::Down) {
         KeyDown(key);
@@ -83,15 +85,15 @@ void Emulator::KeyHandler(const Key& key) {
     }
 }
 
-void Emulator::QuitHandler() {
+void Emulator_::QuitHandler() {
     this->running = false;
 }
 
-bool Emulator::Continue() const {
+bool Emulator_::Continue() const {
     return this->running;
 }
 
-void Emulator::Sync() const {
+void Emulator_::Sync() const {
     // Synchronize to a 50 ms margin.
     using Seconds = std::chrono::duration<double>;
     constexpr Seconds margin{0.05};
@@ -112,7 +114,7 @@ void Emulator::Sync() const {
     }
 }
 
-void Emulator::Render(const Pixels& pixels) {
+void Emulator_::Render(const Pixels& pixels) {
     const auto txSize{static_cast<uint>(this->texture.Width() * this->texture.Height())};
     if (pixels.size() != txSize) {
         throw std::runtime_error{"Emulator - framebuffer/texture size mismatch."};
@@ -134,17 +136,17 @@ void Emulator::Render(const Pixels& pixels) {
     Sync();
 }
 
-void Emulator::Queue(const Samples& left, const Samples& right) {
+void Emulator_::Queue(const Samples& left, const Samples& right) {
     this->audio.Queue(left, right);
 }
 
-void Emulator::KeyUp(const Key& key) {
+void Emulator_::KeyUp(const Key& key) {
     if (key.Code == sdl::Key::Code::Unknown) return;
     const auto button{CodeToButton(key.Code)};
     this->gb->ButtonReleased(button);
 }
 
-void Emulator::KeyDown(const Key& key) {
+void Emulator_::KeyDown(const Key& key) {
     if (key.Code == sdl::Key::Code::Unknown) return;
     const auto button{CodeToButton(key.Code)};
     this->gb->ButtonPressed(button);

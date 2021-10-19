@@ -14,15 +14,19 @@ namespace sdl { class Key; }
 
 namespace app {
 
+class Emulator_;
+using Emulator = std::unique_ptr<Emulator_>;
+
 /* Top level emulator class using SDL2 for audio/video. */
-class Emulator {
+class Emulator_ {
 public:
     /* Initialize the emulator and acquire SDL resources. */
-    Emulator();
+    static Emulator Create();
 
     /* Run the emulation. */
     void Run(const std::filesystem::path& romPath, const std::filesystem::path& ramPath);
 private:
+    Emulator_();
     using Clock = std::chrono::steady_clock;
     using TimePoint = decltype(Clock::now());
     bool Continue() const;
