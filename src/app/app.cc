@@ -45,7 +45,8 @@ void Emulator_::Run(const fs::path& romPath, const fs::path& ramPath) {
     const auto contCb{[this] { return Continue(); }};
 
     // Create the API wrapper.
-    this->gb = std::make_unique<Gameboy>(romPath, ramPath, renderCb, queueCb, this->refreshRate);
+    this->gb = std::make_unique<Gameboy>(romPath, ramPath, renderCb, queueCb,
+                                         this->refreshRate, Audio::SampleRate);
 
     // Print header information to stdout.
     std::cout << gb->Header() << std::endl;

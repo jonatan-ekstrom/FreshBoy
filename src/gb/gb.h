@@ -26,7 +26,7 @@ public:
     using QueueCallback = Apu_::QueueHandler;
     static Gameboy Create(const std::filesystem::path& romPath, const std::filesystem::path& ramPath,
                           const FrameCallback& render, const QueueCallback& queue,
-                          uint refreshRate, bool log = false);
+                          uint refreshRate, uint sampleRate, bool log = false);
     std::string Header() const;
     void Run(const ContinueCallback& cont);
     void ButtonPressed(Button button);
@@ -34,7 +34,7 @@ public:
 private:
     Gameboy_(const std::filesystem::path& romPath, const std::filesystem::path& ramPath,
              const FrameCallback& render, const QueueCallback& queue,
-             uint refreshRate, bool log);
+             uint refreshRate, uint sampleRate, bool log);
     void Tick();
     Cartridge cart;
     Apu apu;

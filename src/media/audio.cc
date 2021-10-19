@@ -13,7 +13,7 @@ Audio::Audio(Instance instance)
      * We're using 44.1 kHz stereo sound in 8-bit unsigned samples.
      */
     SDL_AudioSpec desired{}, obtained{};
-    desired.freq = 44100;
+    desired.freq = SampleRate;
     desired.format = AUDIO_U8;
     desired.channels = 2;
     desired.samples = 1024;

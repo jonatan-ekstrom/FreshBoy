@@ -8,6 +8,9 @@ namespace sdl {
 /* High level API wrapper class for the SDL audio subsystem. */
 class Audio {
 public:
+    /* The sample rate, 44.1 kHz */
+    static constexpr unsigned int SampleRate{44100};
+
     /* A collection of samples to play. Unsigned 8-bit samples are used. */
     using Samples = std::vector<std::uint8_t>;
 

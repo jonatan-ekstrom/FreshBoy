@@ -7,9 +7,9 @@ namespace {
 
 constexpr auto BufferSize{1024};
 
-constexpr double CyclesPerSample(const gb::uint refreshRate) {
-    constexpr auto samplesPerSecond{44100.0};
+constexpr double CyclesPerSample(const gb::uint refreshRate, const gb::uint sampleRate) {
     constexpr auto cyclesPerFrame{70224};
+    const auto samplesPerSecond{static_cast<double>(sampleRate)};
     const auto cyclesPerSecond{cyclesPerFrame * refreshRate};
     const auto cyclesPerSample{cyclesPerSecond / samplesPerSecond};
     return cyclesPerSample;
@@ -19,9 +19,9 @@ constexpr double CyclesPerSample(const gb::uint refreshRate) {
 
 namespace gb {
 
-Apu_::Apu_(const QueueHandler& queue, const uint refreshRate)
+Apu_::Apu_(const QueueHandler& queue, const uint refreshRate, const uint sampleRate)
     : queue{queue},
-      cyclesPerSample{CyclesPerSample(refreshRate)},
+      cyclesPerSample{CyclesPerSample(refreshRate, sampleRate)},
       cycles{0},
       enabled{false},
       seq{[this](auto step){SeqTick(step);}} {
@@ -29,8 +29,8 @@ Apu_::Apu_(const QueueHandler& queue, const uint refreshRate)
     bufferRight.reserve(BufferSize);
 }
 
-Apu Apu_::Create(const QueueHandler& queue, const uint refreshRate) {
-    return Apu{new Apu_{queue, refreshRate}};
+Apu Apu_::Create(const QueueHandler& queue, const uint refreshRate, const uint sampleRate) {
+    return Apu{new Apu_{queue, refreshRate, sampleRate}};
 }
 
 u8 Apu_::Read(const u16 address) const {
