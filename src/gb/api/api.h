@@ -29,6 +29,10 @@ using QueueCallback = std::function<void(const Samples&, const Samples&)>;
 /* Enumeration of all supported joypad buttons. */
 enum class Button { Right, Left, Up, Down, A, B, Select, Start };
 
+/* Display (texture) sizes used by the emulator. */
+inline constexpr unsigned int DisplayWidth{160};
+inline constexpr unsigned int DisplayHeight{144};
+
 /* Opaque pointer handle. */
 class Handle {
 public:

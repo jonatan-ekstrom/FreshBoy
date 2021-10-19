@@ -1,5 +1,6 @@
 #include "api.h"
 #include <stdexcept>
+#include "display.h"
 #include "gb.h"
 #include "input.h"
 
@@ -25,6 +26,9 @@ constexpr Button Map(const api::Button button) {
 }
 
 namespace api {
+
+static_assert(DisplayWidth == lcd::DisplayWidth);
+static_assert(DisplayHeight == lcd::DisplayHeight);
 
 Handle::Handle(Gameboy_ *const handle) : handle{handle} {}
 

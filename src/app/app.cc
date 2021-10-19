@@ -12,8 +12,6 @@ namespace fs = std::filesystem;
 namespace {
 
 constexpr auto Title{"j0n1zBoy"};
-constexpr auto DisplayWidth{160};
-constexpr auto DisplayHeight{144};
 constexpr auto WindowHeight{600};
 constexpr auto WindowWidth{(WindowHeight * 10) / 9};
 
