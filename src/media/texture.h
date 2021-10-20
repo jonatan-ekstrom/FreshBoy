@@ -2,6 +2,7 @@
 #include <cstdint>
 #include "instance.h"
 #include "renderer.h"
+#include "wrapper.h"
 
 struct SDL_Texture;
 
@@ -36,18 +37,13 @@ public:
     /* Creates a pixel from provided RGBA values. */
     static constexpr std::uint32_t Pixel(std::uint8_t r, std::uint8_t g,
                                          std::uint8_t b, std::uint8_t a);
-    ~Texture();
-    Texture(const Texture&) = delete;
-    Texture(Texture&& other) noexcept;
-    Texture& operator=(const Texture&) = delete;
-    Texture& operator=(Texture&& other) noexcept;
 private:
-    friend void Swap(Texture& lhs, Texture& rhs) noexcept;
+    static void Destroy(SDL_Texture* p);
     Instance instance;
     Renderer renderer;
     int width;
     int height;
-    SDL_Texture* handle;
+    Wrapper<SDL_Texture, Destroy> handle;
 };
 
 inline constexpr std::uint32_t Texture::Pixel(const std::uint8_t r,
@@ -56,13 +52,5 @@ inline constexpr std::uint32_t Texture::Pixel(const std::uint8_t r,
                                               const std::uint8_t a) {
     return static_cast<uint32_t>(r << 24 | g << 16 | b << 8 | a);
 }
-
-
-
-
-
-
-
-void Swap(Texture& lhs, Texture& rhs) noexcept;
 
 }

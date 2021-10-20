@@ -6,6 +6,7 @@
 #include <SDL_render.h>
 
 namespace {
+    // Statically assert that we are using the correct pointer type.
     constexpr auto PixelFormat{SDL_PIXELFORMAT_RGBA8888};
     constexpr auto FormatBytesPerPixel{SDL_BYTESPERPIXEL(PixelFormat)};
     constexpr auto PointerBytesPerPixel{sizeof(std::uint32_t)};
@@ -16,13 +17,13 @@ namespace sdl {
 
 Texture::Texture(Instance instance, Renderer renderer,
                  const int width, const int height)
-    : instance{std::move(instance)},
-      renderer{std::move(renderer)},
-      width{width},
-      height{height} {
+    : instance{std::move(instance)}, renderer{std::move(renderer)},
+      width{width}, height{height} {
     if (width <= 0 || height <= 0) {
-        throw std::runtime_error{"Invalid texture dimensions."};
+        throw std::runtime_error{"Texture - Invalid dimensions."};
     }
+
+    // Optimize for textures that change often, requires locking.
     const auto access{SDL_TEXTUREACCESS_STREAMING};
     this->handle = SDL_CreateTexture(this->renderer->Handle(), PixelFormat, access, width, height);
     if (this->handle == nullptr) {
@@ -46,7 +47,7 @@ std::uint32_t* Texture::Lock() {
         throw std::runtime_error{SDL_GetError()};
     }
     if (pitch != expectedPitch) {
-        throw std::runtime_error{"Unexpected pitch when locking texture."};
+        throw std::runtime_error{"Texture - Unexpected pitch when locking."};
     }
     return static_cast<std::uint32_t*>(data);
 }
@@ -59,28 +60,10 @@ SDL_Texture* Texture::Handle() {
     return this->handle;
 }
 
-Texture::~Texture() {
-    if (this->handle != nullptr) {
-        SDL_DestroyTexture(this->handle);
+void Texture::Destroy(SDL_Texture *const p) {
+    if (p != nullptr) {
+        SDL_DestroyTexture(p);
     }
-}
-
-Texture::Texture(Texture&& other) noexcept : width{0}, height{0}, handle{nullptr}  {
-    Swap(*this, other);
-}
-
-Texture& Texture::operator=(Texture&& other) noexcept {
-    Swap(*this, other);
-    return *this;
-}
-
-void Swap(Texture& lhs, Texture& rhs) noexcept {
-    using std::swap;
-    swap(lhs.instance, rhs.instance);
-    swap(lhs.renderer, rhs.renderer);
-    swap(lhs.width, rhs.width);
-    swap(lhs.height, rhs.height);
-    swap(lhs.handle, rhs.handle);
 }
 
 }
