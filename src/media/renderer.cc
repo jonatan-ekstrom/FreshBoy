@@ -28,11 +28,14 @@ void Renderer_::Present() {
 
 Renderer_::Renderer_(Instance&& instance, Window&& window)
     : instance{std::move(instance)}, window{std::move(window)} {
+    // Enable hardware acceleration.
     const auto flags{SDL_RENDERER_ACCELERATED};
     this->handle = SDL_CreateRenderer(this->window->Handle(), -1, flags);
     if (this->handle == nullptr) {
         throw std::runtime_error{SDL_GetError()};
     }
+
+    // Set up a black (full opacity) draw color.
     const auto rgb{0};
     const auto alpha{255};
     if (SDL_SetRenderDrawColor(this->handle, rgb, rgb, rgb, alpha) != 0) {
@@ -44,26 +47,10 @@ SDL_Renderer* Renderer_::Handle() {
     return this->handle;
 }
 
-Renderer_::~Renderer_() {
-    if (this->handle != nullptr) {
-        SDL_DestroyRenderer(this->handle);
+void Renderer_::Destroy(SDL_Renderer *const p) {
+    if (p != nullptr) {
+        SDL_DestroyRenderer(p);
     }
-}
-
-Renderer_::Renderer_(Renderer_&& other) noexcept : handle{nullptr}  {
-    Swap(*this, other);
-}
-
-Renderer_& Renderer_::operator=(Renderer_&& other) noexcept {
-    Swap(*this, other);
-    return *this;
-}
-
-void Swap(Renderer_& lhs, Renderer_& rhs) noexcept {
-    using std::swap;
-    swap(lhs.instance, rhs.instance);
-    swap(lhs.window, rhs.window);
-    swap(lhs.handle, rhs.handle);
 }
 
 }

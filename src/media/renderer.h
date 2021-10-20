@@ -2,6 +2,7 @@
 #include <memory>
 #include "instance.h"
 #include "window.h"
+#include "wrapper.h"
 
 class SDL_Renderer;
 
@@ -35,20 +36,12 @@ public:
 
     /* Returns a pointer to the wrapped SDL_Renderer. */
     SDL_Renderer* Handle();
-
-    ~Renderer_();
-    Renderer_(const Renderer_&) = delete;
-    Renderer_(Renderer_&& other) noexcept;
-    Renderer_& operator=(const Renderer_&) = delete;
-    Renderer_& operator=(Renderer_&& other) noexcept;
 private:
     Renderer_(Instance&& instance, Window&& window);
-    friend void Swap(Renderer_& lhs, Renderer_& rhs) noexcept;
+    static void Destroy(SDL_Renderer* p);
     Instance instance;
     Window window;
-    SDL_Renderer* handle;
+    Wrapper<SDL_Renderer, Destroy> handle;
 };
-
-void Swap(Renderer_& lhs, Renderer_& rhs) noexcept;
 
 }
