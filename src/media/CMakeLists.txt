@@ -8,7 +8,8 @@ set(mediaHeaders
     key.h
     renderer.h
     texture.h
-    window.h)
+    window.h
+    wrapper.h)
 
 set(mediaSources
     audio.cc
