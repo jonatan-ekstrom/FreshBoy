@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "instance.h"
+#include "wrapper.h"
 
 class SDL_Window;
 
@@ -24,19 +25,12 @@ public:
 
     /* Returns a pointer to the wrapped SDL_Window. */
     SDL_Window* Handle();
-
-    ~Window_();
-    Window_(Window_&) = delete;
-    Window_(Window_&& other) noexcept;
-    Window_& operator=(const Window_&) = delete;
-    Window_& operator=(Window_&& other) noexcept;
 private:
     Window_(Instance&& instance, const std::string& title, int width, int height);
-    friend void Swap(Window_& lhs, Window_& rhs) noexcept;
+    static void Destroy(SDL_Window* p);
     Instance instance;
-    SDL_Window* handle;
+    Wrapper<SDL_Window, Destroy> handle;
 };
 
-void Swap(Window_& lhs, Window_& rhs) noexcept;
 
 }
