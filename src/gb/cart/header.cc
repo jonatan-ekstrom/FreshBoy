@@ -5,8 +5,6 @@
 #include "bits.h"
 #include "file.h"
 
-namespace fs = std::filesystem;
-
 namespace {
 
 constexpr std::ptrdiff_t HeaderOffset{0x100};
@@ -101,7 +99,7 @@ constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
 
 namespace gb {
 
-Header::Header(const fs::path& romPath) {
+Header::Header(const Path& romPath) {
     InputFile file{romPath};
     this->bytes = file.ReadBytes(HeaderOffset, HeaderSize);
     if (Checksum() != ComputedChecksum()) {

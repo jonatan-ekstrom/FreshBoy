@@ -1,7 +1,7 @@
 #pragma once
-#include <filesystem>
 #include <string>
 #include <vector>
+#include "path.h"
 #include "types.h"
 
 namespace gb {
@@ -34,7 +34,7 @@ enum class MemSize {
 
 class Header {
 public:
-    explicit Header(const std::filesystem::path& romPath);
+    explicit Header(const Path& romPath);
     std::string Entry() const;
     std::string Logo() const;
     std::string Title() const;

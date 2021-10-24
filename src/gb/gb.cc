@@ -2,16 +2,16 @@
 #include <tuple>
 #include "log.h"
 
-namespace fs = std::filesystem;
-
 namespace {
 
-auto GetRamPath(const fs::path& romPath, const fs::path& ramPath) {
-    fs::path suggested{};
+using gb::Path;
+
+auto GetRamPath(const Path& romPath, const Path& ramPath) {
+    Path suggested{};
     if (!ramPath.empty()) {
         suggested = ramPath;
     } else {
-        suggested = fs::path{romPath}.replace_extension("ram");
+        suggested = Path{romPath}.replace_extension("ram");
     }
     return std::make_tuple(suggested, exists(suggested));
 }
@@ -20,7 +20,7 @@ auto GetRamPath(const fs::path& romPath, const fs::path& ramPath) {
 
 namespace gb {
 
-Gameboy_::Gameboy_(const fs::path& romPath, const fs::path& ramPath,
+Gameboy_::Gameboy_(const Path& romPath, const Path& ramPath,
                    const FrameCallback& render, const QueueCallback& queue,
                    const uint refreshRate, const uint sampleRate, const bool log)
     : cart{Cartridge_::Create(romPath, refreshRate)},
@@ -41,8 +41,8 @@ Gameboy_::Gameboy_(const fs::path& romPath, const fs::path& ramPath,
     }
 }
 
-Gameboy Gameboy_::Create(const fs::path& romPath,
-                         const fs::path& ramPath,
+Gameboy Gameboy_::Create(const Path& romPath,
+                         const Path& ramPath,
                          const FrameCallback& render,
                          const QueueCallback& queue,
                          const uint refreshRate,

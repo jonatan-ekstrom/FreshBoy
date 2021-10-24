@@ -1,9 +1,9 @@
 #pragma once
 #include <array>
 #include <ios>
-#include <filesystem>
 #include <optional>
 #include "mbc.h"
+#include "path.h"
 #include "types.h"
 
 namespace gb {
@@ -40,7 +40,7 @@ private:
 
 class MBC3 final : public MBC {
 public:
-    MBC3(const std::filesystem::path& romPath, Header&& header, uint refreshRate);
+    MBC3(const Path& romPath, Header&& header, uint refreshRate);
     u8 Read(u16 address) const override;
     void Write(u16 address, u8 byte) override;
     void Tick(uint cycles) override;

@@ -7,7 +7,6 @@
 
 using namespace api;
 using namespace sdl;
-namespace fs = std::filesystem;
 
 namespace {
 
@@ -36,7 +35,7 @@ namespace app {
 
 Emulator Emulator_::Create() { return Emulator{new Emulator_}; }
 
-void Emulator_::Run(const fs::path& romPath, const fs::path& ramPath) {
+void Emulator_::Run(const Path& romPath, const Path& ramPath) {
     // Setup callbacks.
     const auto renderCb{[this] (const auto& p) { Render(p); }};
     const auto queueCb{[this] (const auto& left, const auto& right) { Queue(left, right); }};

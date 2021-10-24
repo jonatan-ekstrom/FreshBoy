@@ -3,11 +3,9 @@
 #include "file.h"
 #include "log.h"
 
-namespace fs = std::filesystem;
-
 namespace gb {
 
-RomOnly::RomOnly(const fs::path& romPath, Header&& header)
+RomOnly::RomOnly(const Path& romPath, Header&& header)
     : Cartridge_{std::move(header)} {
     InputFile file{romPath};
     this->rom = file.ReadBytes(0, 0x7FFF);

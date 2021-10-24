@@ -1,6 +1,5 @@
 #pragma once
 #include <chrono>
-#include <filesystem>
 #include <memory>
 #include "api.h"
 #include "audio.h"
@@ -24,7 +23,7 @@ public:
     static Emulator Create();
 
     /* Run the emulation. */
-    void Run(const std::filesystem::path& romPath, const std::filesystem::path& ramPath);
+    void Run(const api::Path& romPath, const api::Path& ramPath);
 private:
     Emulator_();
     using Clock = std::chrono::steady_clock;

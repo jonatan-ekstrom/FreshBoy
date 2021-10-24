@@ -3,11 +3,9 @@
 #include "file.h"
 #include "header.h"
 
-namespace fs = std::filesystem;
-
 namespace gb {
 
-MBC::MBC(const fs::path& romPath, Header&& header)
+MBC::MBC(const Path& romPath, Header&& header)
     : Cartridge_{std::move(header)},
       romBitMask{0},
       ramBitMask{0} {
@@ -30,7 +28,7 @@ MBC::MBC(const fs::path& romPath, Header&& header)
     this->ramBitMask = numRamBanks != 0 ? static_cast<u8>(numRamBanks - 1) : 0;
 }
 
-void MBC::LoadRam(const fs::path& ramPath) {
+void MBC::LoadRam(const Path& ramPath) {
     InputFile file{ramPath};
     std::streampos offset{0};
     for (auto i{0u}; i < this->ramBanks.size(); ++i) {
@@ -43,7 +41,7 @@ void MBC::LoadRam(const fs::path& ramPath) {
     LoadHook(file, offset);
 }
 
-void MBC::SaveRam(const fs::path& ramPath) {
+void MBC::SaveRam(const Path& ramPath) {
     OutputFile file{ramPath};
     std::streampos offset{0};
     for (auto i{0u}; i < this->ramBanks.size(); ++i) {

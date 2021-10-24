@@ -1,8 +1,8 @@
 #pragma once
-#include <filesystem>
 #include <ios>
 #include <vector>
 #include "cartridge.h"
+#include "path.h"
 
 namespace gb {
 
@@ -12,10 +12,10 @@ class OutputFile;
 
 class MBC : public Cartridge_ {
 public:
-    void LoadRam(const std::filesystem::path& ramPath) override final;
-    void SaveRam(const std::filesystem::path& ramPath) override final;
+    void LoadRam(const Path& ramPath) override final;
+    void SaveRam(const Path& ramPath) override final;
 protected:
-    MBC(const std::filesystem::path& romPath, Header&& header);
+    MBC(const Path& romPath, Header&& header);
     std::vector<MemBlock> romBanks;
     std::vector<MemBlock> ramBanks;
     u8 romBitMask;

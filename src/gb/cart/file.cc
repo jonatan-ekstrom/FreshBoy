@@ -1,12 +1,11 @@
 #include "file.h"
 #include <cstddef>
 
-namespace fs = std::filesystem;
 using Char = std::fstream::char_type;
 
 namespace gb {
 
-InputFile::InputFile(const fs::path& filePath)
+InputFile::InputFile(const Path& filePath)
     : stream{filePath, std::ios::binary} {
     if (!this->stream) {
         throw std::runtime_error{"InputFile - Failed to open file: " + filePath.string()};
@@ -34,7 +33,7 @@ std::vector<u8> InputFile::ReadBytes(const std::streampos offset,
     return bytes;
 }
 
-OutputFile::OutputFile(const fs::path& filePath)
+OutputFile::OutputFile(const Path& filePath)
     : stream{filePath, std::ios::binary} {
     if (!this->stream) {
         throw std::runtime_error{"OutputFile - Failed to open file: " + filePath.string()};

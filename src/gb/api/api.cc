@@ -5,7 +5,6 @@
 #include "input.h"
 
 using namespace gb;
-namespace fs = std::filesystem;
 
 namespace {
 
@@ -42,7 +41,7 @@ Gameboy_* Handle::operator->() {
 
 void Handle::GameboyDeleter::operator()(Gameboy_ *const p) { delete p; }
 
-Gameboy::Gameboy(const fs::path& romPath, const fs::path& ramPath,
+Gameboy::Gameboy(const Path& romPath, const Path& ramPath,
                  const RenderCallback& render, const QueueCallback& queue,
                  const unsigned int refreshRate, const unsigned int sampleRate, const bool log)
     : gb{Gameboy_::Create(romPath, ramPath, render, queue, refreshRate, sampleRate, log).release()} {}

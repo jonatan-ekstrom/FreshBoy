@@ -8,8 +8,6 @@
 #include "file.h"
 #include "log.h"
 
-namespace fs = std::filesystem;
-
 namespace {
 
 constexpr auto CyclesPerFrame{70224};
@@ -150,7 +148,7 @@ void Rtc::Tick() {
     }
 }
 
-MBC3::MBC3(const fs::path& romPath, Header&& header, const uint refreshRate)
+MBC3::MBC3(const Path& romPath, Header&& header, const uint refreshRate)
     : MBC{romPath, std::move(header)},
       rtc{refreshRate},
       enabled{false},

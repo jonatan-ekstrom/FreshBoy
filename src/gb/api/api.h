@@ -11,6 +11,9 @@ namespace gb { class Gameboy_; }
 /* Public API of the gb static library. */
 namespace api {
 
+/* A filesystem path. */
+using Path = std::filesystem::path;
+
 /* A collection of pixels (RGBA). */
 using Pixels = std::vector<std::uint32_t>;
 
@@ -48,7 +51,7 @@ private:
 class Gameboy {
 public:
     /* Constructs a new instance of the gameboy emulator. */
-    Gameboy(const std::filesystem::path& romPath, const std::filesystem::path& ramPath,
+    Gameboy(const Path& romPath, const Path& ramPath,
             const RenderCallback& render, const QueueCallback& queue,
             unsigned int refreshRate, unsigned int sampleRate, bool log = false);
 
