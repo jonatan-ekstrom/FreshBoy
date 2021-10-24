@@ -19,7 +19,7 @@ if (DEFINED CMAKE_CXX_FLAGS_RELEASE)
 endif ()
 
 # Create C++ project.
-project(gameboy
+project(gb++
         VERSION 1.0
         LANGUAGES CXX)
 
