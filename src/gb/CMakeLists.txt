@@ -1,3 +1,5 @@
+# Gameboy emulator library (libgb).
+
 # Add the 'gb' static library.
 add_library(gb STATIC gb.cc)
 

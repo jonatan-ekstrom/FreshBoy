@@ -19,17 +19,35 @@ namespace gb {
 class Gameboy_;
 using Gameboy = std::unique_ptr<Gameboy_>;
 
+/*
+ * Top level class assembling all gameboy subsystems.
+ */
 class Gameboy_ {
 public:
     using ContinueCallback = std::function<bool(void)>;
     using FrameCallback = Lcd_::FrameHandler;
     using QueueCallback = Apu_::QueueHandler;
+
+    /*
+     * Static constructor, creates a new gameboy instance.
+     * Loads the provided rom / ram files.
+     * Sets up rendering and sound using the provided callbacks,
+     * screen refresh rate and sound sample rate.
+     */
     static Gameboy Create(const Path& romPath, const Path& ramPath,
                           const FrameCallback& render, const QueueCallback& queue,
                           uint refreshRate, uint sampleRate, bool log = false);
+
+    /* Returns a string representation of the ROM header. */
     std::string Header() const;
+
+    /* Run the emulator until the 'cont' callback returns false. */
     void Run(const ContinueCallback& cont);
+
+    /* Set the state of the button to pressed. */
     void ButtonPressed(Button button);
+
+    /* Set the state of the button to released. */
     void ButtonReleased(Button button);
 private:
     Gameboy_(const Path& romPath, const Path& ramPath,
