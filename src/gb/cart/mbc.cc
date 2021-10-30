@@ -14,21 +14,25 @@ MBC::MBC(const Path& romPath, Header&& header)
     const auto numRomBanks{this->header.RomBanks()};
     const auto numRamBanks{this->header.RamBanks()};
 
+    // Load all ROM banks from the file.
     InputFile file{romPath};
     for (auto i{0u}; i < numRomBanks; ++i) {
         const auto offset{i * romBankSize};
         this->romBanks.push_back(file.ReadBytes(offset, romBankSize));
     }
 
+    // Allocate memory for all cartridge RAM banks.
     for (auto i{0u}; i < numRamBanks; ++i) {
         this->ramBanks.push_back(MemBlock(ramBankSize));
     }
 
+    // Initialize bitmasks based on the number of banks available.
     this->romBitMask = static_cast<u8>(numRomBanks - 1);
     this->ramBitMask = numRamBanks != 0 ? static_cast<u8>(numRamBanks - 1) : 0;
 }
 
 void MBC::LoadRam(const Path& ramPath) {
+    // Load cartridge RAM banks from previously saved data.
     InputFile file{ramPath};
     std::streampos offset{0};
     for (auto i{0u}; i < this->ramBanks.size(); ++i) {
@@ -42,6 +46,7 @@ void MBC::LoadRam(const Path& ramPath) {
 }
 
 void MBC::SaveRam(const Path& ramPath) {
+    // Save cartridge RAM banks to file.
     OutputFile file{ramPath};
     std::streampos offset{0};
     for (auto i{0u}; i < this->ramBanks.size(); ++i) {

@@ -10,6 +10,7 @@ class Header;
 class InputFile;
 class OutputFile;
 
+/* Base class for MBC cartridges. */
 class MBC : public Cartridge_ {
 public:
     void LoadRam(const Path& ramPath) override final;

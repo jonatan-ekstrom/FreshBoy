@@ -11,9 +11,11 @@ namespace gb {
 Cartridge_::Cartridge_(Header&& header) : header{std::move(header)} {}
 
 Cartridge Cartridge_::Create(const Path& romPath, const uint refreshRate) {
+    // Parse the header and compute the cartridge checksum.
     Header header{romPath};
     const auto checksum{header.CartridgeChecksum()};
 
+    /* Check the cartridge type and create the proper derived class. */
     Cartridge res;
     switch (header.Type()) {
         case CartridgeType::RomOnly:

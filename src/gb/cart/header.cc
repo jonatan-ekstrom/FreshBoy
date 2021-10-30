@@ -8,33 +8,21 @@
 namespace {
 
 constexpr std::ptrdiff_t HeaderOffset{0x100};
-constexpr std::size_t HeaderSize{80};
 
 constexpr const char* MemSizeToStr(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
-        case MemSize::Zero:
-            return "None";
-        case MemSize::KB8:
-            return "8 KB";
-        case MemSize::KB32:
-            return "32 KB";
-        case MemSize::KB64:
-            return "64 KB";
-        case MemSize::KB128:
-            return "128 KB";
-        case MemSize::KB256:
-            return "256 KB";
-        case MemSize::KB512:
-            return "512 KB";
-        case MemSize::MB1:
-            return "1 MB";
-        case MemSize::MB2:
-            return "2 MB";
-        case MemSize::MB4:
-            return "4 MB";
-        case MemSize::MB8:
-            return "8 MB";
+        case MemSize::Zero: return "None";
+        case MemSize::KB8: return "8 KB";
+        case MemSize::KB32: return "32 KB";
+        case MemSize::KB64: return "64 KB";
+        case MemSize::KB128: return "128 KB";
+        case MemSize::KB256: return "256 KB";
+        case MemSize::KB512: return "512 KB";
+        case MemSize::MB1: return "1 MB";
+        case MemSize::MB2: return "2 MB";
+        case MemSize::MB4: return "4 MB";
+        case MemSize::MB8: return "8 MB";
         case MemSize::Unknown:
         default:
             return "Unknown";
@@ -44,45 +32,31 @@ constexpr const char* MemSizeToStr(const gb::MemSize sz) {
 constexpr uint MemSizeToRomBanks(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
-        case MemSize::KB32:
-            return 2;
-        case MemSize::KB64:
-            return 4;
-        case MemSize::KB128:
-            return 8;
-        case MemSize::KB256:
-            return 16;
-        case MemSize::KB512:
-            return 32;
-        case MemSize::MB1:
-            return 64;
-        case MemSize::MB2:
-            return 128;
-        case MemSize::MB4:
-            return 256;
-        case MemSize::MB8:
-            return 512;
+        case MemSize::KB32: return 2;
+        case MemSize::KB64: return 4;
+        case MemSize::KB128: return 8;
+        case MemSize::KB256: return 16;
+        case MemSize::KB512: return 32;
+        case MemSize::MB1: return 64;
+        case MemSize::MB2: return 128;
+        case MemSize::MB4: return 256;
+        case MemSize::MB8: return 512;
         case MemSize::Zero:
         case MemSize::KB8:
         case MemSize::Unknown:
         default:
-            throw std::runtime_error{"Invalid memsize for rom bank calculation."};
+            throw std::runtime_error{"Header - Invalid memsize for rom bank calculation."};
     }
 }
 
 constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
-        case MemSize::Zero:
-            return 0;
-        case MemSize::KB8:
-            return 1;
-        case MemSize::KB32:
-            return 4;
-        case MemSize::KB64:
-            return 8;
-        case MemSize::KB128:
-            return 16;
+        case MemSize::Zero: return 0;
+        case MemSize::KB8: return 1;
+        case MemSize::KB32: return 4;
+        case MemSize::KB64: return 8;
+        case MemSize::KB128: return 16;
         case MemSize::KB256:
         case MemSize::KB512:
         case MemSize::MB1:
@@ -91,7 +65,7 @@ constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
         case MemSize::MB8:
         case MemSize::Unknown:
         default:
-            throw std::runtime_error{"Invalid memsize for ram bank calculation."};
+            throw std::runtime_error{"Header - Invalid memsize for ram bank calculation."};
     }
 }
 
@@ -100,6 +74,8 @@ constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
 namespace gb {
 
 Header::Header(const Path& romPath) {
+    // Read the header from the ROM file and compute checksum.
+    constexpr std::size_t HeaderSize{80};
     InputFile file{romPath};
     this->bytes = file.ReadBytes(HeaderOffset, HeaderSize);
     if (Checksum() != ComputedChecksum()) {
@@ -176,20 +152,13 @@ std::string Header::TypeCode() const {
 
 std::string Header::TypeStr() const {
     switch (Type()) {
-        case CartridgeType::RomOnly:
-            return "ROM only";
-        case CartridgeType::MBC1:
-            return "MBC1";
-        case CartridgeType::MBC2:
-            return "MBC2";
-        case CartridgeType::MBC3:
-            return "MBC3";
-        case CartridgeType::MBC5:
-            return "MBC5";
-        case CartridgeType::MBC6:
-            return "MBC6";
-        case CartridgeType::MBC7:
-            return "MBC7";
+        case CartridgeType::RomOnly: return "ROM only";
+        case CartridgeType::MBC1: return "MBC1";
+        case CartridgeType::MBC2: return "MBC2";
+        case CartridgeType::MBC3: return "MBC3";
+        case CartridgeType::MBC5: return "MBC5";
+        case CartridgeType::MBC6: return "MBC6";
+        case CartridgeType::MBC7: return "MBC7";
         case CartridgeType::Unknown:
         default:
             return "Unknown";
@@ -199,26 +168,16 @@ std::string Header::TypeStr() const {
 MemSize Header::RomSize() const {
     const auto byte{this->bytes[0x148 - HeaderOffset]};
     switch (byte) {
-        case 0x00:
-            return MemSize::KB32;
-        case 0x01:
-            return MemSize::KB64;
-        case 0x02:
-            return MemSize::KB128;
-        case 0x03:
-            return MemSize::KB256;
-        case 0x04:
-            return MemSize::KB512;
-        case 0x05:
-            return MemSize::MB1;
-        case 0x06:
-            return MemSize::MB2;
-        case 0x07:
-            return MemSize::MB4;
-        case 0x08:
-            return MemSize::MB8;
-        default:
-            return MemSize::Unknown;
+        case 0x00: return MemSize::KB32;
+        case 0x01: return MemSize::KB64;
+        case 0x02: return MemSize::KB128;
+        case 0x03: return MemSize::KB256;
+        case 0x04: return MemSize::KB512;
+        case 0x05: return MemSize::MB1;
+        case 0x06: return MemSize::MB2;
+        case 0x07: return MemSize::MB4;
+        case 0x08: return MemSize::MB8;
+        default: return MemSize::Unknown;
     }
 }
 
@@ -233,18 +192,12 @@ uint Header::RomBanks() const {
 MemSize Header::RamSize() const {
     const auto byte{this->bytes[0x149 - HeaderOffset]};
     switch (byte) {
-        case 0x00:
-            return MemSize::Zero;
-        case 0x02:
-            return MemSize::KB8;
-        case 0x03:
-            return MemSize::KB32;
-        case 0x04:
-            return MemSize::KB128;
-        case 0x05:
-            return MemSize::KB64;
-        default:
-            return MemSize::Unknown;
+        case 0x00: return MemSize::Zero;
+        case 0x02: return MemSize::KB8;
+        case 0x03: return MemSize::KB32;
+        case 0x04: return MemSize::KB128;
+        case 0x05: return MemSize::KB64;
+        default: return MemSize::Unknown;
     }
 }
 
@@ -313,19 +266,20 @@ std::string Header::Stringify(const u16 begin, const u16 end) const {
 }
 
 std::string Header::Hexdump(const u16 begin, const u16 end) const {
-    const char characters[]{"0123456789ABCDEF"};
+    constexpr char characters[]{"0123456789ABCDEF"};
+    constexpr auto width{16};
     const auto start{this->bytes.cbegin() + begin - HeaderOffset};
     const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};
     std::string result;
-    int count{0};
+    auto count{0};
     for (auto p{start}; p != stop; ++p) {
         const auto byte{*p};
         result.push_back(characters[bit::HighNibble(byte)]);
         result.push_back(characters[bit::LowNibble(byte)]);
-        if (++count == 16) {
+        if (++count == width) {
             result.push_back('\n');
             count = 0;
-        } else if (p != stop - 1) {
+        } else if (p != (stop - 1)) {
             result.push_back(' ');
         }
     }

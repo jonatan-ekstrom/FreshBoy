@@ -7,8 +7,9 @@ namespace gb {
 
 RomOnly::RomOnly(const Path& romPath, Header&& header)
     : Cartridge_{std::move(header)} {
+    // Open file and read the first 32 kB of data.
     InputFile file{romPath};
-    this->rom = file.ReadBytes(0, 0x7FFF);
+    this->rom = file.ReadBytes(0, 0x8000);
 }
 
 u8 RomOnly::Read(const u16 address) const {

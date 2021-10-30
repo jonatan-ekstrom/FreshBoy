@@ -1,5 +1,6 @@
 #include "file.h"
 #include <cstddef>
+#include <stdexcept>
 
 using Char = std::fstream::char_type;
 

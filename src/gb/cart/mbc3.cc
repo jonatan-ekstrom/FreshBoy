@@ -13,6 +13,7 @@ namespace {
 constexpr auto CyclesPerFrame{70224};
 
 gb::u32 GetCurrentTime() {
+    // Return number of seconds since the clock's epoch.
     using namespace std::chrono;
     using Sec = duration<gb::u32>;
     const auto now{steady_clock::now()};
@@ -54,6 +55,7 @@ void Rtc::Write(const u8 address, const u8 byte) {
 void Rtc::Tick(const uint cycles) {
     if (!Active()) return;
 
+    // Advance clock each second if active.
     this->cycleCount += cycles;
     if (this->cycleCount >= this->cyclesPerSecond) {
         this->cycleCount -= this->cyclesPerSecond;
@@ -66,6 +68,7 @@ void Rtc::Latch() {
 }
 
 Rtc::State Rtc::Serialize() const {
+    // Serialize current state into array.
     State state{};
     state[0] = this->curr.Sec;
     state[1] = this->curr.Min;
@@ -83,6 +86,7 @@ Rtc::State Rtc::Serialize() const {
 }
 
 void Rtc::Deserialize(const State& state) {
+    // Deserialize state.
     this->cycleCount = 0;
     this->latched = Regs{};
 
@@ -94,9 +98,10 @@ void Rtc::Deserialize(const State& state) {
 
     if (!Active()) return;
 
+    // The clock was ticking when we stopped. Update with elapsed real time.
     const auto stored{static_cast<u32>((state[5] << 24) | (state[6] << 16) | (state[7] << 8) | state[8])};
     const auto current{GetCurrentTime()};
-    const auto elapsed{current - stored};
+    const auto elapsed{current > stored ? current - stored : 0u};
     for (auto i{0u}; i < elapsed; ++i) {
         Tick();
     }
@@ -112,6 +117,7 @@ void Rtc::Tick() {
         this->curr.Sec = 0;
         carry = true;
     } else {
+        // Seconds are represented using 6 bits (2^6 = 64).
         this->curr.Sec = static_cast<u8>((this->curr.Sec + 1) % 64);
         carry = false;
     }
@@ -121,6 +127,7 @@ void Rtc::Tick() {
     if (this->curr.Min == 59) {
         this->curr.Min = 0;
     } else {
+        // Minutes are represented using 6 bits (2^6 = 64).
         this->curr.Min = static_cast<u8>((this->curr.Min + 1) % 64);
         carry = false;
     }
@@ -130,12 +137,14 @@ void Rtc::Tick() {
     if (this->curr.Hrs == 23) {
         this->curr.Hrs = 0;
     } else {
+        // Hours are represented using 5 bits (2^5 = 32).
         this->curr.Hrs = static_cast<u8>((this->curr.Hrs + 1) % 32);
         carry = false;
     }
 
     if (!carry) return;
 
+    // Days are represented using 9 bits.
     auto days{((this->curr.Ctrl & 0x01) << 8) | this->curr.Days};
     if (days == 511) {
         this->curr.Days = 0;
@@ -243,7 +252,6 @@ std::optional<uint> MBC3::RamBank() const {
     if (!this->enabled || this->ramBanks.empty() || this->selector > 0x03) {
         return {};
     }
-
     return this->selector & this->ramBitMask;
 }
 
@@ -255,6 +263,7 @@ std::optional<u8> MBC3::Register() const {
 }
 
 void MBC3::LoadHook(InputFile& file, const std::streampos offset) {
+    // Load RTC state from file.
     Rtc::State state{};
     const auto bytes{file.ReadBytes(offset, std::size(state))};
     std::copy(bytes.cbegin(), bytes.cend(), state.begin());
@@ -262,6 +271,7 @@ void MBC3::LoadHook(InputFile& file, const std::streampos offset) {
 }
 
 void MBC3::SaveHook(OutputFile& file, const std::streampos offset) {
+    // Write RTC data to file.
     const auto state{this->rtc.Serialize()};
     std::vector<u8> bytes{state.cbegin(), state.cend()};
     file.WriteBytes(offset, bytes);

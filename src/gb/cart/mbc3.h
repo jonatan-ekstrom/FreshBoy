@@ -12,15 +12,29 @@ class Header;
 class InputFile;
 class OutputFile;
 
+/* MBC3 Real Time Clock. */
 class Rtc {
 public:
     using State = std::array<u8, 9>;
+    /* Initialize a new real-time clock for the provided screen refresh rate. */
     explicit Rtc(uint refreshRate);
+
+    /* Read data from the provided address. */
     u8 Read(u8 address) const;
+
+    /* Write data to the provided address. */
     void Write(u8 address, u8 byte);
+
+    /* Tick the clock the provided number of cycles. */
     void Tick(uint cycles);
+
+    /* Latch the clock state. */
     void Latch();
+
+    /* Serialize the internal state. */
     State Serialize() const;
+
+    /* Deserialize the provided state. */
     void Deserialize(const State& state);
 private:
     struct Regs {
@@ -38,11 +52,16 @@ private:
     Regs latched;
 };
 
+/* Handler class for MBC3 based cartridges. */
 class MBC3 final : public MBC {
 public:
+    /* Creates a new MBC3 handler for the provided file. */
     MBC3(const Path& romPath, Header&& header, uint refreshRate);
+
     u8 Read(u16 address) const override;
+
     void Write(u16 address, u8 byte) override;
+
     void Tick(uint cycles) override;
 private:
     void LoadHook(InputFile& file, std::streampos offset) override final;
