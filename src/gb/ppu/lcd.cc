@@ -161,9 +161,8 @@ void Lcd_::Tick(const uint cycles) {
     this->cycleCount += cycles;
 
     if (!Enabled()) {
-        constexpr auto cyclesPerFrame{70224};
-        if (this->cycleCount < cyclesPerFrame) return;
-        this->cycleCount %= cyclesPerFrame;
+        if (this->cycleCount < lcd::CyclesPerFrame) return;
+        this->cycleCount %= lcd::CyclesPerFrame;
         FrameReady();
         return;
     }

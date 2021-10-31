@@ -1,6 +1,7 @@
 #include "apu.h"
 #include <array>
 #include "bits.h"
+#include "display.h"
 #include "log.h"
 
 namespace {
@@ -8,9 +9,8 @@ namespace {
 constexpr auto BufferSize{1024};
 
 constexpr double CyclesPerSample(const gb::uint refreshRate, const gb::uint sampleRate) {
-    constexpr auto cyclesPerFrame{70224};
     const auto samplesPerSecond{static_cast<double>(sampleRate)};
-    const auto cyclesPerSecond{cyclesPerFrame * refreshRate};
+    const auto cyclesPerSecond{gb::lcd::CyclesPerFrame * refreshRate};
     const auto cyclesPerSample{cyclesPerSecond / samplesPerSecond};
     return cyclesPerSample;
 }

@@ -5,12 +5,11 @@
 #include <utility>
 #include <vector>
 #include "bits.h"
+#include "display.h"
 #include "file.h"
 #include "log.h"
 
 namespace {
-
-constexpr auto CyclesPerFrame{70224};
 
 gb::u32 GetCurrentTime() {
     // Return number of seconds since the clock's epoch.
@@ -25,7 +24,7 @@ gb::u32 GetCurrentTime() {
 namespace gb {
 
 Rtc::Rtc(const uint refreshRate)
-    : cyclesPerSecond{CyclesPerFrame * refreshRate},
+    : cyclesPerSecond{lcd::CyclesPerFrame * refreshRate},
       cycleCount{0},
       curr{},
       latched{} {}
