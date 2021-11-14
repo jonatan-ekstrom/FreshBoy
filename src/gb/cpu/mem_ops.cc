@@ -6,71 +6,60 @@ namespace gb {
 // 8-bit transfer
 void Cpu_::Load(ByteReg& dst, const ByteReg src) { dst.v = src.v; }
 
-void Cpu_::Load(ByteReg& dst, const u8 imm) { dst.v = imm; }
+void Cpu_::Load(ByteReg& reg, const Imm8 imm) { reg.v = imm.v; }
 
-void Cpu_::Load(ByteReg& dst, const RegPair src) { dst.v = this->mmu->Read(src.Addr()); }
+void Cpu_::Load(ByteReg& reg, const RegPair rp) { reg.v = this->mmu->Read(rp.Ptr()); }
 
-void Cpu_::Load(const RegPair dst, const ByteReg src) { this->mmu->Write(dst.Addr(), src.v); }
+void Cpu_::Load(const RegPair rp, const ByteReg reg) { this->mmu->Write(rp.Ptr(), reg.v); }
 
-void Cpu_::Load(const RegPair dst, const u8 imm) { this->mmu->Write(dst.Addr(), imm); }
+void Cpu_::Load(const RegPair rp, const Imm8 imm) { this->mmu->Write(rp.Ptr(), imm.v); }
 
-void Cpu_::Load(ByteReg& dst, const Address src) { dst.v = this->mmu->Read(src.a); }
+void Cpu_::Load(ByteReg& reg, const Imm16 imm) { reg.v = this->mmu->Read(imm.Ptr()); }
 
-void Cpu_::Load(const Address dst, const ByteReg src) { this->mmu->Write(dst.a, src.v); }
+void Cpu_::Load(const Imm16 imm, const ByteReg reg) { this->mmu->Write(imm.Ptr(), reg.v); }
 
-void Cpu_::LoadInc(ByteReg& dst, const RegPair src) {
-    dst.v = this->mmu->Read(src.Addr());
-    src.Inc();
+void Cpu_::LoadInc(ByteReg& reg, const RegPair rp) {
+    reg.v = this->mmu->Read(rp.Ptr());
+    rp.Inc();
 }
 
-void Cpu_::LoadInc(const RegPair dst, ByteReg src) {
-    this->mmu->Write(dst.Addr(), src.v);
-    dst.Inc();
+void Cpu_::LoadInc(const RegPair rp, ByteReg reg) {
+    this->mmu->Write(rp.Ptr(), reg.v);
+    rp.Inc();
 }
 
-void Cpu_::LoadDec(ByteReg& dst, const RegPair src) {
-    dst.v = this->mmu->Read(src.Addr());
-    src.Dec();
+void Cpu_::LoadDec(ByteReg& reg, const RegPair rp) {
+    reg.v = this->mmu->Read(rp.Ptr());
+    rp.Dec();
 }
 
-void Cpu_::LoadDec(const RegPair dst, const ByteReg src) {
-    this->mmu->Write(dst.Addr(), src.v);
-    dst.Dec();
+void Cpu_::LoadDec(const RegPair rp, const ByteReg reg) {
+    this->mmu->Write(rp.Ptr(), reg.v);
+    rp.Dec();
 }
 
 //16-bit transfer
-void Cpu_::Load(const RegPair dst, const u16 imm) {
-    dst.h = bit::High(imm);
-    dst.l = bit::Low(imm);
+void Cpu_::Load(const RegPair rp, const Imm16 imm) {
+    rp.h = bit::High(imm.v);
+    rp.l = bit::Low(imm.v);
 }
 
-void Cpu_::Load(WordReg& dst, const u16 imm) { dst.v = imm; }
+void Cpu_::Load(WordReg& reg, const Imm16 imm) { reg.v = imm.v; }
 
-void Cpu_::Load(WordReg& dst, const RegPair src) { dst.v = src.Addr(); }
+void Cpu_::Load(WordReg& reg, const RegPair rp) { reg.v = rp.Ptr(); }
 
-void Cpu_::Push(const RegPair src) {
-    this->mmu->Write(--this->sp.v, src.h);
-    this->mmu->Write(--this->sp.v, src.l);
+void Cpu_::Load(const Imm16 imm, const WordReg reg) {
+    const auto ptr{imm.Ptr()};
+    this->mmu->Write(ptr, bit::Low(reg.v));
+    this->mmu->Write(ptr + 1, bit::High(reg.v));
 }
 
-void Cpu_::Pop(const RegPair dst) {
-    dst.l = this->mmu->Read(this->sp.v++);
-    dst.h = this->mmu->Read(this->sp.v++);
-}
-
-void Cpu_::PopAf() {
-    const auto low{this->mmu->Read(this->sp.v++)};
-    const auto high{this->mmu->Read(this->sp.v++)};
-    this->a.v = high;
-    this->f.v = low & 0xF0;
-}
-
-void Cpu_::Load(const RegPair dst, const WordReg src, const s8 imm) {
-    const auto lhs{static_cast<int>(src.v)};
-    const auto rhs{static_cast<int>(imm)};
+void Cpu_::Load(const RegPair rp, const WordReg reg, const Simm8 imm) {
+    const auto lhs{static_cast<int>(reg.v)};
+    const auto rhs{static_cast<int>(imm.v)};
     const auto sum{static_cast<u16>(lhs + rhs)};
-    dst.h = bit::High(sum);
-    dst.l = bit::Low(sum);
+    rp.h = bit::High(sum);
+    rp.l = bit::Low(sum);
 
     this->flags.UpdateZ(false);
     this->flags.UpdateN(false);
@@ -78,9 +67,21 @@ void Cpu_::Load(const RegPair dst, const WordReg src, const s8 imm) {
     this->flags.UpdateC(bit::Carry(lhs, rhs, 7));
 }
 
-void Cpu_::Load(const Address dst, const WordReg src) {
-    this->mmu->Write(dst.a, bit::Low(src.v));
-    this->mmu->Write(dst.a+1, bit::High(src.v));
+void Cpu_::Push(const RegPair rp) {
+    this->mmu->Write(--this->sp.v, rp.h);
+    this->mmu->Write(--this->sp.v, rp.l);
+}
+
+void Cpu_::Pop(const RegPair rp) {
+    rp.l = this->mmu->Read(this->sp.v++);
+    rp.h = this->mmu->Read(this->sp.v++);
+}
+
+void Cpu_::PopAf() {
+    const auto low{this->mmu->Read(this->sp.v++)};
+    const auto high{this->mmu->Read(this->sp.v++)};
+    this->a.v = high;
+    this->f.v = low & 0xF0;
 }
 
 }

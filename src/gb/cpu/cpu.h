@@ -32,9 +32,9 @@ private:
 
     bool HandleInterrupts();
     std::tuple<u8, bool> GetOpcode();
-    u8 GetByte();
-    s8 GetSignedByte();
-    u16 GetWord();
+    Imm8 GetByte();
+    Simm8 GetSignedByte();
+    Imm16 GetWord();
     void PushPc();
     void PopPc();
     void Execute(u8 opcode);

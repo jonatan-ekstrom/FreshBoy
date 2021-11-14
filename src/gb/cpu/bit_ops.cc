@@ -18,9 +18,9 @@ void Cpu_::Rl(ByteReg& reg) {
 }
 
 void Cpu_::Rl(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Rl(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Rla() {
@@ -43,9 +43,9 @@ void Cpu_::Rlc(ByteReg& reg) {
 }
 
 void Cpu_::Rlc(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Rlc(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Rlca() {
@@ -68,9 +68,9 @@ void Cpu_::Rr(ByteReg& reg) {
 }
 
 void Cpu_::Rr(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Rr(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Rra() {
@@ -93,9 +93,9 @@ void Cpu_::Rrc(ByteReg& reg) {
 }
 
 void Cpu_::Rrc(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Rrc(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Rrca() {
@@ -116,9 +116,9 @@ void Cpu_::Sla(ByteReg& reg) {
 }
 
 void Cpu_::Sla(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Sla(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Sra(u8& imm) {
@@ -136,9 +136,9 @@ void Cpu_::Sra(ByteReg& reg) {
 }
 
 void Cpu_::Sra(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Sra(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Srl(u8& imm) {
@@ -155,9 +155,9 @@ void Cpu_::Srl(ByteReg& reg) {
 }
 
 void Cpu_::Srl(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Srl(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Swap(u8& imm) {
@@ -175,9 +175,9 @@ void Cpu_::Swap(ByteReg& reg) {
 }
 
 void Cpu_::Swap(const RegPair rp) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Swap(val);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Bit(const u8 imm, const uint bit) {
@@ -192,7 +192,7 @@ void Cpu_::Bit(const ByteReg reg, const uint bit) {
 }
 
 void Cpu_::Bit(const RegPair rp, const uint bit) {
-    Bit(this->mmu->Read(rp.Addr()), bit);
+    Bit(this->mmu->Read(rp.Ptr()), bit);
 }
 
 void Cpu_::Set(u8& imm, const uint bit) {
@@ -204,9 +204,9 @@ void Cpu_::Set(ByteReg& reg, const uint bit) {
 }
 
 void Cpu_::Set(const RegPair rp, const uint bit) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Set(val, bit);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 void Cpu_::Res(u8& imm, const uint bit) {
@@ -218,9 +218,9 @@ void Cpu_::Res(ByteReg& reg, const uint bit) {
 }
 
 void Cpu_::Res(const RegPair rp, const uint bit) {
-    auto val{this->mmu->Read(rp.Addr())};
+    auto val{this->mmu->Read(rp.Ptr())};
     Res(val, bit);
-    this->mmu->Write(rp.Addr(), val);
+    this->mmu->Write(rp.Ptr(), val);
 }
 
 }

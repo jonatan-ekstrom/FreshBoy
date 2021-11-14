@@ -1,24 +1,29 @@
 #pragma once
 
-// 8-bit transfer
-void Load(ByteReg& dst, ByteReg src);
-void Load(ByteReg& dst, u8 imm);
-void Load(ByteReg& dst, RegPair src);
-void Load(RegPair dst, ByteReg src);
-void Load(RegPair dst, u8 imm);
-void Load(ByteReg& dst, Address src);
-void Load(Address dst, ByteReg src);
-void LoadInc(ByteReg& dst, RegPair src);
-void LoadInc(RegPair dst, ByteReg src);
-void LoadDec(ByteReg& dst, RegPair src);
-void LoadDec(RegPair dst, ByteReg src);
+/* 8-bit transfer */
 
-// 16-bit transfer
-void Load(RegPair dst, u16 imm);
-void Load(WordReg& dst, u16 imm);
-void Load(WordReg& dst, RegPair src);
-void Push(RegPair src);
-void Pop(RegPair dst);
-void PopAf();
-void Load(RegPair dst, WordReg src, s8 imm);
-void Load(Address dst, WordReg src);
+void Load(ByteReg& dst, ByteReg src); // dst := src
+void Load(ByteReg& reg, Imm8 imm);    // reg := imm
+void Load(ByteReg& reg, RegPair rp);  // reg := [rp]
+void Load(RegPair rp, ByteReg reg);   // [rp] := reg
+void Load(RegPair rp, Imm8 imm);      // [rp] := imm
+void Load(ByteReg& reg, Imm16 imm);   // reg := [imm]
+void Load(Imm16 imm, ByteReg reg);    // [imm] := reg
+
+void LoadInc(ByteReg& reg, RegPair rp); // reg := [rp++]
+void LoadInc(RegPair rp, ByteReg reg);  // [rp++] := reg
+void LoadDec(ByteReg& reg, RegPair rp); // reg := [rp--]
+void LoadDec(RegPair rp, ByteReg reg);  // [rp--] := reg
+
+/* 16-bit transfer */
+
+void Load(RegPair rp, Imm16 imm);    // rp := imm
+void Load(WordReg& reg, Imm16 imm);  // reg := imm
+void Load(WordReg& reg, RegPair rp); // reg := rp
+void Load(Imm16 imm, WordReg reg);   // [imm] := reg
+
+void Load(RegPair rp, WordReg reg, Simm8 imm); // rp := reg + imm
+
+void Push(RegPair rp); // [--sp] := rp
+void Pop(RegPair rp);  // rp := [sp++]
+void PopAf();          // af := [sp++]

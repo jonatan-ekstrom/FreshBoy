@@ -10,7 +10,7 @@ void Cpu_::Opcode_04() { Inc(this->b); }
 void Cpu_::Opcode_05() { Dec(this->b); }
 void Cpu_::Opcode_06() { Load(this->b, GetByte()); }
 void Cpu_::Opcode_07() { Rlca(); }
-void Cpu_::Opcode_08() { Load(Address{GetWord()}, this->sp); }
+void Cpu_::Opcode_08() { Load(GetWord(), this->sp); }
 void Cpu_::Opcode_09() { Add(this->hl, this->bc); }
 void Cpu_::Opcode_0A() { Load(this->a, this->bc); }
 void Cpu_::Opcode_0B() { Dec(this->bc); }
@@ -54,8 +54,8 @@ void Cpu_::Opcode_30() { RelJump(Condition::NC, GetSignedByte()); }
 void Cpu_::Opcode_31() { Load(this->sp, GetWord()); }
 void Cpu_::Opcode_32() { LoadDec(this->hl, this->a); }
 void Cpu_::Opcode_33() { Inc(this->sp); }
-void Cpu_::Opcode_34() { Inc(Address{this->hl}); }
-void Cpu_::Opcode_35() { Dec(Address{this->hl}); }
+void Cpu_::Opcode_34() { IncHL(this->hl); }
+void Cpu_::Opcode_35() { DecHL(this->hl); }
 void Cpu_::Opcode_36() { Load(this->hl, GetByte()); }
 void Cpu_::Opcode_37() { Scf(); }
 void Cpu_::Opcode_38() { RelJump(Condition::C, GetSignedByte()); }
@@ -226,9 +226,9 @@ void Cpu_::Opcode_DC() { Call(Condition::C, GetWord()); }
 void Cpu_::Opcode_DD() { /* Invalid */ }
 void Cpu_::Opcode_DE() { SubWithBorrow(GetByte()); }
 void Cpu_::Opcode_DF() { Rst(3); }
-void Cpu_::Opcode_E0() { Load(Address{GetByte()}, this->a); }
+void Cpu_::Opcode_E0() { Load(GetByte().IO(), this->a); }
 void Cpu_::Opcode_E1() { Pop(this->hl); }
-void Cpu_::Opcode_E2() { Load(this->c.Addr(), this->a); }
+void Cpu_::Opcode_E2() { Load(this->c.IO(), this->a); }
 void Cpu_::Opcode_E3() { /* Invalid */ }
 void Cpu_::Opcode_E4() { /* Invalid */ }
 void Cpu_::Opcode_E5() { Push(this->hl); }
@@ -236,15 +236,15 @@ void Cpu_::Opcode_E6() { And(GetByte()); }
 void Cpu_::Opcode_E7() { Rst(4); }
 void Cpu_::Opcode_E8() { Add(this->sp, GetSignedByte()); }
 void Cpu_::Opcode_E9() { Jump(this->hl); }
-void Cpu_::Opcode_EA() { Load(Address{GetWord()}, this->a); }
+void Cpu_::Opcode_EA() { Load(GetWord(), this->a); }
 void Cpu_::Opcode_EB() { /* Invalid */ }
 void Cpu_::Opcode_EC() { /* Invalid */ }
 void Cpu_::Opcode_ED() { /* Invalid */ }
 void Cpu_::Opcode_EE() { Xor(GetByte()); }
 void Cpu_::Opcode_EF() { Rst(5); }
-void Cpu_::Opcode_F0() { Load(this->a, Address{GetByte()}); }
+void Cpu_::Opcode_F0() { Load(this->a, GetByte().IO()); }
 void Cpu_::Opcode_F1() { PopAf(); }
-void Cpu_::Opcode_F2() { Load(this->a, this->c.Addr()); }
+void Cpu_::Opcode_F2() { Load(this->a, this->c.IO()); }
 void Cpu_::Opcode_F3() { Di(); }
 void Cpu_::Opcode_F4() { /* Invalid */ }
 void Cpu_::Opcode_F5() { Push(this->af); }
@@ -252,7 +252,7 @@ void Cpu_::Opcode_F6() { Or(GetByte()); }
 void Cpu_::Opcode_F7() { Rst(6); }
 void Cpu_::Opcode_F8() { Load(this->hl, this->sp, GetSignedByte()); }
 void Cpu_::Opcode_F9() { Load(this->sp, this->hl); }
-void Cpu_::Opcode_FA() { Load(this->a, Address{GetWord()}); }
+void Cpu_::Opcode_FA() { Load(this->a, GetWord()); }
 void Cpu_::Opcode_FB() { Ei(); }
 void Cpu_::Opcode_FC() { /* Invalid */ }
 void Cpu_::Opcode_FD() { /* Invalid */ }

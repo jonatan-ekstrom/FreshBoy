@@ -3,40 +3,48 @@
 
 namespace gb {
 
-void Cpu_::Jump(const u16 imm) {
-    this->pc.v = imm;
+void Cpu_::Jump(const u16 addr) {
+    this->pc.v = addr;
     this->branched = true;
 }
 
-void Cpu_::Jump(const Condition cond, const u16 imm) {
+void Cpu_::Jump(const Imm16 imm) {
+    Jump(imm.v);
+}
+
+void Cpu_::Jump(const Condition cond, const Imm16 imm) {
     if (this->flags.Check(cond)) {
         Jump(imm);
     }
 }
 
 void Cpu_::Jump(const RegPair rp) {
-    Jump(rp.Addr());
+    Jump(rp.Ptr());
 }
 
-void Cpu_::RelJump(const s8 imm) {
+void Cpu_::RelJump(const Simm8 imm) {
     const auto lhs{static_cast<int>(this->pc.v)};
-    const auto rhs{static_cast<int>(imm)};
+    const auto rhs{static_cast<int>(imm.v)};
     const auto next{static_cast<u16>(lhs + rhs)};
     Jump(next);
 }
 
-void Cpu_::RelJump(const Condition cond, const s8 imm) {
+void Cpu_::RelJump(const Condition cond, const Simm8 imm) {
     if (this->flags.Check(cond)) {
         RelJump(imm);
     }
 }
 
-void Cpu_::Call(const u16 imm) {
+void Cpu_::Call(const u16 addr) {
     PushPc();
-    Jump(imm);
+    Jump(addr);
 }
 
-void Cpu_::Call(const Condition cond, const u16 imm) {
+void Cpu_::Call(const Imm16 imm) {
+    Call(imm.v);
+}
+
+void Cpu_::Call(const Condition cond, const Imm16 imm) {
     if (this->flags.Check(cond)) {
         Call(imm);
     }

@@ -3,31 +3,37 @@
 
 namespace gb {
 
-struct Address;
+struct Imm16;
 
-struct ByteReg {
-    Address Addr() const;
+struct Base8 {
+    Imm16 IO() const;
     u8 v{0};
 };
 
-struct WordReg {
+struct Base16 {
+    u16 Ptr() const;
     u16 v{0};
+};
+
+struct ByteReg : public Base8 {};
+
+struct Imm8 : public Base8 {};
+
+struct WordReg : public Base16 {};
+
+struct Imm16 : public Base16 {};
+
+struct Simm8 {
+    s8 v{0};
 };
 
 struct RegPair {
     RegPair(ByteReg& h, ByteReg& l);
-    u16 Addr() const;
+    u16 Ptr() const;
     void Inc() const;
     void Dec() const;
     u8& h;
     u8& l;
-};
-
-struct Address {
-    explicit Address(u16 a);
-    explicit Address(u8 a);
-    explicit Address(RegPair rp);
-    u16 a;
 };
 
 enum class Condition { NZ, Z, NC, C };
@@ -47,6 +53,5 @@ public:
 private:
     u8& f;
 };
-
 
 }

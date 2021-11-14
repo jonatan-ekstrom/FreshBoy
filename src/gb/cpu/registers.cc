@@ -1,13 +1,16 @@
 #include "registers.h"
+#include <stdexcept>
 #include "bits.h"
 
 namespace gb {
 
-Address ByteReg::Addr() const { return Address{static_cast<u16>(0xFF00 + this->v)}; }
+Imm16 Base8::IO() const { return Imm16{static_cast<u16>(0xFF00 + this->v)}; }
+
+u16 Base16::Ptr() const { return this->v; }
 
 RegPair::RegPair(ByteReg& h, ByteReg& l) : h{h.v}, l{l.v} {}
 
-u16 RegPair::Addr() const { return bit::Merge(this->h, this->l); }
+u16 RegPair::Ptr() const { return bit::Merge(this->h, this->l); }
 
 void RegPair::Inc() const {
     auto merged{bit::Merge(this->h, this->l)};
@@ -23,10 +26,6 @@ void RegPair::Dec() const {
     this->l = bit::Low(merged);
 }
 
-Address::Address(const u16 a) : a{a} {}
-Address::Address(const u8 a) : a{static_cast<u16>(a + 0xFF00)} {}
-Address::Address(const RegPair rp) : a{rp.Addr()} {}
-
 Flags::Flags(ByteReg& f) : f{f.v} {}
 
 bool Flags::Check(const Condition c) const {
@@ -35,7 +34,7 @@ bool Flags::Check(const Condition c) const {
         case Condition::Z: return Z();
         case Condition::NC: return !C();
         case Condition::C: return C();
-        default: return false;
+        default: throw std::runtime_error{"Flags - Unknown condition."};
     }
 }
 
