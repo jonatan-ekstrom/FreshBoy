@@ -63,8 +63,8 @@ void Cpu_::Load(const RegPair rp, const WordReg reg, const Simm8 imm) {
 
     this->flags.UpdateZ(false);
     this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry(lhs, rhs, 3));
-    this->flags.UpdateC(bit::Carry(lhs, rhs, 7));
+    this->flags.UpdateH(bit::Carry<3>(lhs, rhs));
+    this->flags.UpdateC(bit::Carry<7>(lhs, rhs));
 }
 
 void Cpu_::Push(const RegPair rp) {

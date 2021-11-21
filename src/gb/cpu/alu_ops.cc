@@ -9,8 +9,8 @@ void Cpu_::Add(const u8 val) {
     this->a.v = static_cast<u8>(lhs + rhs);
     this->flags.UpdateZ(this->a.v == 0);
     this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry(lhs, rhs, 3));
-    this->flags.UpdateC(bit::Carry(lhs, rhs, 7));
+    this->flags.UpdateH(bit::Carry<3>(lhs, rhs));
+    this->flags.UpdateC(bit::Carry<7>(lhs, rhs));
 }
 
 void Cpu_::Add(const Imm8 imm) {
@@ -32,8 +32,8 @@ void Cpu_::AddWithCarry(const u8 val) {
     this->a.v = static_cast<u8>(lhs + rhs + carry);
     this->flags.UpdateZ(this->a.v == 0);
     this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry(lhs, rhs, carry, 3));
-    this->flags.UpdateC(bit::Carry(lhs, rhs, carry, 7));
+    this->flags.UpdateH(bit::Carry<3>(lhs, rhs, carry));
+    this->flags.UpdateC(bit::Carry<7>(lhs, rhs, carry));
 }
 
 void Cpu_::AddWithCarry(const Imm8 imm) {
@@ -54,8 +54,8 @@ void Cpu_::Sub(const u8 val) {
     this->a.v = static_cast<u8>(lhs - rhs);
     this->flags.UpdateZ(this->a.v == 0);
     this->flags.UpdateN(true);
-    this->flags.UpdateH(bit::Borrow(lhs, rhs, 4));
-    this->flags.UpdateC(bit::Borrow(lhs, rhs, 8));
+    this->flags.UpdateH(bit::Borrow<4>(lhs, rhs));
+    this->flags.UpdateC(bit::Borrow<8>(lhs, rhs));
 }
 
 void Cpu_::Sub(const Imm8 imm) {
@@ -77,8 +77,8 @@ void Cpu_::SubWithBorrow(const u8 val) {
     this->a.v = static_cast<u8>(lhs - rhs - borrow);
     this->flags.UpdateZ(this->a.v == 0);
     this->flags.UpdateN(true);
-    this->flags.UpdateH(bit::Borrow(lhs, rhs, borrow, 4));
-    this->flags.UpdateC(bit::Borrow(lhs, rhs, borrow, 8));
+    this->flags.UpdateH(bit::Borrow<4>(lhs, rhs, borrow));
+    this->flags.UpdateC(bit::Borrow<8>(lhs, rhs, borrow));
 }
 
 void Cpu_::SubWithBorrow(const Imm8 imm) {
@@ -158,8 +158,8 @@ void Cpu_::Cmp(const u8 val) {
     const auto rhs{val};
     this->flags.UpdateZ((lhs - rhs) == 0);
     this->flags.UpdateN(true);
-    this->flags.UpdateH(bit::Borrow(lhs, rhs, 4));
-    this->flags.UpdateC(bit::Borrow(lhs, rhs, 8));
+    this->flags.UpdateH(bit::Borrow<4>(lhs, rhs));
+    this->flags.UpdateC(bit::Borrow<8>(lhs, rhs));
 }
 
 void Cpu_::Cmp(const Imm8 imm) {
@@ -180,7 +180,7 @@ void Cpu_::Inc(u8& val) {
     ++val;
     this->flags.UpdateZ(val == 0);
     this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry(lhs, rhs, 3));
+    this->flags.UpdateH(bit::Carry<3>(lhs, rhs));
 }
 
 void Cpu_::Inc(ByteReg& reg) {
@@ -200,7 +200,7 @@ void Cpu_::Dec(u8& val) {
     --val;
     this->flags.UpdateZ(val == 0);
     this->flags.UpdateN(true);
-    this->flags.UpdateH(bit::Borrow(lhs, rhs, 4));
+    this->flags.UpdateH(bit::Borrow<4>(lhs, rhs));
 }
 
 void Cpu_::Dec(ByteReg& reg) {
@@ -222,8 +222,8 @@ void Cpu_::Add(const RegPair rp, const u16 val) {
     rp.l = bit::Low(sum);
 
     this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry(lhs, rhs, 11));
-    this->flags.UpdateC(bit::Carry(lhs, rhs, 15));
+    this->flags.UpdateH(bit::Carry<11>(lhs, rhs));
+    this->flags.UpdateC(bit::Carry<15>(lhs, rhs));
 }
 
 void Cpu_::Add(const RegPair dst, const RegPair src) {
@@ -245,8 +245,8 @@ void Cpu_::Add(WordReg& reg, const Simm8 imm) {
     reg.v = sum;
     this->flags.UpdateZ(false);
     this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry(lhs, rhs, 3));
-    this->flags.UpdateC(bit::Carry(lhs, rhs, 7));
+    this->flags.UpdateH(bit::Carry<3>(lhs, rhs));
+    this->flags.UpdateC(bit::Carry<7>(lhs, rhs));
 }
 
 void Cpu_::Inc(const RegPair rp) {
