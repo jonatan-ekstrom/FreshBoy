@@ -2,6 +2,8 @@
 
 namespace {
 
+/* Compile time test to verify that integers are at least 32-bits wide. */
+
 using namespace gb;
 
 constexpr uint BitCount() {

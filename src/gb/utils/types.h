@@ -3,6 +3,8 @@
 
 namespace gb {
 
+/* Standard typedefs used to reduce verbosity of the code. */
+
 using uint = unsigned int;
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
