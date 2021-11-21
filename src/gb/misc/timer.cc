@@ -51,7 +51,7 @@ u8 Timer_::Read(const u16 address) const {
 
 void Timer_::Write(const u16 address, const u8 byte) {
     if (address == DivAddress) {
-        Reset();
+        Reset(); // Writing to DIV triggers a reset.
         return;
     }
 
@@ -80,33 +80,26 @@ void Timer_::Tick(const uint cycles) {
 }
 
 bool Timer_::Output() const {
+    // Check if timer is enabled (TAC bit 2).
     const auto enabled{bit::IsSet(this->tac, 2)};
     if (!enabled) return false;
 
+    // Check timer frequency (TAC bits 1 and 0).
     const auto freq{this->tac & 0x03};
     uint bit;
     switch (freq) {
-        case 0:
-            bit = 9;
-            break;
-        case 1:
-            bit = 3;
-            break;
-        case 2:
-            bit = 5;
-            break;
-        case 3:
-            bit = 7;
-            break;
-        default:
-            throw std::runtime_error{"Timer - invalid frequency."};
+        case 0: bit = 9; break;
+        case 1: bit = 3; break;
+        case 2: bit = 5; break;
+        case 3: bit = 7; break;
+        default: throw std::runtime_error{"Timer - invalid frequency."};
     }
 
     return bit::IsSet(this->ticks, bit);
 }
 
 u8 Timer_::Div() const {
-    return bit::High(this->ticks);
+    return bit::High(this->ticks); // DIV contains the upper 8 bits of the 16-bit counter.
 }
 
 void Timer_::FireInterrupt() const {
@@ -157,7 +150,7 @@ void Timer_::TacWrite(const u8 byte) {
 void Timer_::Tick() {
     RunStateMachine();
     if (IncrementCounter()) {
-        TimaTick();
+        TimaTick(); // Increment TIMA on falling edge.
     }
 }
 
@@ -179,7 +172,7 @@ void Timer_::RunStateMachine() {
             if (this->stateCounter == cycleLength) {
                 GotoState(TimerState::Load);
                 LoadTima();
-                FireInterrupt();
+                FireInterrupt(); // Fire interrupt when TIMA overflows.
             }
             break;
         case TimerState::Load:

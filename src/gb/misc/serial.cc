@@ -51,6 +51,8 @@ void Serial_::Tick(const uint cycles) {
     this->cycleCount += cycles;
     const auto numShifts{this->cycleCount / divider};
     this->cycleCount %= divider;
+
+    // Shift the registers one step per 512 ticks if a transfer is in progress.
     for (auto i{0u}; TransferInProgress() && i < numShifts; ++i) {
         Shift();
     }
@@ -61,6 +63,7 @@ bool Serial_::TransferInProgress() const {
 }
 
 void Serial_::ScWrite(const u8 byte) {
+    // Start transfer if 0x81 is written to the SC register.
     this->sc = byte & 0x81;
     if (this->sc == 0x81) {
         StartTransfer();
@@ -72,18 +75,21 @@ void Serial_::StartTransfer() {
 }
 
 void Serial_::Shift() {
+    // Shift the MSB of SB into the LSB of the output.
     this->out = static_cast<u8>((this->out << 1) | ((this->sb & (1 << 7)) != 0));
+
+    // Shift one into the LSB of the SB register.
     this->sb = static_cast<u8>((this->sb << 1) | 1);
     if (++this->shifts == 8) {
-        TransferDone();
+        TransferDone(); // Trigger interrupt after 8 shifts have been done.
     }
 }
 
 void Serial_::TransferDone() {
-    bit::Clear(this->sc, 7);
+    bit::Clear(this->sc, 7); // Clear transfer flag.
     this->shifts = 0;
     this->interrupts->RequestInterrupt(Interrupt::Serial);
-    std::cout << this->out << std::flush;
+    std::cout << this->out << std::flush; // Write character to stdout.
 }
 
 }
