@@ -12,9 +12,13 @@ namespace gb {
 class Cpu_;
 using Cpu = std::shared_ptr<Cpu_>;
 
+/* Central Processing Unit - Sharp LR35902 core. */
 class Cpu_ {
 public:
+    /* Static constructor. */
     static Cpu Create(InterruptManager interrupts, Memory mmu);
+
+    /* Steps the processor one instruction, returns number of elapsed cycles. */
     uint Tick();
 private:
     Cpu_(InterruptManager&& interrupts, Memory&& mmu);

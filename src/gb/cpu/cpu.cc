@@ -6,25 +6,19 @@
 
 namespace {
 
-constexpr auto mCycle{4};
-constexpr auto intCycles{5 * mCycle};
-constexpr auto exPrefix{0xCB};
+constexpr auto mCycle{4}; // Machine Cycles -> Cycles.
+constexpr auto intCycles{5 * mCycle}; // Cycles per interrupt.
+constexpr auto exPrefix{0xCB}; // Extended instruction set prefix.
 
 constexpr gb::u16 Vector(const gb::Interrupt interrupt) {
     using gb::Interrupt;
     switch (interrupt) {
-        case Interrupt::VBlank:
-            return 0x40;
-        case Interrupt::Stat:
-            return 0x48;
-        case Interrupt::Timer:
-            return 0x50;
-        case Interrupt::Serial:
-            return 0x58;
-        case Interrupt::Joypad:
-            return 0x60;
-        default:
-            throw std::runtime_error{"Unknown interrupt."};
+        case Interrupt::VBlank: return 0x40;
+        case Interrupt::Stat: return 0x48;
+        case Interrupt::Timer: return 0x50;
+        case Interrupt::Serial: return 0x58;
+        case Interrupt::Joypad: return 0x60;
+        default: throw std::runtime_error{"CPU - Unknown interrupt."};
     }
 }
 
@@ -51,35 +45,48 @@ Cpu Cpu_::Create(InterruptManager interrupts, Memory mmu) {
 }
 
 uint Cpu_::Tick() {
+    // Handle pending interrupts.
     if (HandleInterrupts()) return intCycles;
+
+    // If halted, step one machine cycle and return.
     if (this->halted) return mCycle;
+
+    // Get next opcode to execute.
     const auto [opcode, ex] = GetOpcode();
-    this->branched = false;
+
+    // Execute operation.
     uint mCycles;
     if (ex) {
         ExecuteEx(opcode);
         mCycles = cyclesEx[opcode];
     } else {
+        this->branched = false;
         Execute(opcode);
-        mCycles = branched ? cyclesBranched[opcode] : cycles[opcode];
+        mCycles = this->branched ? cyclesBranched[opcode] : cycles[opcode];
     }
     return mCycles * 4;
 }
 
 bool Cpu_::HandleInterrupts() {
     const auto pending{this->interrupts->PendingInterrupts()};
+
+    // No pending interrupts, bail.
     if (pending.empty()) return false;
 
+    // We have pending interrupts, exit HALT mode.
     this->halted = false;
+
+    // If IME is clear, ignore pending interrupts.
     if (!this->interrupts->InterruptsEnabled()) return false;
 
+    // IME is set, execute pending interrupt.
     const auto requested{pending.front()};
-    this->interrupts->DisableInterrupts();
-    this->interrupts->AcknowledgeInterrupt(requested);
+    this->interrupts->DisableInterrupts(); // Clear IME.
+    this->interrupts->AcknowledgeInterrupt(requested); // Clear IF.
 
+    // Call interrupt vector.
     const auto vector{Vector(requested)};
-    PushPc();
-    this->pc.v = vector;
+    Call(vector);
 
     return true;
 }
@@ -88,6 +95,7 @@ std::tuple<u8, bool> Cpu_::GetOpcode() {
     bool extended{false};
     auto opcode{GetByte().v};
     if (opcode == exPrefix) {
+        // Extended (two-byte) instruction.
         extended = true;
         opcode = GetByte().v;
     }

@@ -2,6 +2,8 @@
 
 namespace gb {
 
+/* Perform opcode dispatching. */
+
 void Cpu_::Execute(const u8 opcode) {
     switch (opcode) {
         case 0x00: Opcode_00(); break;

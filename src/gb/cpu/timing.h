@@ -6,6 +6,7 @@ namespace gb {
 
 namespace ops {
 
+/* Cycle timing for non-extended non-branched instructions. */
 inline constexpr std::array<uint, 256> cycles {
     1, 3, 2, 2, 1, 1, 2, 1, 5, 2, 2, 2, 1, 1, 2, 1,
     1, 3, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1,
@@ -25,6 +26,7 @@ inline constexpr std::array<uint, 256> cycles {
     3, 3, 2, 1, 0, 4, 2, 4, 3, 2, 4, 1, 0, 0, 2, 4
 };
 
+/* Cycle timing for non-extended branched instructions. */
 inline constexpr std::array<uint, 256> cyclesBranched {
     1, 3, 2, 2, 1, 1, 2, 1, 5, 2, 2, 2, 1, 1, 2, 1,
     1, 3, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1,
@@ -44,6 +46,7 @@ inline constexpr std::array<uint, 256> cyclesBranched {
     3, 3, 2, 1, 0, 4, 2, 4, 3, 2, 4, 1, 0, 0, 2, 4
 };
 
+/* Cycle timing for extended instructions. */
 inline constexpr std::array<uint, 256> cyclesEx {
     2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2,
     2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2,

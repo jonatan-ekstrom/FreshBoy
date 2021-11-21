@@ -1,4 +1,7 @@
 #pragma once
+
+/* Declarations of all opcode member functions. */
+
 void Opcode_00();
 void Opcode_01();
 void Opcode_02();

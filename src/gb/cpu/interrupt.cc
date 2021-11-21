@@ -47,6 +47,8 @@ void InterruptManager_::Write(const u16 address, const u8 byte) {
 std::vector<Interrupt> InterruptManager_::PendingInterrupts() const {
     std::vector<Interrupt> pending;
     constexpr auto numInterrupts{5};
+
+    // Return all unmasked interrupts that have their corresponding flag set.
     const auto masked{static_cast<u8>(this->enabled & this->flags)};
     for (auto i{0u}; i < numInterrupts; ++i) {
         if (bit::IsSet(masked, i)) {
