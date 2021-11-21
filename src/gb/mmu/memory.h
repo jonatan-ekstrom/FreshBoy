@@ -15,11 +15,17 @@ namespace gb {
 class Memory_;
 using Memory = std::shared_ptr<Memory_>;
 
+/* Class representing the Memory Management Unit (MMU). */
 class Memory_ {
 public:
+    /* Static constructor. */
     static Memory Create(Cartridge cart, Input input, InterruptManager interrupts,
                          Lcd lcd, Serial serial, Apu sound, Timer timer);
+
+    /* Read one byte from the provided address. */
     u8 Read(u16 address) const;
+
+    /* Write one byte to the provided address. */
     void Write(u16 address, u8 byte);
 private:
     using MemBlock = std::vector<u8>;

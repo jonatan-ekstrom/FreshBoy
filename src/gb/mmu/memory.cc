@@ -15,9 +15,9 @@ Memory_::Memory_(Cartridge&& cart, Input&& input, InterruptManager&& interrupts,
       serial{std::move(serial)},
       sound{std::move(sound)},
       timer{std::move(timer)},
-      boot{dmg::BootRom.cbegin(), dmg::BootRom.cend()},
-      wram(0x2000),
-      hram(0x7F),
+      boot{dmg::BootRom.cbegin(), dmg::BootRom.cend()}, // Allocate boot ROM.
+      wram(0x2000), // Allocate 8 KB of work RAM.
+      hram(0x7F), // Allocate 127 bytes of high RAM.
       dma{0},
       bank{0} {}
 
@@ -40,7 +40,7 @@ u8 Memory_::Read(const u16 address) const {
     }
 
     // Cartridge ROM
-    if (address <= 0x7FFF) {
+    if (address >= 0x100 && address <= 0x7FFF) {
         return this->cart->Read(address);
     }
 
@@ -108,7 +108,7 @@ void Memory_::Write(const u16 address, const u8 byte) {
     }
 
     // Cartridge ROM
-    if (address <= 0x7FFF) {
+    if (address >= 0x100 && address <= 0x7FFF) {
         this->cart->Write(address, byte);
         return;
     }
@@ -283,6 +283,7 @@ void Memory_::WriteIo(const u16 address, const u8 byte) {
 }
 
 void Memory_::DmaTransfer(const u8 byte) {
+    // Trigger a DMA transfer (160 bytes) to OAM.
     constexpr auto numBytes{160};
     u16 src{static_cast<u16>(byte * 0x100)};
     if (src < 0x8000 || src > 0xDFFF) {
