@@ -44,11 +44,11 @@ void Cmp(RegPair rp);  // Z := (a - [rp]) == 0
 
 void Inc(u8& val);      // Helper
 void Inc(ByteReg& reg); // reg := reg + 1
-void IncHL(RegPair rp); // [rp] := [rp] + 1
+void IncRef(RegPair rp); // [rp] := [rp] + 1
 
 void Dec(u8& val);      // Helper
 void Dec(ByteReg& reg); // reg := reg - 1
-void DecHL(RegPair rp); // [rp] := [rp] - 1
+void DecRef(RegPair rp); // [rp] := [rp] - 1
 
 /* 16-bit operations */
 

@@ -54,8 +54,8 @@ void Cpu_::Opcode_30() { RelJump(Condition::NC, GetSignedByte()); }
 void Cpu_::Opcode_31() { Load(this->sp, GetWord()); }
 void Cpu_::Opcode_32() { LoadDec(this->hl, this->a); }
 void Cpu_::Opcode_33() { Inc(this->sp); }
-void Cpu_::Opcode_34() { IncHL(this->hl); }
-void Cpu_::Opcode_35() { DecHL(this->hl); }
+void Cpu_::Opcode_34() { IncRef(this->hl); }
+void Cpu_::Opcode_35() { DecRef(this->hl); }
 void Cpu_::Opcode_36() { Load(this->hl, GetByte()); }
 void Cpu_::Opcode_37() { Scf(); }
 void Cpu_::Opcode_38() { RelJump(Condition::C, GetSignedByte()); }

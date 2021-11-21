@@ -187,7 +187,7 @@ void Cpu_::Inc(ByteReg& reg) {
     Inc(reg.v);
 }
 
-void Cpu_::IncHL(const RegPair rp) {
+void Cpu_::IncRef(const RegPair rp) {
     const auto ptr{rp.Ptr()};
     auto val{this->mmu->Read(ptr)};
     Inc(val);
@@ -207,7 +207,7 @@ void Cpu_::Dec(ByteReg& reg) {
     Dec(reg.v);
 }
 
-void Cpu_::DecHL(const RegPair rp) {
+void Cpu_::DecRef(const RegPair rp) {
     const auto ptr{rp.Ptr()};
     auto val{this->mmu->Read(ptr)};
     Dec(val);
