@@ -7,6 +7,7 @@ namespace {
 
 constexpr auto BaseAddress{0xFF20};
 
+/* Divisor codes used in frequency computations. */
 constexpr std::array<uint, 8> Divisors{8, 16, 32, 48, 64, 80, 96, 112};
 
 }

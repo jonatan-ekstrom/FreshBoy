@@ -68,14 +68,14 @@ void Wave::Write(const u16 address, const u8 byte) {
     }
 
     if (address == (BaseAddress + 3)) {
-        this->rawFreq = static_cast<u16>((this->rawFreq & 0x0700) | byte);
-        this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 2));
+        const auto newFreq{static_cast<u16>((this->rawFreq & 0x0700) | byte)};
+        SetFrequency(newFreq);
         return;
     }
 
     if (address == (BaseAddress + 4)) {
-        this->rawFreq = static_cast<u16>((this->rawFreq & 0x00FF) | ((byte & 0x07) << 8));
-        this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 2));
+        const auto newFreq{static_cast<u16>((this->rawFreq & 0x00FF) | ((byte & 0x07) << 8))};
+        SetFrequency(newFreq);
         this->length.SetEnabled(bit::IsSet(byte, 6));
         if (bit::IsSet(byte, 7)) {
             Trigger();
@@ -113,6 +113,11 @@ void Wave::SetDacPower(const u8 byte) {
     if (!this->dac.Enabled()) {
         this->enabled = false;
     }
+}
+
+void Wave::SetFrequency(const u16 newFreq) {
+    this->rawFreq = newFreq;
+    this->freq.SetPeriod(static_cast<uint>((2048 - this->rawFreq) * 2));
 }
 
 void Wave::Trigger() {

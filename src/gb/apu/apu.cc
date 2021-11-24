@@ -6,8 +6,10 @@
 
 namespace {
 
+/* Number of samples to store before making a call to queue new audio. */
 constexpr auto BufferSize{1024};
 
+/* Calculates the number of cycles between each audio sample. */
 constexpr double CyclesPerSample(const gb::uint refreshRate, const gb::uint sampleRate) {
     const auto samplesPerSecond{static_cast<double>(sampleRate)};
     const auto cyclesPerSecond{gb::lcd::CyclesPerFrame * refreshRate};
@@ -164,14 +166,17 @@ uint Apu_::SampleCount() const {
 }
 
 void Apu_::Tick() {
+    // Check whether it is time to store a new sample.
     this->cycles += 1;
     if (this->cycles > this->cyclesPerSample) {
         this->cycles -= this->cyclesPerSample;
         Sample();
     }
 
+    // Bail out if power is off.
     if (!this->enabled) return;
 
+    // Step sequencer and all channels.
     this->seq.Tick();
     this->ch1.Tick();
     this->ch2.Tick();
@@ -180,9 +185,10 @@ void Apu_::Tick() {
 }
 
 void Apu_::SeqTick(const uint step) {
-    bool length{false};
-    bool env{false};
-    bool sweep{false};
+    // Sequencer has fired, determine which units to tick.
+    bool length{false}; // Length ticks on steps 0, 2, 4 and 6.
+    bool env{false}; // Envelope ticks on step 7.
+    bool sweep{false}; // Sweep ticks on step 2 and 6.
     switch (step) {
         case 0: length = true; break;
         case 2: length = sweep = true; break;
@@ -206,12 +212,14 @@ void Apu_::SeqTick(const uint step) {
 }
 
 void Apu_::Sample() {
+    // If buffer is full, queue data to audio device before clearing.
     if (SampleCount() == BufferSize) {
         this->queue(this->bufferLeft, this->bufferRight);
         this->bufferLeft.clear();
         this->bufferRight.clear();
     }
 
+    // Store next sample in the buffer.
     const auto [l, r] = GetSample();
     this->bufferLeft.push_back(l);
     this->bufferRight.push_back(r);
@@ -221,6 +229,8 @@ std::tuple<u8, u8> Apu_::GetSample() {
     if (!this->enabled) {
         return {0, 0};
     }
+
+    // Compute the final sample value by mixing, amplifying and digitizing each channel.
     const auto [lm, rm] = this->mixer.Mix(this->ch1.Out(), this->ch2.Out(),
                                           this->ch3.Out(), this->ch4.Out());
     const auto [la, ra] = this->amp.Amplify(lm, rm);
@@ -229,6 +239,7 @@ std::tuple<u8, u8> Apu_::GetSample() {
 }
 
 void Apu_::Reset() {
+    // These registers are written with zero upon reset.
     constexpr std::array<u16, 20> regs {
         0xFF10, 0xFF11, 0xFF12, 0xFF13, 0xFF14,
         0xFF16, 0xFF17, 0xFF18, 0xFF19,

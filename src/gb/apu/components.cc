@@ -4,7 +4,8 @@
 
 namespace {
 
-gb::u8 Digitize(const double input) {
+/* Maps floating point values in the range [0, 1] to an unsigned 8-bit integer. */
+constexpr gb::u8 Digitize(const double input) {
     const auto digitized{255 * input};
     const auto clampedLow{digitized < 0 ? 0 : digitized};
     const auto clampedHigh{clampedLow > 255 ? 255 : digitized};
@@ -19,9 +20,10 @@ Sequencer::Sequencer(const Callback& callback)
     : callback{callback}, counter{8192}, step{7} {}
 
 void Sequencer::Tick() {
+    // Step sequencer once every 8192 machine cycles.
     if (--this->counter != 0) return;
     this->counter = 8192;
-    this->step = (this->step + 1) % 8;
+    this->step = (this->step + 1) % 8; // Cycle from 0 -> 7.
     callback(this->step);
 }
 
@@ -31,7 +33,7 @@ void Sequencer::Reset() {
 
 SquareUnit::SquareUnit()
     : duty{SquareDuty::OneEighth},
-      pattern{{{0, 0, 0, 0, 0, 0, 0, 1},
+      pattern{{{0, 0, 0, 0, 0, 0, 0, 1}, // Setup duty patterns.
                {1, 0, 0, 0, 0, 0, 0, 1},
                {1, 0, 0, 0, 0, 1, 1, 1},
                {0, 1, 1, 1, 1, 1, 1, 0}}},
@@ -50,7 +52,7 @@ void SquareUnit::SetDuty(const SquareDuty newDuty) {
 }
 
 void SquareUnit::Tick() {
-    this->pos = (this->pos + 1) % 8;
+    this->pos = (this->pos + 1) % 8; // Advance position in waveform.
 }
 
 FreqUnit::FreqUnit(const Callback& callback, const uint period)
@@ -67,6 +69,7 @@ void FreqUnit::Trigger() {
 }
 
 void FreqUnit::Tick() {
+    // Callback is called once every 'period' machine cycles.
     if (this->counter == 0) return;
     if (--this->counter != 0) return;
     this->counter = this->period;
@@ -97,7 +100,7 @@ void LengthUnit::Trigger() {
 void LengthUnit::Tick() {
     if (!this->enabled || this->counter == 0) return;
     if (--this->counter == 0) {
-        this->callback();
+        this->callback(); // Callback is called to disable channel when timer expires.
     }
 }
 
@@ -116,6 +119,7 @@ void EnvelopeUnit::Write(const u8 byte) {
 }
 
 void EnvelopeUnit::Trigger() {
+    // Initialize volume from I/O register.
     this->volume = static_cast<u8>((this->data >> 4) & 0x0F);
     this->counter = this->data & 0x07;
 }
@@ -124,6 +128,7 @@ void EnvelopeUnit::Tick() {
     if (this->counter == 0) return;
     if (--this->counter != 0) return;
 
+    // Increment / decrement current volume level on timer expiration.
     const auto add{(this->data & 0x08) != 0};
     const auto next{this->volume + (add ? 1 : -1)};
     if (next >= 0 && next <= 15) {
@@ -177,10 +182,11 @@ void SweepUnit::Tick() {
 }
 
 void SweepUnit::Calc(const bool update) {
+    // Performs a frequency calculation, optionally storing the new frequency.
     const auto shift{this->data & 0x07};
     const auto newFreq{Calc()};
     if (newFreq > 2047) {
-        this->disabler();
+        this->disabler(); // Disable the channel.
     } else if ((shift != 0) && update) {
         this->freq = newFreq;
         this->setter(newFreq);
@@ -188,6 +194,7 @@ void SweepUnit::Calc(const bool update) {
 }
 
 u16 SweepUnit::Calc() {
+    // Compute a new frequency by adding / subtracting a shifted version.
     const auto shift{this->data & 0x07};
     const auto neg{bit::IsSet(this->data, 3)};
     this->negUsed = neg;
@@ -207,8 +214,9 @@ WaveUnit::WaveUnit()
       pos{0} {}
 
 u8 WaveUnit::Out() const {
-    const auto base{pos / 2};
-    const auto high{pos % 2 == 0};
+    // Compute the output value of the arbitrary waveform.
+    const auto base{this->pos / 2};
+    const auto high{this->pos % 2 == 0};
     const auto data{high ? bit::HighNibble(this->ram[base]) :
                            bit::LowNibble(this->ram[base])};
     const auto lvl{static_cast<u8>(this->level)};
@@ -243,12 +251,13 @@ void WaveUnit::Trigger() {
 }
 
 void WaveUnit::Tick() {
-    this->pos = (this->pos + 1) % 32;
+    this->pos = (this->pos + 1) % 32; // Update waveform position.
 }
 
 NoiseUnit::NoiseUnit() : altMode{false}, reg{0x7FFF} {}
 
 u8 NoiseUnit::Out() const {
+    // Read output from shift register.
     return bit::IsSet(this->reg, 0) ? 0 : 1;
 }
 
@@ -265,6 +274,7 @@ void NoiseUnit::Trigger() {
 }
 
 void NoiseUnit::Tick() {
+    // Step the feedback shift register acting as a PRNG.
     const auto zero{bit::Get(this->reg, 0)};
     const auto one{bit::Get(this->reg, 1)};
     const auto x{(zero ^ one) == 1};
@@ -282,6 +292,7 @@ bool Dac::Enabled() const {
 }
 
 double Dac::Map(const u8 sample) const {
+    // Map digital signal ([0, 15]) to 'analogue' output level ([0, 1]).
     if (!this->enabled) return 0;
     if (sample >= 15) return 1;
     return sample / 15.0;
@@ -337,6 +348,7 @@ void Amplifier::Write(const u8 byte) {
 
 std::tuple<double, double> Amplifier::Amplify(const double left,
                                               const double right) const {
+    // Parse I/O register to retrieve level scaling.
     const auto leftLevel{static_cast<u8>((this->ctrl >> 4) & 0x07)};
     const auto rightLevel{static_cast<u8>(this->ctrl & 0x07)};
 

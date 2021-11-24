@@ -15,13 +15,25 @@ namespace gb {
 class Apu_;
 using Apu = std::shared_ptr<Apu_>;
 
+/* Class representing the Audio Processing Unit (APU). */
 class Apu_ {
 public:
+    /* A collection of (unsigned 8-bit) audio samples. */
     using Samples = std::vector<u8>;
+
+    /* A callback function used to queue left and right audio channel samples for playback. */
     using QueueHandler = std::function<void(const Samples&, const Samples&)>;
+
+    /* Static constructor. */
     static Apu Create(const QueueHandler& queue, uint refreshRate, uint sampleRate);
+
+    /* Read byte from memory mapped register. */
     u8 Read(u16 address) const;
+
+    /* Write byte to memory mapped register. */
     void Write(u16 address, u8 byte);
+
+    /* Step audio unit the provided number of CPU cycles. */
     void Tick(uint cycles);
 private:
     Apu_(const QueueHandler& queue, uint refreshRate, uint sampleRate);
@@ -31,6 +43,7 @@ private:
     void Sample();
     std::tuple<u8, u8> GetSample();
     void Reset();
+
     QueueHandler queue;
     double cyclesPerSample;
     double cycles;
