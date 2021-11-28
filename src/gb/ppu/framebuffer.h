@@ -5,12 +5,22 @@
 
 namespace gb {
 
+/* Stores all pixel data currently being rendered by the PPU. */
 class Framebuffer {
 public:
+    /* Typedef for pixel data. Data is stored as 32-bit pixels (RGBA). */
     using Pixels = std::vector<u32>;
+
+    /* Creates a new instance of the framebuffer. */
     Framebuffer();
+
+    /* Lock the current frame for rendering and retrieve a reference to the pixel data. */
     const Pixels& LockFrame();
-    Dot* ScanlinePtr(uint index);
+
+    /* Return a pointer to the scanline referenced by the provided row index. */
+    Dot* ScanlinePtr(uint rowIndex);
+
+    /* Resets the framebuffer to its initial state. */
     void Reset();
 private:
     std::vector<Dot> dots;

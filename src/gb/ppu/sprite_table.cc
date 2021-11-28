@@ -11,13 +11,14 @@ namespace {
 constexpr auto BaseAddress{0xFE00u};
 constexpr auto HighAddress{0xFE9Fu};
 constexpr auto NumSprites{40u};
-constexpr auto SpriteSize{4u};
 
 constexpr bool ValidAddress(const gb::u16 address) {
     return (address >= BaseAddress && address <= HighAddress);
 }
 
+/* Maps a 16-bit address to the corresponding sprite and offset (index). */
 constexpr auto GetSpriteAndIndex(const gb::u16 address) {
+    constexpr auto SpriteSize{4u};
     const auto adjusted{address - BaseAddress};
     const auto sprite{adjusted / SpriteSize};
     const auto index{adjusted % SpriteSize};
@@ -51,24 +52,24 @@ u8 Sprite::TileIndex() const {
 }
 
 bool Sprite::FlipX() const {
-    return BitSet(5);
+    return FlagSet(5);
 }
 
 bool Sprite::FlipY() const {
-    return BitSet(6);
+    return FlagSet(6);
 }
 
 SpritePalette Sprite::Palette() const {
-    return BitSet(4) ? SpritePalette::One : SpritePalette::Zero;
+    return FlagSet(4) ? SpritePalette::One : SpritePalette::Zero;
 }
 
-bool Sprite::BitSet(const uint bit) const {
+bool Sprite::FlagSet(uint bit) const {
     const auto flags{this->data[3]};
     return bit::IsSet(flags, bit);
 }
 
 bool Sprite::Hidden() const {
-    return BitSet(7);
+    return FlagSet(7);
 }
 
 SpriteTable_::SpriteTable_() : sprites(NumSprites) {}
@@ -95,15 +96,19 @@ void SpriteTable_::Write(const u16 address, const u8 byte) {
     this->sprites[sprite].Write(index, byte);
 }
 
-std::vector<const Sprite*>
-SpriteTable_::GetSpritesToRender(const uint line,
-                                 const SpriteSize size) const {
+SpriteTable_::SpriteRefs
+SpriteTable_::GetSpritesToRender(const uint line, const SpriteSize size) const {
     if (line >= lcd::DisplayHeight) {
         throw std::runtime_error{"SpriteTable - invalid scanline."};
     }
     const auto scanline{static_cast<int>(line)};
     const auto spriteHeight{size == SpriteSize::Large ? 16 : 8};
 
+    /*
+     * Loop over all sprites starting from the lowest memory address.
+     * Find all sprites that has at least one row overlapping the current scanline.
+     * Out of these, select the first 10.
+     */
     constexpr auto maxCandidates{10u};
     std::vector<const Sprite*> candidates;
     candidates.reserve(maxCandidates);
@@ -119,7 +124,10 @@ SpriteTable_::GetSpritesToRender(const uint line,
         }
     }
 
-    // Sort in priority order high -> low.
+    /*
+     * Sort all sprites in priority (X-coordinate) order, high -> low.
+     * Keep previous order if equal (stable sort).
+     */
     const auto cmp{[](auto s1, auto s2) { return s1->X() < s2->X(); }};
     std::stable_sort(candidates.begin(), candidates.end(), cmp);
 

@@ -112,6 +112,7 @@ void Lcd_::Write(const u16 address, const u8 byte) {
 
     // LCDC
     if (address == 0xFF40) {
+        // Handle enabling / disabling of the PPU through LCDC.
         const auto prev{Enabled()};
         this->lcdc.Write(byte);
         const auto curr{Enabled()};
@@ -126,6 +127,7 @@ void Lcd_::Write(const u16 address, const u8 byte) {
 
     // STAT
     if (address == 0xFF41) {
+        // Prevent interrupts if LCD is disabled.
         this->stat.Write(address, byte, Enabled());
         return;
     }
@@ -138,6 +140,7 @@ void Lcd_::Write(const u16 address, const u8 byte) {
 
     // LYC
     if (address == 0xFF45) {
+        // Prevent interrupts if LCD is disabled.
         this->stat.Write(address, byte, Enabled());
         return;
     }
@@ -161,12 +164,14 @@ void Lcd_::Tick(const uint cycles) {
     this->cycleCount += cycles;
 
     if (!Enabled()) {
+        // If LCD is disabled, just pump empty frames.
         if (this->cycleCount < lcd::CyclesPerFrame) return;
         this->cycleCount %= lcd::CyclesPerFrame;
         FrameReady();
         return;
     }
 
+    // Dispatch to the handler for each mode.
     switch (this->stat.Mode()) {
         case LcdMode::HBlank:
             HandleHBlank();
@@ -181,7 +186,7 @@ void Lcd_::Tick(const uint cycles) {
             HandleTransfer();
             return;
         default:
-            throw std::runtime_error{"Unknown state in PPU state machine."};
+            throw std::runtime_error{"LCD - Unknown mode."};
     }
 }
 

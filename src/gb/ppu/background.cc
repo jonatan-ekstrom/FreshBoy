@@ -15,6 +15,17 @@ void Background::RenderScanline(const uint ly, Dot *const line) const {
         throw std::runtime_error{"Background - invalid scanline."};
     }
 
+    /*
+     * Render the current (ly) scanline.
+     * The BG map is 256x256 pixels.
+     * Transform display coordinates (dx, dy) to map coordinates (mx, my).
+     *    mx = (dx + SCX) % 256
+     *    my = (dy + SCY) % 256
+     * Map coordinates -> / Tile Map / -> Tile index + offset
+     * Tile index -> / Tile Bank / -> Tile
+     * Offset -> / Tile / -> Color index
+     * Color index -> / Palette / -> Shade
+     */
     constexpr auto mapSize{256};
     const auto displayY{ly};
     const auto mapY{(Y() + displayY) % mapSize};
@@ -27,6 +38,7 @@ void Background::RenderScanline(const uint ly, Dot *const line) const {
 }
 
 void Background::RenderDisabled(Dot *const line) const {
+    // Fill an entire scanline with color index zero.
     constexpr auto index{ColorIndex::Zero};
     const auto shade{GetShade(index)};
     const Dot dot{index, shade};

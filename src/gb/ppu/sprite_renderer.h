@@ -8,13 +8,20 @@
 
 namespace gb {
 
+/* Class responsible for drawing sprites. */
 class SpriteRenderer {
 public:
+    /* Create the sprite renderer. */
     SpriteRenderer(TileBanks banks, SpriteTable table, Palette obp0, Palette obp1);
+
+    /* Set which sprite size to use. */
     void SetSize(SpriteSize size);
+
+    /* Render scanline 'ly' to the framebuffer's 'line' pointer. */
     void RenderScanline(uint ly, Dot* line) const;
 private:
-    void WriteDot(Dot& dot, const std::vector<const Sprite*>& sprites,
+    using SpriteRefs = SpriteTable_::SpriteRefs;
+    void WriteDot(Dot& dot, const SpriteRefs& sprites,
                   uint displayX, uint displayY) const;
     static uint DotX(const Sprite& sprite, uint displayX);
     uint DotY(const Sprite& sprite, uint displayY) const;

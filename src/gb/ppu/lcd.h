@@ -1,7 +1,6 @@
 #pragma once
 #include <functional>
 #include <memory>
-#include <optional>
 #include "background.h"
 #include "framebuffer.h"
 #include "interrupt.h"
@@ -19,14 +18,25 @@ namespace gb {
 class Lcd_;
 using Lcd = std::shared_ptr<Lcd_>;
 
+/* Main class of the PPU component, represents the LCD. */
 class Lcd_ {
 public:
+    /* Callback function for signaling that a frame is ready for rendering. */
     using FrameHandler = std::function<void(const Framebuffer::Pixels&)>;
+
+    /* Static constructor. */
     static Lcd Create(InterruptManager interrupts, const FrameHandler& frameHandler);
+
+    /* Read byte from VRAM or I/O register. */
     u8 Read(u16 address) const;
+
+    /* Write byte to VRAM or I/O register. */
     void Write(u16 address, u8 byte);
+
+    /* Step the PPU the provided number of CPU cycles. */
     void Tick(uint cycles);
 private:
+    using Wly = Window::Wly;
     Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler);
     bool Enabled() const;
     bool Accessible(u16 address) const;
@@ -53,7 +63,7 @@ private:
     LcdStat stat;
     LcdControl lcdc;
     Framebuffer frame;
-    std::optional<uint> wly;
+    Wly wly;
     uint cycleCount;
     bool firstFrame;
 };

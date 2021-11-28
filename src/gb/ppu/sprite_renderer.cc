@@ -7,6 +7,7 @@ namespace {
 
 constexpr auto Size{8};
 
+/* Returns true if the sprite overlaps the display X-coordinate. */
 bool OverlapX(const gb::Sprite& sprite, const uint displayX) {
     const auto x{static_cast<int>(displayX)};
     const auto low{sprite.X()};
@@ -14,6 +15,7 @@ bool OverlapX(const gb::Sprite& sprite, const uint displayX) {
     return (x >= low && x < high);
 }
 
+/* Returns true if the sprite overlaps the display Y-coordinate. */
 bool OverlapY(const gb::Sprite& sprite, const uint displayY, const bool small) {
     const auto y{static_cast<int>(displayY)};
     const auto height{small ? Size : 2 * Size};
@@ -51,13 +53,18 @@ void SpriteRenderer::RenderScanline(const uint ly, Dot *const line) const {
     }
 }
 
-void SpriteRenderer::WriteDot(Dot& dot, const std::vector<const Sprite*>& sprites,
+void SpriteRenderer::WriteDot(Dot& dot, const SpriteRefs& sprites,
                               const uint displayX,
                               const uint displayY) const {
+    // Loop over all sprites in priority order.
     for (const auto s : sprites) {
         // If the current pixel does not overlap this sprite, move to the next.
         if (!OverlapX(*s, displayX)) continue;
 
+        /*
+         * Convert display coordinates to sprite coordinates.
+         * Get the corresponding tile and the color index.
+         */
         const auto dotX{DotX(*s, displayX)};
         auto dotY{DotY(*s, displayY)};
         const auto& tile{GetTile(*s, dotY)};
@@ -69,20 +76,24 @@ void SpriteRenderer::WriteDot(Dot& dot, const std::vector<const Sprite*>& sprite
             const auto current{static_cast<u8>(dot.Index)};
             const auto nonZero{current >= 1 && current <= 3};
             const auto skip{s->Hidden() && nonZero};
-            if (skip) return;
+            if (skip) break;
 
-            const auto z{s->Palette() == SpritePalette::Zero};
-            const auto& palette{z ? this->obp0 : this->obp1};
+            // Get the palette and map the color index to a shade.
+            const auto zero{s->Palette() == SpritePalette::Zero};
+            const auto& palette{zero ? this->obp0 : this->obp1};
             const auto shade = palette->Map(index);
+
+            // Update the dot's color data.
             dot.Index = index;
             dot.Tone = shade;
-            return;
+            break;
         }
     }
 }
 
 uint SpriteRenderer::DotX(const Sprite& sprite,
                           const uint displayX) {
+    // Map display X-coordinate to sprite coordinates.
     if (!OverlapX(sprite, displayX)) {
         throw std::runtime_error{"DisplayX outside sprite."};
     }
@@ -96,6 +107,7 @@ uint SpriteRenderer::DotX(const Sprite& sprite,
 
 uint SpriteRenderer::DotY(const Sprite& sprite,
                           const uint displayY) const {
+    // Map display Y-coordinate to sprite coordinates.
     const bool small{this->spriteSize == SpriteSize::Small};
     if (!OverlapY(sprite, displayY, small)) {
         throw std::runtime_error{"DisplayY outside sprite."};
@@ -111,15 +123,19 @@ uint SpriteRenderer::DotY(const Sprite& sprite,
 
 const Tile& SpriteRenderer::GetTile(const Sprite& sprite,
                                     uint& dotY) const {
+    // Small (8x8) sprites occupy only one tile.
     if (this->spriteSize == SpriteSize::Small) {
         return this->banks->GetTileLow(sprite.TileIndex());
     }
 
+    // Large sprites (8x16) occupy two tiles.
     constexpr auto mask{0xFE};
     if (dotY < Size) {
+        // Upper tile.
         return this->banks->GetTileLow(sprite.TileIndex() & mask);
     }
 
+    // Lower tile.
     dotY -= Size; // Adjust Y-coordinate.
     return this->banks->GetTileLow((sprite.TileIndex() & mask) + 1);
 }

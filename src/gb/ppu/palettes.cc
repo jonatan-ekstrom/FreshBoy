@@ -26,6 +26,13 @@ void Palette_::Write(const u8 byte) {
 }
 
 Shade Palette_::Map(const ColorIndex index) const {
+    /*
+     * Example palette data: 0110 0011
+     * Index 0 -> 0b11 : Darkest (Shade 3)
+     * Index 1 -> 0b00 : Lightest (Shade 0)
+     * Index 2 -> 0b10 : Dark (Shade 2)
+     * Index 3 -> 0b01 : Light (Shade 1)
+     */
     const auto color{static_cast<u8>(index)};
     const auto shade{static_cast<u8>((this->data >> (color * 2)) & 0x03)};
     return static_cast<Shade>(shade);

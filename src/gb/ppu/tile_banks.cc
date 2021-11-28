@@ -8,13 +8,14 @@ namespace {
 constexpr auto BaseAddress{0x8000u};
 constexpr auto HighAddress{0x97FFu};
 constexpr auto NumTiles{384u};
-constexpr auto TileSize{16u};
 
 constexpr bool ValidAddress(const gb::u16 address) {
     return address >= BaseAddress && address <= HighAddress;
 }
 
+/* Maps a 16-bit address to the corresponding tile and dot index. */
 constexpr auto GetTileAndIndex(const gb::u16 address) {
+    constexpr auto TileSize{16u};
     const auto adjusted{address - BaseAddress};
     const auto tile{adjusted / TileSize};
     const auto index{adjusted % TileSize};
@@ -36,6 +37,17 @@ void Tile::Write(const uint index, const u8 byte) {
 }
 
 ColorIndex Tile::Color(const uint dotX, const uint dotY) const {
+    /*
+     *  0 **** ****
+     *  1 **** ****
+     *  2 0101 0010
+     *  .   ^-------|
+     *  3 1011 0100 |---> (X, Y) = (2, 1) ---> Color Index: 0b10 = 2
+     *  .   ^-------|
+     *  .    ...
+     * 14 **** ****
+     * 15 **** ****
+     */
     const auto lowByte{this->data[dotY * 2]};
     const auto highByte{this->data[dotY * 2 + 1]};
     const auto highBit{bit::Get(highByte, 7 - dotX)};
@@ -69,10 +81,12 @@ void TileBanks_::Write(const u16 address, const u8 byte) {
 }
 
 const Tile& TileBanks_::GetTileLow(const u8 index) const {
+    // Tiles 0 -> 255 are available in low addressing mode.
     return this->tiles[index];
 }
 
 const Tile& TileBanks_::GetTileHigh(const u8 index) const {
+    // Tiles 128 -> 383 are available in high adressing mode.
     constexpr auto base{256};
     const auto sign{static_cast<s8>(index)};
     const auto offset{static_cast<uint>(base + sign)};

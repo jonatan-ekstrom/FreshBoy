@@ -4,8 +4,7 @@
 
 namespace gb {
 
-BgBase::BgBase(TileBanks banks, TileMaps maps, Palette palette,
-               const u16 address)
+BgBase::BgBase(TileBanks&& banks, TileMaps&& maps, Palette&& palette, const u16 address)
     : banks{std::move(banks)},
       maps{std::move(maps)},
       palette{std::move(palette)},
@@ -59,6 +58,7 @@ u8 BgBase::Y() const {
 }
 
 ColorIndex BgBase::GetColor(const uint mapX, const uint mapY) const {
+    // Find referenced tile and offset.
     constexpr auto tileSize{8};
     constexpr auto tilesPerLine{32};
     const auto tileX{mapX / tileSize};
@@ -66,20 +66,24 @@ ColorIndex BgBase::GetColor(const uint mapX, const uint mapY) const {
     const auto tileY{mapY / tileSize};
     const auto dotY{mapY % tileSize};
 
+    // Use the currently selected tile map to retrieve the tile index.
     const auto& tileMap{this->activeMap == TileMap::Low ?
                         this->maps->LowMap() :
                         this->maps->HighMap()};
     const auto mapIndex{tileY * tilesPerLine + tileX};
     const auto tileIndex{tileMap[mapIndex]};
 
+    // Get a reference to the tile using the tile index.
     const auto& tile{this->activeBank == TileBank::Low ?
                      this->banks->GetTileLow(tileIndex) :
                      this->banks->GetTileHigh(tileIndex)};
 
+    // Read the color index from the tile at the specified offset.
     return tile.Color(dotX, dotY);
 }
 
 Shade BgBase::GetShade(const ColorIndex index) const {
+    // Map the color index through the background palette.
     return this->palette->Map(index);
 }
 

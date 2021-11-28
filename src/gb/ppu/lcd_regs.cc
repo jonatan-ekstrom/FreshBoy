@@ -37,6 +37,7 @@ bool LcdControl::WindowEnabled() const {
 }
 
 TileBank LcdControl::BackgroundBank() const {
+    // NOTE: Logic is inverted as compared to other control bits.
     return bit::IsSet(this->lcdc, 4) ? TileBank::Low : TileBank::High;
 }
 
@@ -75,7 +76,7 @@ u8 LcdStat::Read(const u16 address) const {
 void LcdStat::Write(const u16 address, const u8 byte,
                     const bool allowInterrupts) {
     if (address == StatAddress) {
-        const u8 mask{0x78};
+        const u8 mask{0x78}; // Only bits 3-6 are writeable.
         bit::Assign(this->stat, byte, mask);
         Refresh(allowInterrupts);
         return;
@@ -107,17 +108,19 @@ void LcdStat::SetLy(const u8 newLy) {
 }
 
 void LcdStat::SetMode(const LcdMode mode) {
-    const u8 mask{0x03};
+    const u8 mask{0x03}; // Mode is stored in bits 0-1.
     bit::Assign(this->stat, static_cast<u8>(mode), mask);
     Refresh();
 }
 
 void LcdStat::Enable() {
+    // When enabled, mode is set to OAM search.
     bit::Set(this->stat, 1);
     Refresh(false);
 }
 
 void LcdStat::Disable() {
+    // When disabled, mode is set to HBlank and LY is zero.
     this->ly = 0;
     bit::Clear(this->stat, 1);
     bit::Clear(this->stat, 0);
@@ -125,14 +128,15 @@ void LcdStat::Disable() {
 }
 
 void LcdStat::Refresh(const bool allowInterrupts) {
+    // Set bit 2 if LY = LYC.
     bit::Update(this->stat, 2, this->ly == this->lyc);
 
     if (UpdateBlankLine() && allowInterrupts) {
-        FireBlank();
+        FireBlank(); // VBlank interrupt.
     }
 
     if (UpdateStatLine() && allowInterrupts) {
-        FireStat();
+        FireStat(); // STAT interrupt.
     }
 }
 
@@ -140,12 +144,13 @@ bool LcdStat::UpdateBlankLine() {
     const auto prevLine{this->blankLine};
     const auto newLine{Mode() == LcdMode::VBlank};
     this->blankLine = newLine;
-    return newLine && !prevLine;
+    return newLine && !prevLine; // Fire on rising edge.
 }
 
 bool LcdStat::UpdateStatLine() {
     const auto prevLine{this->statLine};
 
+    // The stat line is the logical OR of all enabled interrupt sources.
     bool newLine{false};
     newLine = newLine || (bit::IsSet(this->stat, 6) && (this->ly == this->lyc));
     newLine = newLine || (bit::IsSet(this->stat, 5) && Mode() == LcdMode::Oam);
@@ -153,7 +158,7 @@ bool LcdStat::UpdateStatLine() {
     newLine = newLine || (bit::IsSet(this->stat, 3) && Mode() == LcdMode::HBlank);
     this->statLine = newLine;
 
-    return newLine && !prevLine;
+    return newLine && !prevLine; // Fire on rising edge.
 }
 
 void LcdStat::FireBlank() const {

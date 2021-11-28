@@ -3,6 +3,7 @@
 
 namespace gb {
 
+/* Raw 'color' data, prior to being mapped through a palette. */
 enum class ColorIndex : u8 {
     Zero = 0,
     One = 1,
@@ -11,6 +12,7 @@ enum class ColorIndex : u8 {
     None = 255
 };
 
+/* Enumeration of the available shades of 'green'. */
 enum class Shade : u8 {
     Lightest = 0,
     Light = 1,
@@ -19,6 +21,10 @@ enum class Shade : u8 {
     Screen = 255
 };
 
+/*
+ * Represents one dot in the dot matrix display.
+ * Each dot has a color index and a mapped color shade.
+ */
 struct Dot {
     Dot();
     Dot(ColorIndex index, Shade tone);
@@ -26,6 +32,7 @@ struct Dot {
     Shade Tone;
 };
 
+/* 32-bit RGBA color data. */
 struct Color {
     Color();
     explicit Color(Shade shade);

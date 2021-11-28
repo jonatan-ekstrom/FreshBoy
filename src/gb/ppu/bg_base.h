@@ -8,14 +8,22 @@
 
 namespace gb {
 
+/* Base class for the background renderers, BG and window. */
 class BgBase {
 public:
+    /* Select which tile bank to use. */
     void UseBank(TileBank bank);
+
+    /* Select which tile map to use. */
     void UseMap(TileMap map);
+
+    /* Read byte from I/O register. */
     u8 Read(u16 address) const;
+
+    /* Write byte to I/O register. */
     void Write(u16 address, u8 byte);
 protected:
-    BgBase(TileBanks banks, TileMaps maps, Palette palette, u16 address);
+    BgBase(TileBanks&& banks, TileMaps&& maps, Palette&& palette, u16 address);
     ColorIndex GetColor(uint mapX, uint mapY) const;
     Shade GetShade(ColorIndex index) const;
     u8 X() const;
