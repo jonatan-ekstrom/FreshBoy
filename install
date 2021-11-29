@@ -1,0 +1,114 @@
+#!/bin/bash
+
+set -e # Exit on all errors.
+
+printf 'Welcome to the gb++ installation script...\n\n'
+
+numCores="$(grep 'cpu cores' /proc/cpuinfo | awk -F: '{sum+=$2}END{print sum*2}')"
+
+read -p 'Build directory (~/build): ' _build
+
+read -p 'Install directory (~/install): ' _install
+
+read -p 'Build in release mode (Y): ' _release
+
+read -p 'Use GNU specific compiler flags (Y): ' _gnu
+
+read -p 'Remove build directory after installing (Y): ' _clean
+
+read -p 'Number of parallel make jobs ('"$numCores"'): ' _para
+
+build="${_build:-~/build}"
+build="${build/#\~/$HOME}"
+
+if [[ -d "$build" ]]; then
+    echo 'Build directory already exists, exiting...'
+    exit 1
+fi
+
+install="${_install:-~/install}"
+install="${install/#\~/$HOME}"
+
+if [[ -d "$install" ]]; then
+    echo 'Install directory already exists, exiting...'
+    exit 1
+fi
+
+if ! [[ "$_release" =~ [Nn] ]]; then
+    release='Yes'
+    mode='Release'
+else
+    release='No'
+    mode='Debug'
+fi
+
+if ! [[ "$_tests" =~ [Nn] ]]; then
+    tests='Yes'
+    tests_cm='ON'
+else
+    tests='No'
+    tests_cm='OFF'
+fi
+
+if ! [[ "$_gnu" =~ [Nn] ]]; then
+    gnu='Yes'
+    gnu_cm='ON'
+else
+   gnu='No'
+   gnu_cm='OFF'
+fi
+
+if ! [[ "$_clean" =~ [Nn] ]]; then
+    clean='Yes'
+else
+    clean='No'
+fi
+
+para="${_para:-$numCores}"
+
+printf '\nYou have entered the following configuration...\n'
+echo '-------------------------------------------------'
+echo 'Build directory: '"$build"
+echo 'Install directory: '"$install"
+echo 'Release build: '"$release"
+echo 'Use GNU flags: '"$gnu"
+echo 'Remove build directory: '"$clean"
+echo 'Parallel jobs: '"$para"
+echo '-------------------------------------------------'
+printf '\n'
+
+read -p 'Is this correct? (Y): ' correct
+
+if [[ "$correct" =~ [Nn] ]]; then
+    echo 'Exiting...'
+    exit 1
+fi
+
+sourceDir="$PWD"
+
+logFile="$build"/build.log
+
+printf '\nStarting build...\n'
+
+echo '1: Creating directories...'
+mkdir "$build"
+mkdir "$install"
+
+echo '2: Changing to build directory...'
+cd "$build"
+
+echo '3: Running cmake...'
+cmake -DCMAKE_BUILD_TYPE="$mode" -DCMAKE_INSTALL_PREFIX="$install" -DUSE_GNU_FLAGS="$gnu_cm" "$sourceDir" >> "$logFile"
+
+echo '4: Compiling...'
+make -j "$para" >> "$logFile"
+
+echo '5: Installing...'
+make install >> "$logFile"
+
+if [[ "$clean" = 'Yes' ]]; then
+    echo '6: Cleaning up...'
+    rm -rf "$build"
+fi
+
+echo 'Done!'
