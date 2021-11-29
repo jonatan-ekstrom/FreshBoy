@@ -3,9 +3,21 @@
 #include <iostream>
 #include "app.h"
 
+namespace {
+
+void PrintUsage() {
+    constexpr auto usage{"Usage: gb++ [ROM path] [RAM path (optional)]"};
+    std::cerr << usage << std::endl;
+}
+
+}
+
 int main(const int argc, const char* argv[]) {
     int exitCode{EXIT_FAILURE};
-    if (argc < 2 || argc > 3) return exitCode;
+    if (argc < 2 || argc > 3) {
+        PrintUsage();
+        return exitCode;
+    }
     try {
         auto emulator{app::Emulator_::Create()};
         emulator->Run(argv[1], argc == 3 ? argv[2] : "");
