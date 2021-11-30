@@ -53,9 +53,11 @@ $ ./install
 
 #### Roms
 
-![](img/roms/tetris.png) ![](img/roms/zelda.png) ![](img/roms/pokemon.png)
+![](img/roms/tetris.png) ![](img/roms/zelda.png)
 
-![](img/roms/mario.png) ![](img/roms/donkey.png) ![](img/roms/mario2.png)
+![](img/roms/donkey.png) ![](img/roms/pokemon.png)
+
+![](img/roms/mario.png) ![](img/roms/mario2.png)
 
 #### Tests
 
