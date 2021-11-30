@@ -48,3 +48,17 @@ $ ./install
 |     Down    |    Down      |
 |     Left    |    Left      |
 |     Right   |    Right     |
+
+### Screenshots
+
+#### Roms
+
+![](img/roms/tetris.png) ![](img/roms/zelda.png) ![](img/roms/pokemon.png)
+
+![](img/roms/mario.png) ![](img/roms/donkey.png) ![](img/roms/mario2.png)
+
+#### Tests
+
+![](img/test/cpu_instrs.png) ![](img/test/instr_timing.png)
+
+![](img/test/dmg-acid2.png) ![](img/test/dmg_sound.png)
