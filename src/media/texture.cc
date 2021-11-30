@@ -24,7 +24,7 @@ Texture::Texture(Instance instance, Renderer renderer,
     }
 
     // Optimize for textures that change often, requires locking.
-    const auto access{SDL_TEXTUREACCESS_STREAMING};
+    constexpr auto access{SDL_TEXTUREACCESS_STREAMING};
     this->handle = SDL_CreateTexture(this->renderer->Handle(), PixelFormat, access, width, height);
     if (this->handle == nullptr) {
         throw std::runtime_error{SDL_GetError()};

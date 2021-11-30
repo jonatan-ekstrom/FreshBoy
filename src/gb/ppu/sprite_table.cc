@@ -128,7 +128,7 @@ SpriteTable_::GetSpritesToRender(const uint line, const SpriteSize size) const {
      * Sort all sprites in priority (X-coordinate) order, high -> low.
      * Keep previous order if equal (stable sort).
      */
-    const auto cmp{[](auto s1, auto s2) { return s1->X() < s2->X(); }};
+    constexpr auto cmp{[](auto s1, auto s2) { return s1->X() < s2->X(); }};
     std::stable_sort(candidates.begin(), candidates.end(), cmp);
 
     return candidates;

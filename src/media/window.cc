@@ -27,8 +27,8 @@ Window_::Window_(Instance&& instance, const std::string& title,
     }
 
     // Center the window on the screen, but keep it hidden initially.
-    const auto pos{SDL_WINDOWPOS_CENTERED};
-    const auto flags{SDL_WINDOW_HIDDEN};
+    constexpr auto pos{SDL_WINDOWPOS_CENTERED};
+    constexpr auto flags{SDL_WINDOW_HIDDEN};
     this->handle = SDL_CreateWindow(title.c_str(), pos, pos, width, height, flags);
     if (this->handle == nullptr) {
         throw std::runtime_error{SDL_GetError()};

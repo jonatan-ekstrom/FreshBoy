@@ -29,15 +29,15 @@ void Renderer_::Present() {
 Renderer_::Renderer_(Instance&& instance, Window&& window)
     : instance{std::move(instance)}, window{std::move(window)} {
     // Enable hardware acceleration.
-    const auto flags{SDL_RENDERER_ACCELERATED};
+    constexpr auto flags{SDL_RENDERER_ACCELERATED};
     this->handle = SDL_CreateRenderer(this->window->Handle(), -1, flags);
     if (this->handle == nullptr) {
         throw std::runtime_error{SDL_GetError()};
     }
 
     // Set up a black (full opacity) draw color.
-    const auto rgb{0};
-    const auto alpha{255};
+    constexpr auto rgb{0};
+    constexpr auto alpha{255};
     if (SDL_SetRenderDrawColor(this->handle, rgb, rgb, rgb, alpha) != 0) {
         throw std::runtime_error{SDL_GetError()};
     }

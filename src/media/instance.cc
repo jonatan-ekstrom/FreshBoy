@@ -24,7 +24,7 @@ unsigned int Instance_::RefreshRate() const {
     }
 
     // Retrieves the refresh rate for the provided display id.
-    const auto GetRefreshRate{[] (const auto d) {
+    constexpr auto GetRefreshRate{[] (const auto d) {
         SDL_DisplayMode mode{};
         if (SDL_GetCurrentDisplayMode(d, &mode) != 0) {
             throw std::runtime_error{SDL_GetError()};
