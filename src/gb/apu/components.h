@@ -17,7 +17,7 @@ public:
     /* Constructs a new sequencer and registers the provided callback. */
     explicit Sequencer(const Callback& callback);
 
-    /* Ticks the sequencer one machine cycle. */
+    /* Ticks the sequencer one CPU cycle. */
     void Tick();
 
     /* Resets the sequencer to its initial state. */
@@ -192,7 +192,7 @@ public:
     /* Creates a new wave unit. */
     WaveUnit();
 
-    /* Reads the internal I/O register. */
+    /* Returns the current output from the wave generator. */
     u8 Out() const;
 
     /* Returns the current wave level (volume). */
@@ -224,7 +224,7 @@ public:
     /* Creates a new noise unit. */
     NoiseUnit();
 
-    /* Reads the internal I/O register. */
+    /* Returns the current output of the noise generator (0 or 1). */
     u8 Out() const;
 
     /* Checks whether alternative mode is enabled. */
@@ -252,7 +252,7 @@ public:
     /* Returns true if the DAC is enabled. */
     bool Enabled() const;
 
-    /* Maps a new digital sample to an analogue output value. */
+    /* Maps a new digital sample to an analog output value. */
     double Map(u8 sample) const;
 
     /* Enables / disables the DAC. */
@@ -280,11 +280,23 @@ private:
     u8 mask;
 };
 
+/* Component used for amplifying (scaling) the left and right volume levels. */
 class Amplifier {
 public:
+    /* Creates a new amplifier. */
     Amplifier();
+
+    /* Reads the I/O register. */
     u8 Read() const;
+
+    /* Writes to the I/O register. */
     void Write(u8 byte);
+
+    /*
+     * Amplifies the left and right audio channels according to
+     * the data stored in the I/O register.
+     * Output level is normalized to the unit interval.
+     */
     std::tuple<double, double> Amplify(double left, double right) const;
 private:
     u8 ctrl;
@@ -292,7 +304,7 @@ private:
 
 namespace apu {
 
-/* Digitizes left / right analogue values into a digital sample. */
+/* Digitizes left / right analog values into a digital sample. */
 std::tuple<u8, u8> Digitize(double left, double right);
 
 }

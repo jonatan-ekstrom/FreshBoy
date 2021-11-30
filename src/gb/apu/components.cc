@@ -20,7 +20,7 @@ Sequencer::Sequencer(const Callback& callback)
     : callback{callback}, counter{8192}, step{7} {}
 
 void Sequencer::Tick() {
-    // Step sequencer once every 8192 machine cycles.
+    // Step sequencer once every 8192 cycles.
     if (--this->counter != 0) return;
     this->counter = 8192;
     this->step = (this->step + 1) % 8; // Cycle from 0 -> 7.
@@ -69,7 +69,7 @@ void FreqUnit::Trigger() {
 }
 
 void FreqUnit::Tick() {
-    // Callback is called once every 'period' machine cycles.
+    // Callback is called once every 'period' cycles.
     if (this->counter == 0) return;
     if (--this->counter != 0) return;
     this->counter = this->period;
@@ -257,7 +257,7 @@ void WaveUnit::Tick() {
 NoiseUnit::NoiseUnit() : altMode{false}, reg{0x7FFF} {}
 
 u8 NoiseUnit::Out() const {
-    // Read output from shift register.
+    // Output is the shift register LSB, inverted.
     return bit::IsSet(this->reg, 0) ? 0 : 1;
 }
 
@@ -292,7 +292,7 @@ bool Dac::Enabled() const {
 }
 
 double Dac::Map(const u8 sample) const {
-    // Map digital signal ([0, 15]) to 'analogue' output level ([0, 1]).
+    // Map digital signal ([0, 15]) to 'analog' output level ([0, 1]).
     if (!this->enabled) return 0;
     if (sample >= 15) return 1;
     return sample / 15.0;

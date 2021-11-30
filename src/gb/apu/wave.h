@@ -19,7 +19,7 @@ public:
     /* Returns true if the channel is active. */
     bool Active() const;
 
-    /* Returns current (analogue) output level in range [0, 1]. */
+    /* Returns current (analog) output level in range [0, 1]. */
     double Out() const;
 
     /* Step this channel one cycle. */
