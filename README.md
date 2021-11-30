@@ -2,7 +2,7 @@
 
 FreshBoy is a Game Boy (DMG) emulator written in modern C++.
 
-The project started as a way to explore new features in C++20.
+The project started as a way to explore new features in C++20.  
 It turned out to be a great way to combine my passion for embedded
 systems programming with a splash of 90s nostalgia.
 
@@ -12,7 +12,7 @@ systems programming with a splash of 90s nostalgia.
 - Use modern C++20 features.
 - No external dependencies in core library.
 - Decoupled audio / video subsystem.
-- Cross platform
+- Cross platform.
 
 ### Features
 
@@ -38,7 +38,7 @@ $ ./install
 
 ### Keymap
 
-|   GameBoy   |   FreshBoy   |
+|   Game Boy  |   FreshBoy   |
 |:-----------:|:------------:|
 |      A      |      X       |
 |      B      |      Z       |
