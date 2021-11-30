@@ -35,3 +35,16 @@ systems programming with a splash of 90s nostalgia.
 $ sudo apt install build-essential cmake libsdl2-dev
 $ ./install
 ```
+
+### Keymap
+
+|   GameBoy   |   FreshBoy   |
+|:-----------:|:------------:|
+|      A      |      X       |
+|      B      |      Z       |
+|    Start    |    Return    |
+|    Select   |   Backspace  |
+|      Up     |     Up       |
+|     Down    |    Down      |
+|     Left    |    Left      |
+|     Right   |    Right     |
