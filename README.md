@@ -1,6 +1,6 @@
-# gb++
+# FreshBoy
 
-gb++ is a Game Boy (DMG) emulator written in modern C++.
+FreshBoy is a Game Boy (DMG) emulator written in modern C++.
 
 The project started as a way to explore new features in C++20.
 It turned out to be a great way to combine my passion for embedded

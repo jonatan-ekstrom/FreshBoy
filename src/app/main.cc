@@ -6,7 +6,7 @@
 namespace {
 
 void PrintUsage() {
-    constexpr auto usage{"Usage: gb++ [ROM path] [RAM path (optional)]"};
+    constexpr auto usage{"Usage: FreshBoy [ROM path] [RAM path (optional)]"};
     std::cerr << usage << std::endl;
 }
 

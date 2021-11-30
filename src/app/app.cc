@@ -10,7 +10,7 @@ using namespace sdl;
 
 namespace {
 
-constexpr auto Title{"gb++"};
+constexpr auto Title{"FreshBoy"};
 constexpr auto WindowHeight{600};
 constexpr auto WindowWidth{(WindowHeight * 10) / 9};
 

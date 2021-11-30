@@ -17,4 +17,4 @@ install(TARGETS app DESTINATION bin)
 # Output binary to build directory.
 set_target_properties(app PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-                      OUTPUT_NAME gb++)
+                      OUTPUT_NAME FreshBoy)

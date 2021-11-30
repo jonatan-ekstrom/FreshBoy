@@ -2,7 +2,7 @@
 
 set -e # Exit on all errors.
 
-printf 'Welcome to the gb++ installation script...\n\n'
+printf 'Welcome to the FreshBoy installation script...\n\n'
 
 numCores="$(grep 'cpu cores' /proc/cpuinfo | awk -F: '{sum+=$2}END{print sum*2}')"
 
