@@ -24,7 +24,7 @@ set(mediaSources
 add_library(media STATIC ${mediaSources})
 
 # Setup include directories.
-target_include_directories(media PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(media INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Include the SDL headers.
 target_include_directories(media SYSTEM PRIVATE ${SDL2_INCLUDE_DIRS})
