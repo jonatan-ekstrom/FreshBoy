@@ -50,7 +50,7 @@ u8 Memory_::Read(const u16 address) const {
     }
 
     // Cartridge RAM
-    if (address >= 0xA000 && address <=0xBFFF) {
+    if (address >= 0xA000 && address <= 0xBFFF) {
         return this->cart->Read(address);
     }
 
@@ -120,7 +120,7 @@ void Memory_::Write(const u16 address, const u8 byte) {
     }
 
     // Cartridge RAM
-    if (address >= 0xA000 && address <=0xBFFF) {
+    if (address >= 0xA000 && address <= 0xBFFF) {
         this->cart->Write(address, byte);
         return;
     }
@@ -285,7 +285,7 @@ void Memory_::WriteIo(const u16 address, const u8 byte) {
 void Memory_::DmaTransfer(const u8 byte) {
     // Trigger a DMA transfer (160 bytes) to OAM.
     constexpr auto numBytes{160};
-    u16 src{static_cast<u16>(byte * 0x100)};
+    auto src{static_cast<u16>(byte * 0x100)};
     if (src < 0x8000 || src > 0xDFFF) {
         throw std::runtime_error{"MMU - invalid DMA transfer source."};
     }
