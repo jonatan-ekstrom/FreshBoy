@@ -1,5 +1,5 @@
-# We require at least version 3.19 of CMake.
-cmake_minimum_required(VERSION 3.19 FATAL_ERROR)
+# We require at least version 3.18 of CMake.
+cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
 # Check status of build type and compiler flags.
 if (DEFINED CMAKE_BUILD_TYPE)
