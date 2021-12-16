@@ -23,7 +23,7 @@ using Samples = std::vector<std::uint8_t>;
 /* Function called to determine whether to continue emulating. */
 using ContinueCallback = std::function<bool(void)>;
 
-/* Function called to request a re-render of the screen. */
+/* Function called to request a new screen render. */
 using RenderCallback = std::function<void(const Pixels&)>;
 
 /* Function called to queue up new audio samples. */
@@ -39,7 +39,7 @@ inline constexpr unsigned int DisplayHeight{144};
 /* Opaque pointer handle. */
 class Handle {
 public:
-    explicit Handle(gb::Gameboy_ *const handle);
+    explicit Handle(gb::Gameboy_* handle);
     const gb::Gameboy_* operator->() const;
     gb::Gameboy_* operator->();
 private:
@@ -47,10 +47,10 @@ private:
     std::unique_ptr<gb::Gameboy_, GameboyDeleter> handle;
 };
 
-/* Public gameboy API wrapper class. */
+/* Public Game Boy API wrapper class. */
 class Gameboy {
 public:
-    /* Constructs a new instance of the gameboy emulator. */
+    /* Constructs a new instance of the Game Boy emulator. */
     Gameboy(const Path& romPath, const Path& ramPath,
             const RenderCallback& render, const QueueCallback& queue,
             unsigned int refreshRate, unsigned int sampleRate, bool log = false);

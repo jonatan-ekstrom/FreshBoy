@@ -1,4 +1,4 @@
-# Top level API target for the gameboy emulator.
+# Top level API target for the Game Boy emulator.
 
 # Create API header only target.
 add_library(api INTERFACE)
