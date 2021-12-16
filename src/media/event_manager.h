@@ -26,10 +26,10 @@ public:
     EventManager& operator=(EventManager&& other) noexcept;
 
     /* Register a handler function for key presses. */
-    void RegisterKeyHandler(const KeyHandler& handler);
+    void RegisterKeyHandler(KeyHandler handler);
 
     /* Register a handler function for application exit signal. */
-    void RegisterQuitHandler(const QuitHandler& handler);
+    void RegisterQuitHandler(QuitHandler handler);
 
     /* Process all pending events (non blocking). */
     void ProcessEvents() const;

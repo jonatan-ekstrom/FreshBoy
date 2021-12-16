@@ -23,7 +23,7 @@ Key::Key(const SDL_KeyboardEvent& event)
     switch (event.type) {
         case SDL_KEYUP: Type = Type::Up; break;
         case SDL_KEYDOWN: Type = Type::Down; break;
-        default: Type = Type::Unknown;break;
+        default: Type = Type::Unknown; break;
     }
 
     // Parse event state.

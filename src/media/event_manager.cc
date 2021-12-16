@@ -29,12 +29,12 @@ EventManager& EventManager::operator=(EventManager&& other) noexcept {
     return *this;
 }
 
-void EventManager::RegisterKeyHandler(const KeyHandler& handler) {
-    this->keyHandler = handler;
+void EventManager::RegisterKeyHandler(KeyHandler handler) {
+    this->keyHandler = std::move(handler);
 }
 
-void EventManager::RegisterQuitHandler(const QuitHandler& handler) {
-    this->quitHandler = handler;
+void EventManager::RegisterQuitHandler(QuitHandler handler) {
+    this->quitHandler = std::move(handler);
 }
 
 void EventManager::ProcessEvents() const {

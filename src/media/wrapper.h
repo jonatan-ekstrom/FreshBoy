@@ -15,7 +15,6 @@ using ObjectFromFunction = std::integral_constant<decltype(Function), Function>;
 template<typename T, auto Deleter>
 class Wrapper {
 public:
-    Wrapper() = default;
     Wrapper& operator=(T *const ptr) { this->handle.reset(ptr); return *this; }
     operator T*() { return this->handle.get(); }
 private:
