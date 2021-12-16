@@ -9,7 +9,7 @@ class Key {
 public:
     explicit Key(const SDL_KeyboardEvent& event);
 
-    /* The key code. Only keys used by the gameboy emulator are supported. */
+    /* The key code. Only keys used by the Game Boy emulator are supported. */
     enum class Code {
         Unknown,
         Up,

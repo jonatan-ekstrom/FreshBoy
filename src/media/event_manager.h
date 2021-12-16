@@ -11,7 +11,7 @@ class Key;
 /*
  * The EventManager class adds an abstraction layer upon the native SDL event
  * management system. A user can subscribe to an event by registering a handler.
- * Currently two event types are supported: key presses and application quit.
+ * Currently, two event types are supported: key presses and application quit.
  */
 class EventManager {
 public:

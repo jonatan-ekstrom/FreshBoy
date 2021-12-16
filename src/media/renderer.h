@@ -28,10 +28,10 @@ public:
     /* Clears the surface managed by the renderer (i.e. draws black pixels). */
     void Clear();
 
-    /* Copies the contents of the provided texture to the renderer's backbuffer. */
+    /* Copies the contents of the provided texture to the renderer's back buffer. */
     void Copy(Texture& texture);
 
-    /* Presents the contents of the backbuffer to the renderer's drawing surface. */
+    /* Presents the contents of the back buffer to the renderer's drawing surface. */
     void Present();
 
     /* Returns a pointer to the wrapped SDL_Renderer. */

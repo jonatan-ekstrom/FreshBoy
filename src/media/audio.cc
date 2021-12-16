@@ -9,7 +9,7 @@ namespace sdl {
 Audio::Audio(Instance instance)
     : instance{std::move(instance)} {
     /*
-     * Setup the desired audio format.
+     * Set up the desired audio format.
      * We're using 44.1 kHz stereo sound in 8-bit unsigned samples.
      */
     SDL_AudioSpec desired{}, obtained{};
