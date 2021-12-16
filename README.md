@@ -12,7 +12,7 @@ systems programming with a splash of 90s nostalgia.
 - Use modern C++20 features.
 - No external dependencies in core library.
 - Decoupled audio / video subsystem.
-- Cross platform.
+- Cross-platform.
 
 ### Features
 
@@ -38,16 +38,16 @@ $ ./install
 
 ### Keymap
 
-|   Game Boy  |   FreshBoy   |
+|  Game Boy   |   FreshBoy   |
 |:-----------:|:------------:|
 |      A      |      X       |
 |      B      |      Z       |
 |    Start    |    Return    |
-|    Select   |   Backspace  |
-|      Up     |     Up       |
-|     Down    |    Down      |
-|     Left    |    Left      |
-|     Right   |    Right     |
+|   Select    |  Backspace   |
+|     Up      |      Up      |
+|    Down     |     Down     |
+|    Left     |     Left     |
+|    Right    |    Right     |
 
 ### Screenshots
 
