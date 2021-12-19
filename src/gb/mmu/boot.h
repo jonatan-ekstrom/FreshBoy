@@ -2,9 +2,7 @@
 #include <array>
 #include "types.h"
 
-namespace gb {
-
-namespace dmg {
+namespace gb::dmg {
 
 /* Bytes of the original DMG boot program stored in ROM. */
 inline constexpr std::array<u8, 256> BootRom{
@@ -41,7 +39,5 @@ inline constexpr std::array<u8, 256> BootRom{
     0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20,
     0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50
 };
-
-}
 
 }
