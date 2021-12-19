@@ -25,7 +25,7 @@ public:
     using QueueHandler = std::function<void(const Samples&, const Samples&)>;
 
     /* Static constructor. */
-    static Apu Create(const QueueHandler& queue, uint refreshRate, uint sampleRate);
+    static Apu Create(QueueHandler queue, uint refreshRate, uint sampleRate);
 
     /* Read byte from memory mapped register. */
     u8 Read(u16 address) const;
@@ -34,9 +34,9 @@ public:
     void Write(u16 address, u8 byte);
 
     /* Step audio unit the provided number of CPU cycles. */
-    void Tick(uint cycles);
+    void Tick(uint numCycles);
 private:
-    Apu_(const QueueHandler& queue, uint refreshRate, uint sampleRate);
+    Apu_(QueueHandler&& queue, uint refreshRate, uint sampleRate);
     uint SampleCount() const;
     void Tick();
     void SeqTick(uint step);

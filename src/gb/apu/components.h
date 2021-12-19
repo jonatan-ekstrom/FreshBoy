@@ -15,7 +15,7 @@ public:
     using Callback = std::function<void(uint)>;
 
     /* Constructs a new sequencer and registers the provided callback. */
-    explicit Sequencer(const Callback& callback);
+    explicit Sequencer(Callback callback);
 
     /* Ticks the sequencer one CPU cycle. */
     void Tick();
@@ -66,7 +66,7 @@ public:
     using Callback = std::function<void()>;
 
     /* Constructs a new frequency unit, registering the provided callback and sets the initial period. */
-    FreqUnit(const Callback& callback, uint period);
+    FreqUnit(Callback, uint period);
 
     /* Updates the period. */
     void SetPeriod(uint newPeriod);
@@ -89,7 +89,7 @@ public:
     using Callback = std::function<void()>;
 
     /* Creates a new length unit, registering the provided callback and sets the period. */
-    LengthUnit(const Callback& callback, uint period);
+    LengthUnit(Callback, uint period);
 
     /* Returns true if the component is enabled. */
     bool Enabled() const;
@@ -151,7 +151,7 @@ public:
     using Disabler = std::function<void()>;
 
     /* Constructs a new sweep unit and registers the provided callbacks. */
-    SweepUnit(const Getter& getter, const Setter& setter, const Disabler& disabler);
+    SweepUnit(Getter getter, Setter setter, Disabler disabler);
 
     /* Reads the internal I/O register. */
     u8 Read() const;

@@ -1,5 +1,6 @@
 #include "apu.h"
 #include <array>
+#include <utility>
 #include "bits.h"
 #include "display.h"
 #include "log.h"
@@ -21,8 +22,8 @@ constexpr double CyclesPerSample(const gb::uint refreshRate, const gb::uint samp
 
 namespace gb {
 
-Apu_::Apu_(const QueueHandler& queue, const uint refreshRate, const uint sampleRate)
-    : queue{queue},
+Apu_::Apu_(QueueHandler&& queue, const uint refreshRate, const uint sampleRate)
+    : queue{std::move(queue)},
       cyclesPerSample{CyclesPerSample(refreshRate, sampleRate)},
       cycles{0},
       enabled{false},
@@ -31,8 +32,8 @@ Apu_::Apu_(const QueueHandler& queue, const uint refreshRate, const uint sampleR
     bufferRight.reserve(BufferSize);
 }
 
-Apu Apu_::Create(const QueueHandler& queue, const uint refreshRate, const uint sampleRate) {
-    return Apu{new Apu_{queue, refreshRate, sampleRate}};
+Apu Apu_::Create(QueueHandler queue, const uint refreshRate, const uint sampleRate) {
+    return Apu{new Apu_{std::move(queue), refreshRate, sampleRate}};
 }
 
 u8 Apu_::Read(const u16 address) const {
@@ -155,8 +156,8 @@ void Apu_::Write(const u16 address, u8 byte) {
     log::Warning("APU - invalid write address: " + log::Hex(address));
 }
 
-void Apu_::Tick(const uint cycles) {
-    for (auto i{0u}; i < cycles; ++i) {
+void Apu_::Tick(const uint numCycles) {
+    for (auto i{0u}; i < numCycles; ++i) {
         Tick();
     }
 }

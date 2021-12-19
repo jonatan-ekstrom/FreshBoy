@@ -1,5 +1,6 @@
 #include "components.h"
 #include <stdexcept>
+#include <utility>
 #include "bits.h"
 
 namespace {
@@ -16,8 +17,8 @@ constexpr gb::u8 Digitize(const double input) {
 
 namespace gb {
 
-Sequencer::Sequencer(const Callback& callback)
-    : callback{callback}, counter{8192}, step{7} {}
+Sequencer::Sequencer(Callback callback)
+    : callback{std::move(callback)}, counter{8192}, step{7} {}
 
 void Sequencer::Tick() {
     // Step sequencer once every 8192 cycles.
@@ -55,8 +56,8 @@ void SquareUnit::Tick() {
     this->pos = (this->pos + 1) % 8; // Advance position in waveform.
 }
 
-FreqUnit::FreqUnit(const Callback& callback, const uint period)
-    : callback{callback},
+FreqUnit::FreqUnit(Callback callback, const uint period)
+    : callback{std::move(callback)},
       period{period},
       counter{period} {}
 
@@ -76,8 +77,8 @@ void FreqUnit::Tick() {
     this->callback();
 }
 
-LengthUnit::LengthUnit(const Callback& callback, const uint period)
-    : callback{callback}, enabled{false}, period{period}, counter{0} {}
+LengthUnit::LengthUnit(Callback callback, const uint period)
+    : callback{std::move(callback)}, enabled{false}, period{period}, counter{0} {}
 
 bool LengthUnit::Enabled() const {
     return this->enabled;
@@ -137,12 +138,10 @@ void EnvelopeUnit::Tick() {
     }
 }
 
-SweepUnit::SweepUnit(const SweepUnit::Getter& getter,
-                     const SweepUnit::Setter& setter,
-                     const SweepUnit::Disabler& disabler)
-    : getter{getter},
-      setter{setter},
-      disabler{disabler},
+SweepUnit::SweepUnit(Getter getter, Setter setter, Disabler disabler)
+    : getter{std::move(getter)},
+      setter{std::move(setter)},
+      disabler{std::move(disabler)},
       enabled{false},
       negUsed{false},
       counter{0},
