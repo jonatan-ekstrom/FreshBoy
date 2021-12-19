@@ -6,7 +6,7 @@
 
 namespace gb {
 
-/* Enumeration of all supported Gameboy buttons. */
+/* Enumeration of all supported Game Boy buttons. */
 enum class Button {
     Right,
     Left,
