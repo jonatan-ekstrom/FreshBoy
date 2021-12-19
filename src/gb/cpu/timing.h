@@ -2,12 +2,10 @@
 #include <array>
 #include "types.h"
 
-namespace gb {
-
-namespace ops {
+namespace gb::ops {
 
 /* Cycle timing for non-extended non-branched instructions. */
-inline constexpr std::array<uint, 256> cycles {
+inline constexpr std::array<uint, 256> Cycles {
     1, 3, 2, 2, 1, 1, 2, 1, 5, 2, 2, 2, 1, 1, 2, 1,
     1, 3, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1,
     2, 3, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 1, 2, 1,
@@ -27,7 +25,7 @@ inline constexpr std::array<uint, 256> cycles {
 };
 
 /* Cycle timing for non-extended branched instructions. */
-inline constexpr std::array<uint, 256> cyclesBranched {
+inline constexpr std::array<uint, 256> CyclesBranched {
     1, 3, 2, 2, 1, 1, 2, 1, 5, 2, 2, 2, 1, 1, 2, 1,
     1, 3, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1,
     3, 3, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1,
@@ -47,7 +45,7 @@ inline constexpr std::array<uint, 256> cyclesBranched {
 };
 
 /* Cycle timing for extended instructions. */
-inline constexpr std::array<uint, 256> cyclesEx {
+inline constexpr std::array<uint, 256> CyclesEx {
     2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2,
     2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2,
     2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2,
@@ -65,7 +63,5 @@ inline constexpr std::array<uint, 256> cyclesEx {
     2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2,
     2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2
 };
-
-}
 
 }

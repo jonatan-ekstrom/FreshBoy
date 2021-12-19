@@ -7,7 +7,7 @@ void Jump(Imm16 imm);    // PC := imm
 void Jump(RegPair rp);   // PC := rp
 void RelJump(Simm8 imm); // PC := PC + imm
 
-/* Sofware interrupt. */
+/* Software interrupt. */
 
 void Rst(uint t); // CALL(0x08 * t)
 

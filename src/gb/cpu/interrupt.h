@@ -41,7 +41,7 @@ public:
     /* Disables interrupts, i.e. clears the IME flag. */
     void DisableInterrupts();
 
-    /* Requests an interrupt of the provided type, i.e sets the corresponding IF flag. */
+    /* Requests an interrupt of the provided type, i.e. sets the corresponding IF flag. */
     void RequestInterrupt(Interrupt intr);
 
     /* Acknowledges an interrupt of the provided type, i.e. clears the corresponding IF flag. */

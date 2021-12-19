@@ -6,10 +6,6 @@
 
 namespace {
 
-constexpr auto mCycle{4}; // Machine Cycles -> Cycles.
-constexpr auto intCycles{5 * mCycle}; // Cycles per interrupt.
-constexpr auto exPrefix{0xCB}; // Extended instruction set prefix.
-
 constexpr gb::u16 Vector(const gb::Interrupt interrupt) {
     using gb::Interrupt;
     switch (interrupt) {
@@ -36,20 +32,24 @@ Cpu_::Cpu_(InterruptManager&& interrupts, Memory&& mmu)
       hl{this->h, this->l},
       halted{false},
       branched{false},
-      cycles{ops::cycles.cbegin(), ops::cycles.cend()},
-      cyclesBranched{ops::cyclesBranched.cbegin(), ops::cyclesBranched.cend()},
-      cyclesEx{ops::cyclesEx.cbegin(), ops::cyclesEx.cend()} {}
+      cycles{ops::Cycles.cbegin(), ops::Cycles.cend()},
+      cyclesBranched{ops::CyclesBranched.cbegin(), ops::CyclesBranched.cend()},
+      cyclesEx{ops::CyclesEx.cbegin(), ops::CyclesEx.cend()} {}
 
 Cpu Cpu_::Create(InterruptManager interrupts, Memory mmu) {
     return Cpu{new Cpu_{std::move(interrupts), std::move(mmu)}};
 }
 
 uint Cpu_::Tick() {
+    constexpr auto cycleMultiplier{4}; // Machine Cycles -> Cycles.
+    constexpr auto intCycles{5 * cycleMultiplier};
+    constexpr auto haltCycles{1 * cycleMultiplier};
+
     // Handle pending interrupts.
     if (HandleInterrupts()) return intCycles;
 
     // If halted, step one machine cycle and return.
-    if (this->halted) return mCycle;
+    if (this->halted) return haltCycles;
 
     // Get next opcode to execute.
     const auto [opcode, ex] = GetOpcode();
@@ -64,7 +64,7 @@ uint Cpu_::Tick() {
         Execute(opcode);
         mCycles = this->branched ? cyclesBranched[opcode] : cycles[opcode];
     }
-    return mCycles * 4;
+    return mCycles * cycleMultiplier;
 }
 
 bool Cpu_::HandleInterrupts() {
@@ -92,6 +92,7 @@ bool Cpu_::HandleInterrupts() {
 }
 
 std::tuple<u8, bool> Cpu_::GetOpcode() {
+    constexpr auto exPrefix{0xCB}; // Extended instruction set prefix.
     bool extended{false};
     auto opcode{GetByte().v};
     if (opcode == exPrefix) {

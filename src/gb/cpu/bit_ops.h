@@ -16,7 +16,7 @@ void Rlca();            // a := RLC(a)
 
 /* Rotate right (no carry) */
 
-void Rr(u8& imm);      // Helperf
+void Rr(u8& imm);      // Helper
 void Rr(ByteReg& reg); // reg := RR(reg)
 void Rr(RegPair rp);   // [rp] := RR([rp])
 void Rra();            // a := RR(a)
