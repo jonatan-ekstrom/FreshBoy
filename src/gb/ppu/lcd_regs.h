@@ -75,7 +75,7 @@ public:
     /* Returns the current mode of operation. */
     LcdMode Mode() const;
 
-    /* Changes the active scanline, i.e the LY register. */
+    /* Changes the active scanline, i.e. the LY register. */
     void SetLy(u8 newLy);
 
     /* Changes the mode of operation. */

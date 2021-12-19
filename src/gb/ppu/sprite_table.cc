@@ -18,10 +18,10 @@ constexpr bool ValidAddress(const gb::u16 address) {
 
 /* Maps a 16-bit address to the corresponding sprite and offset (index). */
 constexpr auto GetSpriteAndIndex(const gb::u16 address) {
-    constexpr auto SpriteSize{4u};
+    constexpr auto spriteSize{4u};
     const auto adjusted{address - BaseAddress};
-    const auto sprite{adjusted / SpriteSize};
-    const auto index{adjusted % SpriteSize};
+    const auto sprite{adjusted / spriteSize};
+    const auto index{adjusted % spriteSize};
     return std::make_tuple(sprite, index);
 }
 
@@ -106,7 +106,7 @@ SpriteTable_::GetSpritesToRender(const uint line, const SpriteSize size) const {
 
     /*
      * Loop over all sprites starting from the lowest memory address.
-     * Find all sprites that has at least one row overlapping the current scanline.
+     * Find all sprites that have at least one row overlapping the current scanline.
      * Out of these, select the first 10.
      */
     constexpr auto maxCandidates{10u};

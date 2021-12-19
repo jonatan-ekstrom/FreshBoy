@@ -72,7 +72,7 @@ void SpriteRenderer::WriteDot(Dot& dot, const SpriteRefs& sprites,
 
         // If we've found a non-transparent pixel, we're done.
         if (index != ColorIndex::Zero) {
-            // Skip the pixel if the sprite is low-prio and the current color index is non-zero.
+            // Skip the pixel if the sprite is low-priority and the current color index is non-zero.
             const auto current{static_cast<u8>(dot.Index)};
             const auto nonZero{current >= 1 && current <= 3};
             const auto skip{s->Hidden() && nonZero};

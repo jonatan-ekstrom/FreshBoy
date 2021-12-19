@@ -19,7 +19,7 @@ public:
     Window(TileBanks banks, TileMaps maps, Palette palette);
 
     /*
-     * Render scanline 'ly' to the framebuffer's 'line' pointer.
+     * Render scanline 'ly' to the frame buffer's 'line' pointer.
      * 'wly' is the window's internal line counter.
      */
     void RenderScanline(uint ly, Wly& wly, Dot* line) const;

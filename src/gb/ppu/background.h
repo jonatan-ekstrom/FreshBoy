@@ -14,10 +14,10 @@ public:
     /* Create the background renderer. */
     Background(TileBanks banks, TileMaps maps, Palette palette);
 
-    /* Render scanline 'ly' to the framebuffer's 'line' pointer. */
+    /* Render scanline 'ly' to the frame buffer's 'line' pointer. */
     void RenderScanline(uint ly, Dot* line) const;
 
-    /* Render a disabled (index zero) scanline to the framebuffer's 'line' pointer. */
+    /* Render a disabled (index zero) scanline to the frame buffer's 'line' pointer. */
     void RenderDisabled(Dot* line) const;
 };
 

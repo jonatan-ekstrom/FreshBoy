@@ -15,10 +15,10 @@ constexpr bool ValidAddress(const gb::u16 address) {
 
 /* Maps a 16-bit address to the corresponding tile and dot index. */
 constexpr auto GetTileAndIndex(const gb::u16 address) {
-    constexpr auto TileSize{16u};
+    constexpr auto tileSize{16u};
     const auto adjusted{address - BaseAddress};
-    const auto tile{adjusted / TileSize};
-    const auto index{adjusted % TileSize};
+    const auto tile{adjusted / tileSize};
+    const auto index{adjusted % tileSize};
     return std::make_tuple(tile, index);
 }
 
@@ -86,7 +86,7 @@ const Tile& TileBanks_::GetTileLow(const u8 index) const {
 }
 
 const Tile& TileBanks_::GetTileHigh(const u8 index) const {
-    // Tiles 128 -> 383 are available in high adressing mode.
+    // Tiles 128 -> 383 are available in high addressing mode.
     constexpr auto base{256};
     const auto sign{static_cast<s8>(index)};
     const auto offset{static_cast<uint>(base + sign)};

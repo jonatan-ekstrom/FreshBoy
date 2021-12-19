@@ -6,12 +6,12 @@
 
 namespace gb {
 
-Lcd Lcd_::Create(InterruptManager interrupts, const FrameHandler& frameHandler) {
-    return Lcd{new Lcd_{std::move(interrupts), frameHandler}};
+Lcd Lcd_::Create(InterruptManager interrupts, FrameHandler frameHandler) {
+    return Lcd{new Lcd_{std::move(interrupts), std::move(frameHandler)}};
 }
 
-Lcd_::Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler)
-    : frameHandler{frameHandler},
+Lcd_::Lcd_(InterruptManager&& interrupts, FrameHandler&& frameHandler)
+    : frameHandler{std::move(frameHandler)},
       banks{TileBanks_::Create()},
       maps{TileMaps_::Create()},
       table{SpriteTable_::Create()},

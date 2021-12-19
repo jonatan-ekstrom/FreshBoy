@@ -25,7 +25,7 @@ public:
     using FrameHandler = std::function<void(const Framebuffer::Pixels&)>;
 
     /* Static constructor. */
-    static Lcd Create(InterruptManager interrupts, const FrameHandler& frameHandler);
+    static Lcd Create(InterruptManager interrupts, FrameHandler frameHandler);
 
     /* Read byte from VRAM or I/O register. */
     u8 Read(u16 address) const;
@@ -37,7 +37,7 @@ public:
     void Tick(uint cycles);
 private:
     using Wly = Window::Wly;
-    Lcd_(InterruptManager&& interrupts, const FrameHandler& frameHandler);
+    Lcd_(InterruptManager&& interrupts, FrameHandler&& frameHandler);
     bool Enabled() const;
     bool Accessible(u16 address) const;
     void Enable();

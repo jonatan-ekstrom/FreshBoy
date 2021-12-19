@@ -17,7 +17,7 @@ public:
     /* Set which sprite size to use. */
     void SetSize(SpriteSize size);
 
-    /* Render scanline 'ly' to the framebuffer's 'line' pointer. */
+    /* Render scanline 'ly' to the frame buffer's 'line' pointer. */
     void RenderScanline(uint ly, Dot* line) const;
 private:
     using SpriteRefs = SpriteTable_::SpriteRefs;

@@ -3,10 +3,10 @@
 
 namespace gb::lcd {
 
-/* The LCD display width in pixels. */
+/* The LCD width in pixels. */
 inline constexpr uint DisplayWidth{160};
 
-/* The LCD display height in pixels. */
+/* The LCD height in pixels. */
 inline constexpr uint DisplayHeight{144};
 
 /* Number of CPU cycles per screen refresh (on average). */
