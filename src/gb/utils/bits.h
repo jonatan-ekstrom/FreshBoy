@@ -2,10 +2,7 @@
 #include <type_traits>
 #include "types.h"
 
-namespace gb {
-
-/* Helper functions for bit operations. */
-namespace bit {
+namespace gb::bit {
 
 /* Concept used to restrict template types to integers. */
 template<typename T>
@@ -96,8 +93,6 @@ constexpr bool Borrow(const Args... args) {
     constexpr auto mask{(1 << N) - 1}; // Create a mask of (N - 1) ones.
     const auto diff{(... - (args & mask))}; // Subtract masked arguments.
     return diff < 0; // Check if a borrow bit will be generated.
-}
-
 }
 
 }
