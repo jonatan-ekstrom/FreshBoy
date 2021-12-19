@@ -18,12 +18,12 @@ MBC::MBC(const Path& romPath, Header&& header)
     InputFile file{romPath};
     for (auto i{0u}; i < numRomBanks; ++i) {
         const auto offset{i * romBankSize};
-        this->romBanks.push_back(file.ReadBytes(offset, romBankSize));
+        this->romBanks.emplace_back(file.ReadBytes(offset, romBankSize));
     }
 
     // Allocate memory for all cartridge RAM banks.
     for (auto i{0u}; i < numRamBanks; ++i) {
-        this->ramBanks.push_back(MemBlock(ramBankSize));
+        this->ramBanks.emplace_back(ramBankSize);
     }
 
     // Initialize bitmasks based on the number of banks available.

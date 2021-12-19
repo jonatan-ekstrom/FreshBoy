@@ -11,7 +11,7 @@ namespace gb {
 class Cartridge_;
 using Cartridge = std::shared_ptr<Cartridge_>;
 
-/* Base class for gameboy cartridges. */
+/* Base class for Game Boy cartridges. */
 class Cartridge_ {
 public:
     /* Static factory method, creates a new cartridge from the provided ROM. */

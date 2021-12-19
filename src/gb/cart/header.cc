@@ -45,7 +45,7 @@ constexpr uint MemSizeToRomBanks(const gb::MemSize sz) {
         case MemSize::KB8:
         case MemSize::Unknown:
         default:
-            throw std::runtime_error{"Header - Invalid memsize for rom bank calculation."};
+            throw std::runtime_error{"Header - Invalid memory size for rom bank calculation."};
     }
 }
 
@@ -65,7 +65,7 @@ constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
         case MemSize::MB8:
         case MemSize::Unknown:
         default:
-            throw std::runtime_error{"Header - Invalid memsize for ram bank calculation."};
+            throw std::runtime_error{"Header - Invalid memory size for ram bank calculation."};
     }
 }
 
@@ -75,9 +75,9 @@ namespace gb {
 
 Header::Header(const Path& romPath) {
     // Read the header from the ROM file and compute checksum.
-    constexpr std::size_t HeaderSize{80};
+    constexpr std::size_t headerSize{80};
     InputFile file{romPath};
-    this->bytes = file.ReadBytes(HeaderOffset, HeaderSize);
+    this->bytes = file.ReadBytes(HeaderOffset, headerSize);
     if (Checksum() != ComputedChecksum()) {
         throw std::runtime_error{"Header checksum mismatch."};
     }
@@ -262,7 +262,7 @@ std::string Header::Stringify(const u16 begin, const u16 end) const {
     const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};
     std::vector<char> characters{start, stop};
     characters.push_back('\0');
-    return std::string(characters.data());
+    return { characters.data() };
 }
 
 std::string Header::Hexdump(const u16 begin, const u16 end) const {

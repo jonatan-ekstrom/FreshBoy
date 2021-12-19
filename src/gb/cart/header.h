@@ -6,7 +6,7 @@
 
 namespace gb {
 
-/* Enumeration of known gameboy cartridge types. */
+/* Enumeration of known Game Boy cartridge types. */
 enum class CartridgeType {
     Unknown,
     RomOnly,
@@ -34,7 +34,7 @@ enum class MemSize {
     MB8
 };
 
-/* Represents the gameboy ROM header. */
+/* Represents the Game Boy ROM header. */
 class Header {
 public:
     /* Creates a new header by parsing the provided ROM file. */
@@ -70,7 +70,7 @@ public:
     /* ROM size as a string */
     std::string RomStr() const;
 
-    /* Numer of ROM banks */
+    /* Number of ROM banks */
     uint RomBanks() const;
 
     /* Size of the RAM banks */

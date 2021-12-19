@@ -64,8 +64,8 @@ public:
 
     void Tick(uint cycles) override;
 private:
-    void LoadHook(InputFile& file, std::streampos offset) override final;
-    void SaveHook(OutputFile& file, std::streampos offset) override final;
+    void LoadHook(InputFile& file, std::streampos offset) final;
+    void SaveHook(OutputFile& file, std::streampos offset) final;
     uint RomBank() const;
     std::optional<uint> RamBank() const;
     std::optional<u8> Register() const;
