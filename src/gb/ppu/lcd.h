@@ -22,7 +22,7 @@ using Lcd = std::shared_ptr<Lcd_>;
 class Lcd_ {
 public:
     /* Callback function for signaling that a frame is ready for rendering. */
-    using FrameHandler = std::function<void(const Framebuffer::Pixels&)>;
+    using FrameHandler = std::function<void(const FrameBuffer::Pixels&)>;
 
     /* Static constructor. */
     static Lcd Create(InterruptManager interrupts, FrameHandler frameHandler);
@@ -62,7 +62,7 @@ private:
     SpriteRenderer sprites;
     LcdStat stat;
     LcdControl lcdc;
-    Framebuffer frame;
+    FrameBuffer frame;
     Wly wly;
     uint cycleCount;
     bool firstFrame;

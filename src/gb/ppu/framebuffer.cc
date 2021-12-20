@@ -23,17 +23,17 @@ constexpr auto Size{gb::lcd::DisplayWidth * gb::lcd::DisplayHeight};
 
 namespace gb {
 
-Framebuffer::Framebuffer()
+FrameBuffer::FrameBuffer()
     : dots(Size), pixels(Size, ShadeToPixel(Shade::Screen)) {}
 
-const Framebuffer::Pixels& Framebuffer::LockFrame() {
+const FrameBuffer::Pixels& FrameBuffer::LockFrame() {
     // Transform all dots to their corresponding pixel representation.
     std::transform(this->dots.cbegin(), this->dots.cend(),
                    this->pixels.begin(), DotToPixel);
     return this->pixels;
 }
 
-Dot* Framebuffer::ScanlinePtr(const uint rowIndex) {
+Dot* FrameBuffer::ScanlinePtr(const uint rowIndex) {
     if (rowIndex >= lcd::DisplayHeight) {
         throw std::runtime_error{"Framebuffer - Invalid scanline index."};
     }
@@ -41,7 +41,7 @@ Dot* Framebuffer::ScanlinePtr(const uint rowIndex) {
     return &this->dots[offset];
 }
 
-void Framebuffer::Reset() {
+void FrameBuffer::Reset() {
     // Fill the buffer with default dots / pixels.
     std::fill(this->dots.begin(), this->dots.end(), Dot{});
     std::fill(this->pixels.begin(), this->pixels.end(), ShadeToPixel(Shade::Screen));

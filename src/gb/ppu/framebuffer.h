@@ -6,13 +6,13 @@
 namespace gb {
 
 /* Stores all pixel data currently being rendered by the PPU. */
-class Framebuffer {
+class FrameBuffer {
 public:
     /* Typedef for pixel data. Data is stored as 32-bit pixels (RGBA). */
     using Pixels = std::vector<u32>;
 
     /* Creates a new instance of the frame buffer. */
-    Framebuffer();
+    FrameBuffer();
 
     /* Lock the current frame for rendering and retrieve a reference to the pixel data. */
     const Pixels& LockFrame();
