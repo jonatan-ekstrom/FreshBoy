@@ -52,7 +52,7 @@ class Gameboy {
 public:
     /* Constructs a new instance of the Game Boy emulator. */
     Gameboy(const Path& romPath, const Path& ramPath,
-            const RenderCallback& render, const QueueCallback& queue,
+            RenderCallback render, QueueCallback queue,
             unsigned int refreshRate, unsigned int sampleRate, bool log = false);
 
     /* Returns a dump of the ROM header as a string. */

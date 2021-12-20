@@ -1,5 +1,6 @@
 #include "api.h"
 #include <stdexcept>
+#include <utility>
 #include "display.h"
 #include "gb.h"
 #include "input.h"
@@ -42,9 +43,12 @@ Gameboy_* Handle::operator->() {
 void Handle::GameboyDeleter::operator()(Gameboy_ *const p) { delete p; }
 
 Gameboy::Gameboy(const Path& romPath, const Path& ramPath,
-                 const RenderCallback& render, const QueueCallback& queue,
-                 const unsigned int refreshRate, const unsigned int sampleRate, const bool log)
-    : gb{Gameboy_::Create(romPath, ramPath, render, queue, refreshRate, sampleRate, log).release()} {}
+                 RenderCallback render, QueueCallback queue,
+                 const unsigned int refreshRate, const unsigned int sampleRate,
+                 const bool log)
+    : gb{Gameboy_::Create(romPath, ramPath,
+                          std::move(render), std::move(queue),
+                          refreshRate, sampleRate, log).release()} {}
 
 std::string Gameboy::Header() const {
     return this->gb->Header();

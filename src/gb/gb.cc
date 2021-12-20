@@ -1,5 +1,6 @@
 #include "gb.h"
 #include <tuple>
+#include <utility>
 #include "log.h"
 
 namespace {
@@ -15,15 +16,15 @@ auto GetRamPath(const Path& romPath, const Path& ramPath) {
 namespace gb {
 
 Gameboy_::Gameboy_(const Path& romPath, const Path& ramPath,
-                   const FrameCallback& render, const QueueCallback& queue,
+                   FrameCallback&& render, QueueCallback&& queue,
                    const uint refreshRate, const uint sampleRate, const bool log)
     : cart{Cartridge_::Create(romPath, refreshRate)},
-      apu{Apu_::Create(queue, refreshRate, sampleRate)},
+      apu{Apu_::Create(std::move(queue), refreshRate, sampleRate)},
       interrupts{InterruptManager_::Create()},
       input{Input_::Create(this->interrupts)},
       serial{Serial_::Create(this->interrupts)},
       timer{Timer_::Create(this->interrupts)},
-      ppu{Lcd_::Create(this->interrupts, render)},
+      ppu{Lcd_::Create(this->interrupts, std::move(render))},
       mmu{Memory_::Create(this->cart, this->input, this->interrupts,
                           this->ppu, this->serial, this->apu, this->timer)},
       cpu{Cpu_::Create(this->interrupts, this->mmu)} {
@@ -39,10 +40,12 @@ Gameboy_::Gameboy_(const Path& romPath, const Path& ramPath,
 }
 
 Gameboy Gameboy_::Create(const Path& romPath, const Path& ramPath,
-                         const FrameCallback& render, const QueueCallback& queue,
+                         FrameCallback render, QueueCallback queue,
                          const uint refreshRate, const uint sampleRate,
                          const bool log) {
-    return Gameboy{new Gameboy_{romPath, ramPath, render, queue, refreshRate, sampleRate, log}};
+    return Gameboy{new Gameboy_{romPath, ramPath,
+                                std::move(render), std::move(queue),
+                                refreshRate, sampleRate, log}};
 }
 
 std::string Gameboy_::Header() const {

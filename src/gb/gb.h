@@ -20,7 +20,7 @@ class Gameboy_;
 using Gameboy = std::unique_ptr<Gameboy_>;
 
 /*
- * Top level class assembling all gameboy subsystems.
+ * Top level class assembling all Game Boy subsystems.
  */
 class Gameboy_ {
 public:
@@ -29,13 +29,13 @@ public:
     using QueueCallback = Apu_::QueueHandler;
 
     /*
-     * Static constructor, creates a new gameboy instance.
+     * Static constructor, creates a new Game Boy instance.
      * Loads the provided rom / ram files.
      * Sets up rendering and sound using the provided callbacks,
      * screen refresh rate and sound sample rate.
      */
     static Gameboy Create(const Path& romPath, const Path& ramPath,
-                          const FrameCallback& render, const QueueCallback& queue,
+                          FrameCallback render, QueueCallback queue,
                           uint refreshRate, uint sampleRate, bool log = false);
 
     /* Returns a string representation of the ROM header. */
@@ -51,7 +51,7 @@ public:
     void ButtonReleased(Button button);
 private:
     Gameboy_(const Path& romPath, const Path& ramPath,
-             const FrameCallback& render, const QueueCallback& queue,
+             FrameCallback&& render, QueueCallback&& queue,
              uint refreshRate, uint sampleRate, bool log);
     void Tick();
     Cartridge cart;
