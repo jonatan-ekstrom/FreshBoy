@@ -10,7 +10,7 @@
 namespace gb {
 
 class Cpu_;
-using Cpu = std::shared_ptr<Cpu_>;
+using Cpu = std::unique_ptr<Cpu_>;
 
 /* Central Processing Unit - Sharp LR35902 core. */
 class Cpu_ {
