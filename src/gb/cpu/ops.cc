@@ -1,518 +1,533 @@
 #include "cpu.h"
+#include "registers.h"
 
 namespace gb {
 
-void Cpu_::Opcode_00() { Nop(); }
-void Cpu_::Opcode_01() { Load(this->bc, GetWord()); }
-void Cpu_::Opcode_02() { Load(this->bc, this->a); }
-void Cpu_::Opcode_03() { Inc(this->bc); }
-void Cpu_::Opcode_04() { Inc(this->b); }
-void Cpu_::Opcode_05() { Dec(this->b); }
-void Cpu_::Opcode_06() { Load(this->b, GetByte()); }
-void Cpu_::Opcode_07() { Rlca(); }
-void Cpu_::Opcode_08() { Load(GetWord(), this->sp); }
-void Cpu_::Opcode_09() { Add(this->hl, this->bc); }
-void Cpu_::Opcode_0A() { Load(this->a, this->bc); }
-void Cpu_::Opcode_0B() { Dec(this->bc); }
-void Cpu_::Opcode_0C() { Inc(this->c); }
-void Cpu_::Opcode_0D() { Dec(this->c); }
-void Cpu_::Opcode_0E() { Load(this->c, GetByte()); }
-void Cpu_::Opcode_0F() { Rrca(); }
-void Cpu_::Opcode_10() { Stop(); }
-void Cpu_::Opcode_11() { Load(this->de, GetWord()); }
-void Cpu_::Opcode_12() { Load(this->de, this->a); }
-void Cpu_::Opcode_13() { Inc(this->de); }
-void Cpu_::Opcode_14() { Inc(this->d); }
-void Cpu_::Opcode_15() { Dec(this->d); }
-void Cpu_::Opcode_16() { Load(this->d, GetByte()); }
-void Cpu_::Opcode_17() { Rla(); }
-void Cpu_::Opcode_18() { RelJump(GetSignedByte()); }
-void Cpu_::Opcode_19() { Add(this->hl, this->de); }
-void Cpu_::Opcode_1A() { Load(this->a, this->de); }
-void Cpu_::Opcode_1B() { Dec(this->de); }
-void Cpu_::Opcode_1C() { Inc(this->e); }
-void Cpu_::Opcode_1D() { Dec(this->e); }
-void Cpu_::Opcode_1E() { Load(this->e, GetByte()); }
-void Cpu_::Opcode_1F() { Rra(); }
-void Cpu_::Opcode_20() { RelJump(Condition::NZ, GetSignedByte()); }
-void Cpu_::Opcode_21() { Load(this->hl, GetWord()); }
-void Cpu_::Opcode_22() { LoadInc(this->hl, this->a); }
-void Cpu_::Opcode_23() { Inc(this->hl); }
-void Cpu_::Opcode_24() { Inc(this->h); }
-void Cpu_::Opcode_25() { Dec(this->h); }
-void Cpu_::Opcode_26() { Load(this->h, GetByte()); }
-void Cpu_::Opcode_27() { Daa(); }
-void Cpu_::Opcode_28() { RelJump(Condition::Z, GetSignedByte()); }
-void Cpu_::Opcode_29() { Add(this->hl, this->hl); }
-void Cpu_::Opcode_2A() { LoadInc(this->a, this->hl); }
-void Cpu_::Opcode_2B() { Dec(this->hl); }
-void Cpu_::Opcode_2C() { Inc(this->l); }
-void Cpu_::Opcode_2D() { Dec(this->l); }
-void Cpu_::Opcode_2E() { Load(this->l, GetByte()); }
-void Cpu_::Opcode_2F() { Cpl(); }
-void Cpu_::Opcode_30() { RelJump(Condition::NC, GetSignedByte()); }
-void Cpu_::Opcode_31() { Load(this->sp, GetWord()); }
-void Cpu_::Opcode_32() { LoadDec(this->hl, this->a); }
-void Cpu_::Opcode_33() { Inc(this->sp); }
-void Cpu_::Opcode_34() { IncRef(this->hl); }
-void Cpu_::Opcode_35() { DecRef(this->hl); }
-void Cpu_::Opcode_36() { Load(this->hl, GetByte()); }
-void Cpu_::Opcode_37() { Scf(); }
-void Cpu_::Opcode_38() { RelJump(Condition::C, GetSignedByte()); }
-void Cpu_::Opcode_39() { Add(this->hl, this->sp); }
-void Cpu_::Opcode_3A() { LoadDec(this->a, this->hl); }
-void Cpu_::Opcode_3B() { Dec(this->sp); }
-void Cpu_::Opcode_3C() { Inc(this->a); }
-void Cpu_::Opcode_3D() { Dec(this->a); }
-void Cpu_::Opcode_3E() { Load(this->a, GetByte()); }
-void Cpu_::Opcode_3F() { Ccf(); }
-void Cpu_::Opcode_40() { Load(this->b, this->b); }
-void Cpu_::Opcode_41() { Load(this->b, this->c); }
-void Cpu_::Opcode_42() { Load(this->b, this->d); }
-void Cpu_::Opcode_43() { Load(this->b, this->e);}
-void Cpu_::Opcode_44() { Load(this->b, this->h); }
-void Cpu_::Opcode_45() { Load(this->b, this->l); }
-void Cpu_::Opcode_46() { Load(this->b, this->hl); }
-void Cpu_::Opcode_47() { Load(this->b, this->a); }
-void Cpu_::Opcode_48() { Load(this->c, this->b); }
-void Cpu_::Opcode_49() { Load(this->c, this->c); }
-void Cpu_::Opcode_4A() { Load(this->c, this->d); }
-void Cpu_::Opcode_4B() { Load(this->c, this->e); }
-void Cpu_::Opcode_4C() { Load(this->c, this->h); }
-void Cpu_::Opcode_4D() { Load(this->c, this->l); }
-void Cpu_::Opcode_4E() { Load(this->c, this->hl); }
-void Cpu_::Opcode_4F() { Load(this->c, this->a); }
-void Cpu_::Opcode_50() { Load(this->d, this->b); }
-void Cpu_::Opcode_51() { Load(this->d, this->c); }
-void Cpu_::Opcode_52() { Load(this->d, this->d); }
-void Cpu_::Opcode_53() { Load(this->d, this->e); }
-void Cpu_::Opcode_54() { Load(this->d, this->h); }
-void Cpu_::Opcode_55() { Load(this->d, this->l); }
-void Cpu_::Opcode_56() { Load(this->d, this->hl); }
-void Cpu_::Opcode_57() { Load(this->d, this->a); }
-void Cpu_::Opcode_58() { Load(this->e, this->b); }
-void Cpu_::Opcode_59() { Load(this->e, this->c); }
-void Cpu_::Opcode_5A() { Load(this->e, this->d); }
-void Cpu_::Opcode_5B() { Load(this->e, this->e); }
-void Cpu_::Opcode_5C() { Load(this->e, this->h); }
-void Cpu_::Opcode_5D() { Load(this->e, this->l); }
-void Cpu_::Opcode_5E() { Load(this->e, this->hl); }
-void Cpu_::Opcode_5F() { Load(this->e, this->a);  }
-void Cpu_::Opcode_60() { Load(this->h, this->b); }
-void Cpu_::Opcode_61() { Load(this->h, this->c); }
-void Cpu_::Opcode_62() { Load(this->h, this->d); }
-void Cpu_::Opcode_63() { Load(this->h, this->e); }
-void Cpu_::Opcode_64() { Load(this->h, this->h); }
-void Cpu_::Opcode_65() { Load(this->h, this->l); }
-void Cpu_::Opcode_66() { Load(this->h, this->hl); }
-void Cpu_::Opcode_67() { Load(this->h, this->a); }
-void Cpu_::Opcode_68() { Load(this->l, this->b); }
-void Cpu_::Opcode_69() { Load(this->l, this->c); }
-void Cpu_::Opcode_6A() { Load(this->l, this->d); }
-void Cpu_::Opcode_6B() { Load(this->l, this->e); }
-void Cpu_::Opcode_6C() { Load(this->l, this->h); }
-void Cpu_::Opcode_6D() { Load(this->l, this->l); }
-void Cpu_::Opcode_6E() { Load(this->l, this->hl); }
-void Cpu_::Opcode_6F() { Load(this->l, this->a); }
-void Cpu_::Opcode_70() { Load(this->hl, this->b); }
-void Cpu_::Opcode_71() { Load(this->hl, this->c); }
-void Cpu_::Opcode_72() { Load(this->hl, this->d); }
-void Cpu_::Opcode_73() { Load(this->hl, this->e); }
-void Cpu_::Opcode_74() { Load(this->hl, this->h); }
-void Cpu_::Opcode_75() { Load(this->hl, this->l); }
-void Cpu_::Opcode_76() { Halt(); }
-void Cpu_::Opcode_77() { Load(this->hl, this->a); }
-void Cpu_::Opcode_78() { Load(this->a, this->b); }
-void Cpu_::Opcode_79() { Load(this->a, this->c); }
-void Cpu_::Opcode_7A() { Load(this->a, this->d); }
-void Cpu_::Opcode_7B() { Load(this->a, this->e); }
-void Cpu_::Opcode_7C() { Load(this->a, this->h); }
-void Cpu_::Opcode_7D() { Load(this->a, this->l); }
-void Cpu_::Opcode_7E() { Load(this->a, this->hl); }
-void Cpu_::Opcode_7F() { Load(this->a, this->a); }
-void Cpu_::Opcode_80() { Add(this->b); }
-void Cpu_::Opcode_81() { Add(this->c); }
-void Cpu_::Opcode_82() { Add(this->d); }
-void Cpu_::Opcode_83() { Add(this->e); }
-void Cpu_::Opcode_84() { Add(this->h); }
-void Cpu_::Opcode_85() { Add(this->l); }
-void Cpu_::Opcode_86() { Add(this->hl); }
-void Cpu_::Opcode_87() { Add(this->a); }
-void Cpu_::Opcode_88() { AddWithCarry(this->b); }
-void Cpu_::Opcode_89() { AddWithCarry(this->c); }
-void Cpu_::Opcode_8A() { AddWithCarry(this->d); }
-void Cpu_::Opcode_8B() { AddWithCarry(this->e); }
-void Cpu_::Opcode_8C() { AddWithCarry(this->h); }
-void Cpu_::Opcode_8D() { AddWithCarry(this->l); }
-void Cpu_::Opcode_8E() { AddWithCarry(this->hl); }
-void Cpu_::Opcode_8F() { AddWithCarry(this->a); }
-void Cpu_::Opcode_90() { Sub(this->b); }
-void Cpu_::Opcode_91() { Sub(this->c); }
-void Cpu_::Opcode_92() { Sub(this->d); }
-void Cpu_::Opcode_93() { Sub(this->e); }
-void Cpu_::Opcode_94() { Sub(this->h); }
-void Cpu_::Opcode_95() { Sub(this->l); }
-void Cpu_::Opcode_96() { Sub(this->hl); }
-void Cpu_::Opcode_97() { Sub(this->a); }
-void Cpu_::Opcode_98() { SubWithBorrow(this->b); }
-void Cpu_::Opcode_99() { SubWithBorrow(this->c); }
-void Cpu_::Opcode_9A() { SubWithBorrow(this->d); }
-void Cpu_::Opcode_9B() { SubWithBorrow(this->e); }
-void Cpu_::Opcode_9C() { SubWithBorrow(this->h); }
-void Cpu_::Opcode_9D() { SubWithBorrow(this->l); }
-void Cpu_::Opcode_9E() { SubWithBorrow(this->hl); }
-void Cpu_::Opcode_9F() { SubWithBorrow(this->a); }
-void Cpu_::Opcode_A0() { And(this->b); }
-void Cpu_::Opcode_A1() { And(this->c); }
-void Cpu_::Opcode_A2() { And(this->d); }
-void Cpu_::Opcode_A3() { And(this->e); }
-void Cpu_::Opcode_A4() { And(this->h); }
-void Cpu_::Opcode_A5() { And(this->l); }
-void Cpu_::Opcode_A6() { And(this->hl); }
-void Cpu_::Opcode_A7() { And(this->a); }
-void Cpu_::Opcode_A8() { Xor(this->b); }
-void Cpu_::Opcode_A9() { Xor(this->c); }
-void Cpu_::Opcode_AA() { Xor(this->d); }
-void Cpu_::Opcode_AB() { Xor(this->e); }
-void Cpu_::Opcode_AC() { Xor(this->h); }
-void Cpu_::Opcode_AD() { Xor(this->l); }
-void Cpu_::Opcode_AE() { Xor(this->hl); }
-void Cpu_::Opcode_AF() { Xor(this->a); }
-void Cpu_::Opcode_B0() { Or(this->b); }
-void Cpu_::Opcode_B1() { Or(this->c); }
-void Cpu_::Opcode_B2() { Or(this->d); }
-void Cpu_::Opcode_B3() { Or(this->e); }
-void Cpu_::Opcode_B4() { Or(this->h); }
-void Cpu_::Opcode_B5() { Or(this->l); }
-void Cpu_::Opcode_B6() { Or(this->hl); }
-void Cpu_::Opcode_B7() { Or(this->a); }
-void Cpu_::Opcode_B8() { Cmp(this->b); }
-void Cpu_::Opcode_B9() { Cmp(this->c); }
-void Cpu_::Opcode_BA() { Cmp(this->d); }
-void Cpu_::Opcode_BB() { Cmp(this->e); }
-void Cpu_::Opcode_BC() { Cmp(this->h); }
-void Cpu_::Opcode_BD() { Cmp(this->l); }
-void Cpu_::Opcode_BE() { Cmp(this->hl); }
-void Cpu_::Opcode_BF() { Cmp(this->a); }
-void Cpu_::Opcode_C0() { Ret(Condition::NZ); }
-void Cpu_::Opcode_C1() { Pop(this->bc); }
-void Cpu_::Opcode_C2() { Jump(Condition::NZ, GetWord()); }
-void Cpu_::Opcode_C3() { Jump(GetWord()); }
-void Cpu_::Opcode_C4() { Call(Condition::NZ, GetWord()); }
-void Cpu_::Opcode_C5() { Push(this->bc); }
-void Cpu_::Opcode_C6() { Add(GetByte()); }
-void Cpu_::Opcode_C7() { Rst(0); }
-void Cpu_::Opcode_C8() { Ret(Condition::Z); }
-void Cpu_::Opcode_C9() { Ret(); }
-void Cpu_::Opcode_CA() { Jump(Condition::Z, GetWord()); }
-void Cpu_::Opcode_CB() { /* Invalid */ }
-void Cpu_::Opcode_CC() { Call(Condition::Z, GetWord()); }
-void Cpu_::Opcode_CD() { Call(GetWord()); }
-void Cpu_::Opcode_CE() { AddWithCarry(GetByte()); }
-void Cpu_::Opcode_CF() { Rst(1); }
-void Cpu_::Opcode_D0() { Ret(Condition::NC); }
-void Cpu_::Opcode_D1() { Pop(this->de); }
-void Cpu_::Opcode_D2() { Jump(Condition::NC, GetWord()); }
-void Cpu_::Opcode_D3() { /* Invalid */ }
-void Cpu_::Opcode_D4() { Call(Condition::NC, GetWord()); }
-void Cpu_::Opcode_D5() { Push(this->de); }
-void Cpu_::Opcode_D6() { Sub(GetByte()); }
-void Cpu_::Opcode_D7() { Rst(2); }
-void Cpu_::Opcode_D8() { Ret(Condition::C); }
-void Cpu_::Opcode_D9() { Reti(); }
-void Cpu_::Opcode_DA() { Jump(Condition::C, GetWord()); }
-void Cpu_::Opcode_DB() { /* Invalid */ }
-void Cpu_::Opcode_DC() { Call(Condition::C, GetWord()); }
-void Cpu_::Opcode_DD() { /* Invalid */ }
-void Cpu_::Opcode_DE() { SubWithBorrow(GetByte()); }
-void Cpu_::Opcode_DF() { Rst(3); }
-void Cpu_::Opcode_E0() { Load(GetByte().IO(), this->a); }
-void Cpu_::Opcode_E1() { Pop(this->hl); }
-void Cpu_::Opcode_E2() { Load(this->c.IO(), this->a); }
-void Cpu_::Opcode_E3() { /* Invalid */ }
-void Cpu_::Opcode_E4() { /* Invalid */ }
-void Cpu_::Opcode_E5() { Push(this->hl); }
-void Cpu_::Opcode_E6() { And(GetByte()); }
-void Cpu_::Opcode_E7() { Rst(4); }
-void Cpu_::Opcode_E8() { Add(this->sp, GetSignedByte()); }
-void Cpu_::Opcode_E9() { Jump(this->hl); }
-void Cpu_::Opcode_EA() { Load(GetWord(), this->a); }
-void Cpu_::Opcode_EB() { /* Invalid */ }
-void Cpu_::Opcode_EC() { /* Invalid */ }
-void Cpu_::Opcode_ED() { /* Invalid */ }
-void Cpu_::Opcode_EE() { Xor(GetByte()); }
-void Cpu_::Opcode_EF() { Rst(5); }
-void Cpu_::Opcode_F0() { Load(this->a, GetByte().IO()); }
-void Cpu_::Opcode_F1() { PopAf(); }
-void Cpu_::Opcode_F2() { Load(this->a, this->c.IO()); }
-void Cpu_::Opcode_F3() { Di(); }
-void Cpu_::Opcode_F4() { /* Invalid */ }
-void Cpu_::Opcode_F5() { Push(this->af); }
-void Cpu_::Opcode_F6() { Or(GetByte()); }
-void Cpu_::Opcode_F7() { Rst(6); }
-void Cpu_::Opcode_F8() { Load(this->hl, this->sp, GetSignedByte()); }
-void Cpu_::Opcode_F9() { Load(this->sp, this->hl); }
-void Cpu_::Opcode_FA() { Load(this->a, GetWord()); }
-void Cpu_::Opcode_FB() { Ei(); }
-void Cpu_::Opcode_FC() { /* Invalid */ }
-void Cpu_::Opcode_FD() { /* Invalid */ }
-void Cpu_::Opcode_FE() { Cmp(GetByte()); }
-void Cpu_::Opcode_FF() { Rst(7); }
-void Cpu_::Opcode_CB_00() { Rlc(this->b); }
-void Cpu_::Opcode_CB_01() { Rlc(this->c); }
-void Cpu_::Opcode_CB_02() { Rlc(this->d); }
-void Cpu_::Opcode_CB_03() { Rlc(this->e); }
-void Cpu_::Opcode_CB_04() { Rlc(this->h); }
-void Cpu_::Opcode_CB_05() { Rlc(this->l); }
-void Cpu_::Opcode_CB_06() { Rlc(this->hl); }
-void Cpu_::Opcode_CB_07() { Rlc(this->a); }
-void Cpu_::Opcode_CB_08() { Rrc(this->b); }
-void Cpu_::Opcode_CB_09() { Rrc(this->c); }
-void Cpu_::Opcode_CB_0A() { Rrc(this->d); }
-void Cpu_::Opcode_CB_0B() { Rrc(this->e); }
-void Cpu_::Opcode_CB_0C() { Rrc(this->h); }
-void Cpu_::Opcode_CB_0D() { Rrc(this->l); }
-void Cpu_::Opcode_CB_0E() { Rrc(this->hl); }
-void Cpu_::Opcode_CB_0F() { Rrc(this->a); }
-void Cpu_::Opcode_CB_10() { Rl(this->b); }
-void Cpu_::Opcode_CB_11() { Rl(this->c); }
-void Cpu_::Opcode_CB_12() { Rl(this->d); }
-void Cpu_::Opcode_CB_13() { Rl(this->e); }
-void Cpu_::Opcode_CB_14() { Rl(this->h); }
-void Cpu_::Opcode_CB_15() { Rl(this->l); }
-void Cpu_::Opcode_CB_16() { Rl(this->hl); }
-void Cpu_::Opcode_CB_17() { Rl(this->a); }
-void Cpu_::Opcode_CB_18() { Rr(this->b); }
-void Cpu_::Opcode_CB_19() { Rr(this->c); }
-void Cpu_::Opcode_CB_1A() { Rr(this->d); }
-void Cpu_::Opcode_CB_1B() { Rr(this->e); }
-void Cpu_::Opcode_CB_1C() { Rr(this->h); }
-void Cpu_::Opcode_CB_1D() { Rr(this->l); }
-void Cpu_::Opcode_CB_1E() { Rr(this->hl); }
-void Cpu_::Opcode_CB_1F() { Rr(this->a); }
-void Cpu_::Opcode_CB_20() { Sla(this->b); }
-void Cpu_::Opcode_CB_21() { Sla(this->c); }
-void Cpu_::Opcode_CB_22() { Sla(this->d); }
-void Cpu_::Opcode_CB_23() { Sla(this->e); }
-void Cpu_::Opcode_CB_24() { Sla(this->h); }
-void Cpu_::Opcode_CB_25() { Sla(this->l); }
-void Cpu_::Opcode_CB_26() { Sla(this->hl); }
-void Cpu_::Opcode_CB_27() { Sla(this->a); }
-void Cpu_::Opcode_CB_28() { Sra(this->b); }
-void Cpu_::Opcode_CB_29() { Sra(this->c); }
-void Cpu_::Opcode_CB_2A() { Sra(this->d); }
-void Cpu_::Opcode_CB_2B() { Sra(this->e); }
-void Cpu_::Opcode_CB_2C() { Sra(this->h); }
-void Cpu_::Opcode_CB_2D() { Sra(this->l); }
-void Cpu_::Opcode_CB_2E() { Sra(this->hl); }
-void Cpu_::Opcode_CB_2F() { Sra(this->a); }
-void Cpu_::Opcode_CB_30() { Swap(this->b); }
-void Cpu_::Opcode_CB_31() { Swap(this->c); }
-void Cpu_::Opcode_CB_32() { Swap(this->d); }
-void Cpu_::Opcode_CB_33() { Swap(this->e); }
-void Cpu_::Opcode_CB_34() { Swap(this->h); }
-void Cpu_::Opcode_CB_35() { Swap(this->l); }
-void Cpu_::Opcode_CB_36() { Swap(this->hl); }
-void Cpu_::Opcode_CB_37() { Swap(this->a); }
-void Cpu_::Opcode_CB_38() { Srl(this->b); }
-void Cpu_::Opcode_CB_39() { Srl(this->c); }
-void Cpu_::Opcode_CB_3A() { Srl(this->d); }
-void Cpu_::Opcode_CB_3B() { Srl(this->e); }
-void Cpu_::Opcode_CB_3C() { Srl(this->h); }
-void Cpu_::Opcode_CB_3D() { Srl(this->l); }
-void Cpu_::Opcode_CB_3E() { Srl(this->hl); }
-void Cpu_::Opcode_CB_3F() { Srl(this->a); }
-void Cpu_::Opcode_CB_40() { Bit(this->b, 0); }
-void Cpu_::Opcode_CB_41() { Bit(this->c, 0); }
-void Cpu_::Opcode_CB_42() { Bit(this->d, 0); }
-void Cpu_::Opcode_CB_43() { Bit(this->e, 0); }
-void Cpu_::Opcode_CB_44() { Bit(this->h, 0); }
-void Cpu_::Opcode_CB_45() { Bit(this->l, 0); }
-void Cpu_::Opcode_CB_46() { Bit(this->hl, 0); }
-void Cpu_::Opcode_CB_47() { Bit(this->a, 0); }
-void Cpu_::Opcode_CB_48() { Bit(this->b, 1); }
-void Cpu_::Opcode_CB_49() { Bit(this->c, 1); }
-void Cpu_::Opcode_CB_4A() { Bit(this->d, 1); }
-void Cpu_::Opcode_CB_4B() { Bit(this->e, 1); }
-void Cpu_::Opcode_CB_4C() { Bit(this->h, 1); }
-void Cpu_::Opcode_CB_4D() { Bit(this->l, 1); }
-void Cpu_::Opcode_CB_4E() { Bit(this->hl, 1); }
-void Cpu_::Opcode_CB_4F() { Bit(this->a, 1); }
-void Cpu_::Opcode_CB_50() { Bit(this->b, 2); }
-void Cpu_::Opcode_CB_51() { Bit(this->c, 2); }
-void Cpu_::Opcode_CB_52() { Bit(this->d, 2); }
-void Cpu_::Opcode_CB_53() { Bit(this->e, 2); }
-void Cpu_::Opcode_CB_54() { Bit(this->h, 2); }
-void Cpu_::Opcode_CB_55() { Bit(this->l, 2); }
-void Cpu_::Opcode_CB_56() { Bit(this->hl, 2); }
-void Cpu_::Opcode_CB_57() { Bit(this->a, 2); }
-void Cpu_::Opcode_CB_58() { Bit(this->b, 3); }
-void Cpu_::Opcode_CB_59() { Bit(this->c, 3); }
-void Cpu_::Opcode_CB_5A() { Bit(this->d, 3); }
-void Cpu_::Opcode_CB_5B() { Bit(this->e, 3); }
-void Cpu_::Opcode_CB_5C() { Bit(this->h, 3); }
-void Cpu_::Opcode_CB_5D() { Bit(this->l, 3); }
-void Cpu_::Opcode_CB_5E() { Bit(this->hl, 3); }
-void Cpu_::Opcode_CB_5F() { Bit(this->a, 3); }
-void Cpu_::Opcode_CB_60() { Bit(this->b, 4); }
-void Cpu_::Opcode_CB_61() { Bit(this->c, 4); }
-void Cpu_::Opcode_CB_62() { Bit(this->d, 4); }
-void Cpu_::Opcode_CB_63() { Bit(this->e, 4); }
-void Cpu_::Opcode_CB_64() { Bit(this->h, 4); }
-void Cpu_::Opcode_CB_65() { Bit(this->l, 4); }
-void Cpu_::Opcode_CB_66() { Bit(this->hl, 4); }
-void Cpu_::Opcode_CB_67() { Bit(this->a, 4); }
-void Cpu_::Opcode_CB_68() { Bit(this->b, 5); }
-void Cpu_::Opcode_CB_69() { Bit(this->c, 5); }
-void Cpu_::Opcode_CB_6A() { Bit(this->d, 5); }
-void Cpu_::Opcode_CB_6B() { Bit(this->e, 5); }
-void Cpu_::Opcode_CB_6C() { Bit(this->h, 5); }
-void Cpu_::Opcode_CB_6D() { Bit(this->l, 5); }
-void Cpu_::Opcode_CB_6E() { Bit(this->hl, 5); }
-void Cpu_::Opcode_CB_6F() { Bit(this->a, 5); }
-void Cpu_::Opcode_CB_70() { Bit(this->b, 6); }
-void Cpu_::Opcode_CB_71() { Bit(this->c, 6); }
-void Cpu_::Opcode_CB_72() { Bit(this->d, 6); }
-void Cpu_::Opcode_CB_73() { Bit(this->e, 6); }
-void Cpu_::Opcode_CB_74() { Bit(this->h, 6); }
-void Cpu_::Opcode_CB_75() { Bit(this->l, 6); }
-void Cpu_::Opcode_CB_76() { Bit(this->hl, 6); }
-void Cpu_::Opcode_CB_77() { Bit(this->a, 6); }
-void Cpu_::Opcode_CB_78() { Bit(this->b, 7); }
-void Cpu_::Opcode_CB_79() { Bit(this->c, 7); }
-void Cpu_::Opcode_CB_7A() { Bit(this->d, 7); }
-void Cpu_::Opcode_CB_7B() { Bit(this->e, 7); }
-void Cpu_::Opcode_CB_7C() { Bit(this->h, 7); }
-void Cpu_::Opcode_CB_7D() { Bit(this->l, 7); }
-void Cpu_::Opcode_CB_7E() { Bit(this->hl, 7); }
-void Cpu_::Opcode_CB_7F() { Bit(this->a, 7); }
-void Cpu_::Opcode_CB_80() { Res(this->b, 0); }
-void Cpu_::Opcode_CB_81() { Res(this->c, 0); }
-void Cpu_::Opcode_CB_82() { Res(this->d, 0); }
-void Cpu_::Opcode_CB_83() { Res(this->e, 0); }
-void Cpu_::Opcode_CB_84() { Res(this->h, 0); }
-void Cpu_::Opcode_CB_85() { Res(this->l, 0); }
-void Cpu_::Opcode_CB_86() { Res(this->hl, 0); }
-void Cpu_::Opcode_CB_87() { Res(this->a, 0); }
-void Cpu_::Opcode_CB_88() { Res(this->b, 1); }
-void Cpu_::Opcode_CB_89() { Res(this->c, 1); }
-void Cpu_::Opcode_CB_8A() { Res(this->d, 1); }
-void Cpu_::Opcode_CB_8B() { Res(this->e, 1); }
-void Cpu_::Opcode_CB_8C() { Res(this->h, 1); }
-void Cpu_::Opcode_CB_8D() { Res(this->l, 1); }
-void Cpu_::Opcode_CB_8E() { Res(this->hl, 1); }
-void Cpu_::Opcode_CB_8F() { Res(this->a, 1); }
-void Cpu_::Opcode_CB_90() { Res(this->b, 2); }
-void Cpu_::Opcode_CB_91() { Res(this->c, 2); }
-void Cpu_::Opcode_CB_92() { Res(this->d, 2); }
-void Cpu_::Opcode_CB_93() { Res(this->e, 2); }
-void Cpu_::Opcode_CB_94() { Res(this->h, 2); }
-void Cpu_::Opcode_CB_95() { Res(this->l, 2); }
-void Cpu_::Opcode_CB_96() { Res(this->hl, 2); }
-void Cpu_::Opcode_CB_97() { Res(this->a, 2); }
-void Cpu_::Opcode_CB_98() { Res(this->b, 3); }
-void Cpu_::Opcode_CB_99() { Res(this->c, 3); }
-void Cpu_::Opcode_CB_9A() { Res(this->d, 3); }
-void Cpu_::Opcode_CB_9B() { Res(this->e, 3); }
-void Cpu_::Opcode_CB_9C() { Res(this->h, 3); }
-void Cpu_::Opcode_CB_9D() { Res(this->l, 3); }
-void Cpu_::Opcode_CB_9E() { Res(this->hl, 3); }
-void Cpu_::Opcode_CB_9F() { Res(this->a, 3); }
-void Cpu_::Opcode_CB_A0() { Res(this->b, 4); }
-void Cpu_::Opcode_CB_A1() { Res(this->c, 4); }
-void Cpu_::Opcode_CB_A2() { Res(this->d, 4); }
-void Cpu_::Opcode_CB_A3() { Res(this->e, 4); }
-void Cpu_::Opcode_CB_A4() { Res(this->h, 4); }
-void Cpu_::Opcode_CB_A5() { Res(this->l, 4); }
-void Cpu_::Opcode_CB_A6() { Res(this->hl, 4); }
-void Cpu_::Opcode_CB_A7() { Res(this->a, 4); }
-void Cpu_::Opcode_CB_A8() { Res(this->b, 5); }
-void Cpu_::Opcode_CB_A9() { Res(this->c, 5); }
-void Cpu_::Opcode_CB_AA() { Res(this->d, 5); }
-void Cpu_::Opcode_CB_AB() { Res(this->e, 5); }
-void Cpu_::Opcode_CB_AC() { Res(this->h, 5); }
-void Cpu_::Opcode_CB_AD() { Res(this->l, 5); }
-void Cpu_::Opcode_CB_AE() { Res(this->hl, 5); }
-void Cpu_::Opcode_CB_AF() { Res(this->a, 5); }
-void Cpu_::Opcode_CB_B0() { Res(this->b, 6); }
-void Cpu_::Opcode_CB_B1() { Res(this->c, 6); }
-void Cpu_::Opcode_CB_B2() { Res(this->d, 6); }
-void Cpu_::Opcode_CB_B3() { Res(this->e, 6); }
-void Cpu_::Opcode_CB_B4() { Res(this->h, 6); }
-void Cpu_::Opcode_CB_B5() { Res(this->l, 6); }
-void Cpu_::Opcode_CB_B6() { Res(this->hl, 6); }
-void Cpu_::Opcode_CB_B7() { Res(this->a, 6); }
-void Cpu_::Opcode_CB_B8() { Res(this->b, 7); }
-void Cpu_::Opcode_CB_B9() { Res(this->c, 7); }
-void Cpu_::Opcode_CB_BA() { Res(this->d, 7); }
-void Cpu_::Opcode_CB_BB() { Res(this->e, 7); }
-void Cpu_::Opcode_CB_BC() { Res(this->h, 7); }
-void Cpu_::Opcode_CB_BD() { Res(this->l, 7); }
-void Cpu_::Opcode_CB_BE() { Res(this->hl, 7); }
-void Cpu_::Opcode_CB_BF() { Res(this->a, 7); }
-void Cpu_::Opcode_CB_C0() { Set(this->b, 0); }
-void Cpu_::Opcode_CB_C1() { Set(this->c, 0); }
-void Cpu_::Opcode_CB_C2() { Set(this->d, 0); }
-void Cpu_::Opcode_CB_C3() { Set(this->e, 0); }
-void Cpu_::Opcode_CB_C4() { Set(this->h, 0); }
-void Cpu_::Opcode_CB_C5() { Set(this->l, 0); }
-void Cpu_::Opcode_CB_C6() { Set(this->hl, 0); }
-void Cpu_::Opcode_CB_C7() { Set(this->a, 0); }
-void Cpu_::Opcode_CB_C8() { Set(this->b, 1); }
-void Cpu_::Opcode_CB_C9() { Set(this->c, 1); }
-void Cpu_::Opcode_CB_CA() { Set(this->d, 1); }
-void Cpu_::Opcode_CB_CB() { Set(this->e, 1); }
-void Cpu_::Opcode_CB_CC() { Set(this->h, 1); }
-void Cpu_::Opcode_CB_CD() { Set(this->l, 1); }
-void Cpu_::Opcode_CB_CE() { Set(this->hl, 1); }
-void Cpu_::Opcode_CB_CF() { Set(this->a, 1); }
-void Cpu_::Opcode_CB_D0() { Set(this->b, 2); }
-void Cpu_::Opcode_CB_D1() { Set(this->c, 2); }
-void Cpu_::Opcode_CB_D2() { Set(this->d, 2); }
-void Cpu_::Opcode_CB_D3() { Set(this->e, 2); }
-void Cpu_::Opcode_CB_D4() { Set(this->h, 2); }
-void Cpu_::Opcode_CB_D5() { Set(this->l, 2); }
-void Cpu_::Opcode_CB_D6() { Set(this->hl, 2); }
-void Cpu_::Opcode_CB_D7() { Set(this->a, 2); }
-void Cpu_::Opcode_CB_D8() { Set(this->b, 3); }
-void Cpu_::Opcode_CB_D9() { Set(this->c, 3); }
-void Cpu_::Opcode_CB_DA() { Set(this->d, 3); }
-void Cpu_::Opcode_CB_DB() { Set(this->e, 3); }
-void Cpu_::Opcode_CB_DC() { Set(this->h, 3); }
-void Cpu_::Opcode_CB_DD() { Set(this->l, 3); }
-void Cpu_::Opcode_CB_DE() { Set(this->hl, 3); }
-void Cpu_::Opcode_CB_DF() { Set(this->a, 3); }
-void Cpu_::Opcode_CB_E0() { Set(this->b, 4); }
-void Cpu_::Opcode_CB_E1() { Set(this->c, 4); }
-void Cpu_::Opcode_CB_E2() { Set(this->d, 4); }
-void Cpu_::Opcode_CB_E3() { Set(this->e, 4); }
-void Cpu_::Opcode_CB_E4() { Set(this->h, 4); }
-void Cpu_::Opcode_CB_E5() { Set(this->l, 4); }
-void Cpu_::Opcode_CB_E6() { Set(this->hl, 4); }
-void Cpu_::Opcode_CB_E7() { Set(this->a, 4); }
-void Cpu_::Opcode_CB_E8() { Set(this->b, 5); }
-void Cpu_::Opcode_CB_E9() { Set(this->c, 5); }
-void Cpu_::Opcode_CB_EA() { Set(this->d, 5); }
-void Cpu_::Opcode_CB_EB() { Set(this->e, 5); }
-void Cpu_::Opcode_CB_EC() { Set(this->h, 5); }
-void Cpu_::Opcode_CB_ED() { Set(this->l, 5); }
-void Cpu_::Opcode_CB_EE() { Set(this->hl, 5); }
-void Cpu_::Opcode_CB_EF() { Set(this->a, 5); }
-void Cpu_::Opcode_CB_F0() { Set(this->b, 6); }
-void Cpu_::Opcode_CB_F1() { Set(this->c, 6); }
-void Cpu_::Opcode_CB_F2() { Set(this->d, 6); }
-void Cpu_::Opcode_CB_F3() { Set(this->e, 6); }
-void Cpu_::Opcode_CB_F4() { Set(this->h, 6); }
-void Cpu_::Opcode_CB_F5() { Set(this->l, 6); }
-void Cpu_::Opcode_CB_F6() { Set(this->hl, 6); }
-void Cpu_::Opcode_CB_F7() { Set(this->a, 6); }
-void Cpu_::Opcode_CB_F8() { Set(this->b, 7); }
-void Cpu_::Opcode_CB_F9() { Set(this->c, 7); }
-void Cpu_::Opcode_CB_FA() { Set(this->d, 7); }
-void Cpu_::Opcode_CB_FB() { Set(this->e, 7); }
-void Cpu_::Opcode_CB_FC() { Set(this->h, 7); }
-void Cpu_::Opcode_CB_FD() { Set(this->l, 7); }
-void Cpu_::Opcode_CB_FE() { Set(this->hl, 7); }
-void Cpu_::Opcode_CB_FF() { Set(this->a, 7); }
+Ops::Ops(Cpu_& cpu)
+    : cpu{cpu}, alu{cpu}, bit{cpu}, flow{cpu}, mem{cpu}, spec{cpu} {}
+
+void Ops::Execute(const u8 opcode) {
+    switch (opcode) {
+        case 0x00: spec.Nop(); break;
+        case 0x01: mem.Load(cpu.bc, cpu.GetWord()); break;
+        case 0x02: mem.Load(cpu.bc, cpu.a); break;
+        case 0x03: alu.Inc(cpu.bc); break;
+        case 0x04: alu.Inc(cpu.b); break;
+        case 0x05: alu.Dec(cpu.b); break;
+        case 0x06: mem.Load(cpu.b, cpu.GetByte()); break;
+        case 0x07: bit.Rlca(); break;
+        case 0x08: mem.Load(cpu.GetWord(), cpu.sp); break;
+        case 0x09: alu.Add(cpu.hl, cpu.bc); break;
+        case 0x0A: mem.Load(cpu.a, cpu.bc); break;
+        case 0x0B: alu.Dec(cpu.bc); break;
+        case 0x0C: alu.Inc(cpu.c); break;
+        case 0x0D: alu.Dec(cpu.c); break;
+        case 0x0E: mem.Load(cpu.c, cpu.GetByte()); break;
+        case 0x0F: bit.Rrca(); break;
+        case 0x10: spec.Stop(); break;
+        case 0x11: mem.Load(cpu.de, cpu.GetWord()); break;
+        case 0x12: mem.Load(cpu.de, cpu.a); break;
+        case 0x13: alu.Inc(cpu.de); break;
+        case 0x14: alu.Inc(cpu.d); break;
+        case 0x15: alu.Dec(cpu.d); break;
+        case 0x16: mem.Load(cpu.d, cpu.GetByte()); break;
+        case 0x17: bit.Rla(); break;
+        case 0x18: flow.RelJump(cpu.GetSignedByte()); break;
+        case 0x19: alu.Add(cpu.hl, cpu.de); break;
+        case 0x1A: mem.Load(cpu.a, cpu.de); break;
+        case 0x1B: alu.Dec(cpu.de); break;
+        case 0x1C: alu.Inc(cpu.e); break;
+        case 0x1D: alu.Dec(cpu.e); break;
+        case 0x1E: mem.Load(cpu.e, cpu.GetByte()); break;
+        case 0x1F: bit.Rra(); break;
+        case 0x20: flow.RelJump(Condition::NZ, cpu.GetSignedByte()); break;
+        case 0x21: mem.Load(cpu.hl, cpu.GetWord()); break;
+        case 0x22: mem.LoadInc(cpu.hl, cpu.a); break;
+        case 0x23: alu.Inc(cpu.hl); break;
+        case 0x24: alu.Inc(cpu.h); break;
+        case 0x25: alu.Dec(cpu.h); break;
+        case 0x26: mem.Load(cpu.h, cpu.GetByte()); break;
+        case 0x27: spec.Daa(); break;
+        case 0x28: flow.RelJump(Condition::Z, cpu.GetSignedByte()); break;
+        case 0x29: alu.Add(cpu.hl, cpu.hl); break;
+        case 0x2A: mem.LoadInc(cpu.a, cpu.hl); break;
+        case 0x2B: alu.Dec(cpu.hl); break;
+        case 0x2C: alu.Inc(cpu.l); break;
+        case 0x2D: alu.Dec(cpu.l); break;
+        case 0x2E: mem.Load(cpu.l, cpu.GetByte()); break;
+        case 0x2F: spec.Cpl(); break;
+        case 0x30: flow.RelJump(Condition::NC, cpu.GetSignedByte()); break;
+        case 0x31: mem.Load(cpu.sp, cpu.GetWord()); break;
+        case 0x32: mem.LoadDec(cpu.hl, cpu.a); break;
+        case 0x33: alu.Inc(cpu.sp); break;
+        case 0x34: alu.IncRef(cpu.hl); break;
+        case 0x35: alu.DecRef(cpu.hl); break;
+        case 0x36: mem.Load(cpu.hl, cpu.GetByte()); break;
+        case 0x37: spec.Scf(); break;
+        case 0x38: flow.RelJump(Condition::C, cpu.GetSignedByte()); break;
+        case 0x39: alu.Add(cpu.hl, cpu.sp); break;
+        case 0x3A: mem.LoadDec(cpu.a, cpu.hl); break;
+        case 0x3B: alu.Dec(cpu.sp); break;
+        case 0x3C: alu.Inc(cpu.a); break;
+        case 0x3D: alu.Dec(cpu.a); break;
+        case 0x3E: mem.Load(cpu.a, cpu.GetByte()); break;
+        case 0x3F: spec.Ccf(); break;
+        case 0x40: mem.Load(cpu.b, cpu.b); break;
+        case 0x41: mem.Load(cpu.b, cpu.c); break;
+        case 0x42: mem.Load(cpu.b, cpu.d); break;
+        case 0x43: mem.Load(cpu.b, cpu.e); break;
+        case 0x44: mem.Load(cpu.b, cpu.h); break;
+        case 0x45: mem.Load(cpu.b, cpu.l); break;
+        case 0x46: mem.Load(cpu.b, cpu.hl); break;
+        case 0x47: mem.Load(cpu.b, cpu.a); break;
+        case 0x48: mem.Load(cpu.c, cpu.b); break;
+        case 0x49: mem.Load(cpu.c, cpu.c); break;
+        case 0x4A: mem.Load(cpu.c, cpu.d); break;
+        case 0x4B: mem.Load(cpu.c, cpu.e); break;
+        case 0x4C: mem.Load(cpu.c, cpu.h); break;
+        case 0x4D: mem.Load(cpu.c, cpu.l); break;
+        case 0x4E: mem.Load(cpu.c, cpu.hl); break;
+        case 0x4F: mem.Load(cpu.c, cpu.a); break;
+        case 0x50: mem.Load(cpu.d, cpu.b); break;
+        case 0x51: mem.Load(cpu.d, cpu.c); break;
+        case 0x52: mem.Load(cpu.d, cpu.d); break;
+        case 0x53: mem.Load(cpu.d, cpu.e); break;
+        case 0x54: mem.Load(cpu.d, cpu.h); break;
+        case 0x55: mem.Load(cpu.d, cpu.l); break;
+        case 0x56: mem.Load(cpu.d, cpu.hl); break;
+        case 0x57: mem.Load(cpu.d, cpu.a); break;
+        case 0x58: mem.Load(cpu.e, cpu.b); break;
+        case 0x59: mem.Load(cpu.e, cpu.c); break;
+        case 0x5A: mem.Load(cpu.e, cpu.d); break;
+        case 0x5B: mem.Load(cpu.e, cpu.e); break;
+        case 0x5C: mem.Load(cpu.e, cpu.h); break;
+        case 0x5D: mem.Load(cpu.e, cpu.l); break;
+        case 0x5E: mem.Load(cpu.e, cpu.hl); break;
+        case 0x5F: mem.Load(cpu.e, cpu.a); break;
+        case 0x60: mem.Load(cpu.h, cpu.b); break;
+        case 0x61: mem.Load(cpu.h, cpu.c); break;
+        case 0x62: mem.Load(cpu.h, cpu.d); break;
+        case 0x63: mem.Load(cpu.h, cpu.e); break;
+        case 0x64: mem.Load(cpu.h, cpu.h); break;
+        case 0x65: mem.Load(cpu.h, cpu.l); break;
+        case 0x66: mem.Load(cpu.h, cpu.hl); break;
+        case 0x67: mem.Load(cpu.h, cpu.a); break;
+        case 0x68: mem.Load(cpu.l, cpu.b); break;
+        case 0x69: mem.Load(cpu.l, cpu.c); break;
+        case 0x6A: mem.Load(cpu.l, cpu.d); break;
+        case 0x6B: mem.Load(cpu.l, cpu.e); break;
+        case 0x6C: mem.Load(cpu.l, cpu.h); break;
+        case 0x6D: mem.Load(cpu.l, cpu.l); break;
+        case 0x6E: mem.Load(cpu.l, cpu.hl); break;
+        case 0x6F: mem.Load(cpu.l, cpu.a); break;
+        case 0x70: mem.Load(cpu.hl, cpu.b); break;
+        case 0x71: mem.Load(cpu.hl, cpu.c); break;
+        case 0x72: mem.Load(cpu.hl, cpu.d); break;
+        case 0x73: mem.Load(cpu.hl, cpu.e); break;
+        case 0x74: mem.Load(cpu.hl, cpu.h); break;
+        case 0x75: mem.Load(cpu.hl, cpu.l); break;
+        case 0x76: spec.Halt(); break;
+        case 0x77: mem.Load(cpu.hl, cpu.a); break;
+        case 0x78: mem.Load(cpu.a, cpu.b); break;
+        case 0x79: mem.Load(cpu.a, cpu.c); break;
+        case 0x7A: mem.Load(cpu.a, cpu.d); break;
+        case 0x7B: mem.Load(cpu.a, cpu.e); break;
+        case 0x7C: mem.Load(cpu.a, cpu.h); break;
+        case 0x7D: mem.Load(cpu.a, cpu.l); break;
+        case 0x7E: mem.Load(cpu.a, cpu.hl); break;
+        case 0x7F: mem.Load(cpu.a, cpu.a); break;
+        case 0x80: alu.Add(cpu.b); break;
+        case 0x81: alu.Add(cpu.c); break;
+        case 0x82: alu.Add(cpu.d); break;
+        case 0x83: alu.Add(cpu.e); break;
+        case 0x84: alu.Add(cpu.h); break;
+        case 0x85: alu.Add(cpu.l); break;
+        case 0x86: alu.Add(cpu.hl); break;
+        case 0x87: alu.Add(cpu.a); break;
+        case 0x88: alu.AddWithCarry(cpu.b); break;
+        case 0x89: alu.AddWithCarry(cpu.c); break;
+        case 0x8A: alu.AddWithCarry(cpu.d); break;
+        case 0x8B: alu.AddWithCarry(cpu.e); break;
+        case 0x8C: alu.AddWithCarry(cpu.h); break;
+        case 0x8D: alu.AddWithCarry(cpu.l); break;
+        case 0x8E: alu.AddWithCarry(cpu.hl); break;
+        case 0x8F: alu.AddWithCarry(cpu.a); break;
+        case 0x90: alu.Sub(cpu.b); break;
+        case 0x91: alu.Sub(cpu.c); break;
+        case 0x92: alu.Sub(cpu.d); break;
+        case 0x93: alu.Sub(cpu.e); break;
+        case 0x94: alu.Sub(cpu.h); break;
+        case 0x95: alu.Sub(cpu.l); break;
+        case 0x96: alu.Sub(cpu.hl); break;
+        case 0x97: alu.Sub(cpu.a); break;
+        case 0x98: alu.SubWithBorrow(cpu.b); break;
+        case 0x99: alu.SubWithBorrow(cpu.c); break;
+        case 0x9A: alu.SubWithBorrow(cpu.d); break;
+        case 0x9B: alu.SubWithBorrow(cpu.e); break;
+        case 0x9C: alu.SubWithBorrow(cpu.h); break;
+        case 0x9D: alu.SubWithBorrow(cpu.l); break;
+        case 0x9E: alu.SubWithBorrow(cpu.hl); break;
+        case 0x9F: alu.SubWithBorrow(cpu.a); break;
+        case 0xA0: alu.And(cpu.b); break;
+        case 0xA1: alu.And(cpu.c); break;
+        case 0xA2: alu.And(cpu.d); break;
+        case 0xA3: alu.And(cpu.e); break;
+        case 0xA4: alu.And(cpu.h); break;
+        case 0xA5: alu.And(cpu.l); break;
+        case 0xA6: alu.And(cpu.hl); break;
+        case 0xA7: alu.And(cpu.a); break;
+        case 0xA8: alu.Xor(cpu.b); break;
+        case 0xA9: alu.Xor(cpu.c); break;
+        case 0xAA: alu.Xor(cpu.d); break;
+        case 0xAB: alu.Xor(cpu.e); break;
+        case 0xAC: alu.Xor(cpu.h); break;
+        case 0xAD: alu.Xor(cpu.l); break;
+        case 0xAE: alu.Xor(cpu.hl); break;
+        case 0xAF: alu.Xor(cpu.a); break;
+        case 0xB0: alu.Or(cpu.b); break;
+        case 0xB1: alu.Or(cpu.c); break;
+        case 0xB2: alu.Or(cpu.d); break;
+        case 0xB3: alu.Or(cpu.e); break;
+        case 0xB4: alu.Or(cpu.h); break;
+        case 0xB5: alu.Or(cpu.l); break;
+        case 0xB6: alu.Or(cpu.hl); break;
+        case 0xB7: alu.Or(cpu.a); break;
+        case 0xB8: alu.Cmp(cpu.b); break;
+        case 0xB9: alu.Cmp(cpu.c); break;
+        case 0xBA: alu.Cmp(cpu.d); break;
+        case 0xBB: alu.Cmp(cpu.e); break;
+        case 0xBC: alu.Cmp(cpu.h); break;
+        case 0xBD: alu.Cmp(cpu.l); break;
+        case 0xBE: alu.Cmp(cpu.hl); break;
+        case 0xBF: alu.Cmp(cpu.a); break;
+        case 0xC0: flow.Ret(Condition::NZ); break;
+        case 0xC1: mem.Pop(cpu.bc); break;
+        case 0xC2: flow.Jump(Condition::NZ, cpu.GetWord()); break;
+        case 0xC3: flow.Jump(cpu.GetWord()); break;
+        case 0xC4: flow.Call(Condition::NZ, cpu.GetWord()); break;
+        case 0xC5: mem.Push(cpu.bc); break;
+        case 0xC6: alu.Add(cpu.GetByte()); break;
+        case 0xC7: flow.Rst(0); break;
+        case 0xC8: flow.Ret(Condition::Z); break;
+        case 0xC9: flow.Ret(); break;
+        case 0xCA: flow.Jump(Condition::Z, cpu.GetWord()); break;
+        case 0xCB: break; /* Invalid */
+        case 0xCC: flow.Call(Condition::Z, cpu.GetWord()); break;
+        case 0xCD: flow.Call(cpu.GetWord()); break;
+        case 0xCE: alu.AddWithCarry(cpu.GetByte()); break;
+        case 0xCF: flow.Rst(1); break;
+        case 0xD0: flow.Ret(Condition::NC); break;
+        case 0xD1: mem.Pop(cpu.de); break;
+        case 0xD2: flow.Jump(Condition::NC, cpu.GetWord()); break;
+        case 0xD3: break; /* Invalid */
+        case 0xD4: flow.Call(Condition::NC, cpu.GetWord()); break;
+        case 0xD5: mem.Push(cpu.de); break;
+        case 0xD6: alu.Sub(cpu.GetByte()); break;
+        case 0xD7: flow.Rst(2); break;
+        case 0xD8: flow.Ret(Condition::C); break;
+        case 0xD9: flow.Reti(); break;
+        case 0xDA: flow.Jump(Condition::C, cpu.GetWord()); break;
+        case 0xDB: break; /* Invalid */
+        case 0xDC: flow.Call(Condition::C, cpu.GetWord()); break;
+        case 0xDD: break; /* Invalid */
+        case 0xDE: alu.SubWithBorrow(cpu.GetByte()); break;
+        case 0xDF: flow.Rst(3); break;
+        case 0xE0: mem.Load(cpu.GetByte().IO(), cpu.a); break;
+        case 0xE1: mem.Pop(cpu.hl); break;
+        case 0xE2: mem.Load(cpu.c.IO(), cpu.a); break;
+        case 0xE3: break; /* Invalid */
+        case 0xE4: break; /* Invalid */
+        case 0xE5: mem.Push(cpu.hl); break;
+        case 0xE6: alu.And(cpu.GetByte()); break;
+        case 0xE7: flow.Rst(4); break;
+        case 0xE8: alu.Add(cpu.sp, cpu.GetSignedByte()); break;
+        case 0xE9: flow.Jump(cpu.hl); break;
+        case 0xEA: mem.Load(cpu.GetWord(), cpu.a); break;
+        case 0xEB: break; /* Invalid */
+        case 0xEC: break; /* Invalid */
+        case 0xED: break; /* Invalid */
+        case 0xEE: alu.Xor(cpu.GetByte()); break;
+        case 0xEF: flow.Rst(5); break;
+        case 0xF0: mem.Load(cpu.a, cpu.GetByte().IO()); break;
+        case 0xF1: mem.PopAf(); break;
+        case 0xF2: mem.Load(cpu.a, cpu.c.IO()); break;
+        case 0xF3: spec.Di(); break;
+        case 0xF4: break; /* Invalid */
+        case 0xF5: mem.Push(cpu.af); break;
+        case 0xF6: alu.Or(cpu.GetByte()); break;
+        case 0xF7: flow.Rst(6); break;
+        case 0xF8: mem.Load(cpu.hl, cpu.sp, cpu.GetSignedByte()); break;
+        case 0xF9: mem.Load(cpu.sp, cpu.hl); break;
+        case 0xFA: mem.Load(cpu.a, cpu.GetWord()); break;
+        case 0xFB: spec.Ei(); break;
+        case 0xFC: break; /* Invalid */
+        case 0xFD: break; /* Invalid */
+        case 0xFE: alu.Cmp(cpu.GetByte()); break;
+        case 0xFF: flow.Rst(7); break;
+        default: break;
+    }
+}
+
+void Ops::ExecuteEx(const u8 opcode) {
+    switch (opcode) {
+        case 0x00: bit.Rlc(cpu.b); break;
+        case 0x01: bit.Rlc(cpu.c); break;
+        case 0x02: bit.Rlc(cpu.d); break;
+        case 0x03: bit.Rlc(cpu.e); break;
+        case 0x04: bit.Rlc(cpu.h); break;
+        case 0x05: bit.Rlc(cpu.l); break;
+        case 0x06: bit.Rlc(cpu.hl); break;
+        case 0x07: bit.Rlc(cpu.a); break;
+        case 0x08: bit.Rrc(cpu.b); break;
+        case 0x09: bit.Rrc(cpu.c); break;
+        case 0x0A: bit.Rrc(cpu.d); break;
+        case 0x0B: bit.Rrc(cpu.e); break;
+        case 0x0C: bit.Rrc(cpu.h); break;
+        case 0x0D: bit.Rrc(cpu.l); break;
+        case 0x0E: bit.Rrc(cpu.hl); break;
+        case 0x0F: bit.Rrc(cpu.a); break;
+        case 0x10: bit.Rl(cpu.b); break;
+        case 0x11: bit.Rl(cpu.c); break;
+        case 0x12: bit.Rl(cpu.d); break;
+        case 0x13: bit.Rl(cpu.e); break;
+        case 0x14: bit.Rl(cpu.h); break;
+        case 0x15: bit.Rl(cpu.l); break;
+        case 0x16: bit.Rl(cpu.hl); break;
+        case 0x17: bit.Rl(cpu.a); break;
+        case 0x18: bit.Rr(cpu.b); break;
+        case 0x19: bit.Rr(cpu.c); break;
+        case 0x1A: bit.Rr(cpu.d); break;
+        case 0x1B: bit.Rr(cpu.e); break;
+        case 0x1C: bit.Rr(cpu.h); break;
+        case 0x1D: bit.Rr(cpu.l); break;
+        case 0x1E: bit.Rr(cpu.hl); break;
+        case 0x1F: bit.Rr(cpu.a); break;
+        case 0x20: bit.Sla(cpu.b); break;
+        case 0x21: bit.Sla(cpu.c); break;
+        case 0x22: bit.Sla(cpu.d); break;
+        case 0x23: bit.Sla(cpu.e); break;
+        case 0x24: bit.Sla(cpu.h); break;
+        case 0x25: bit.Sla(cpu.l); break;
+        case 0x26: bit.Sla(cpu.hl); break;
+        case 0x27: bit.Sla(cpu.a); break;
+        case 0x28: bit.Sra(cpu.b); break;
+        case 0x29: bit.Sra(cpu.c); break;
+        case 0x2A: bit.Sra(cpu.d); break;
+        case 0x2B: bit.Sra(cpu.e); break;
+        case 0x2C: bit.Sra(cpu.h); break;
+        case 0x2D: bit.Sra(cpu.l); break;
+        case 0x2E: bit.Sra(cpu.hl); break;
+        case 0x2F: bit.Sra(cpu.a); break;
+        case 0x30: bit.Swap(cpu.b); break;
+        case 0x31: bit.Swap(cpu.c); break;
+        case 0x32: bit.Swap(cpu.d); break;
+        case 0x33: bit.Swap(cpu.e); break;
+        case 0x34: bit.Swap(cpu.h); break;
+        case 0x35: bit.Swap(cpu.l); break;
+        case 0x36: bit.Swap(cpu.hl); break;
+        case 0x37: bit.Swap(cpu.a); break;
+        case 0x38: bit.Srl(cpu.b); break;
+        case 0x39: bit.Srl(cpu.c); break;
+        case 0x3A: bit.Srl(cpu.d); break;
+        case 0x3B: bit.Srl(cpu.e); break;
+        case 0x3C: bit.Srl(cpu.h); break;
+        case 0x3D: bit.Srl(cpu.l); break;
+        case 0x3E: bit.Srl(cpu.hl); break;
+        case 0x3F: bit.Srl(cpu.a); break;
+        case 0x40: bit.Bit(cpu.b, 0); break;
+        case 0x41: bit.Bit(cpu.c, 0); break;
+        case 0x42: bit.Bit(cpu.d, 0); break;
+        case 0x43: bit.Bit(cpu.e, 0); break;
+        case 0x44: bit.Bit(cpu.h, 0); break;
+        case 0x45: bit.Bit(cpu.l, 0); break;
+        case 0x46: bit.Bit(cpu.hl, 0); break;
+        case 0x47: bit.Bit(cpu.a, 0); break;
+        case 0x48: bit.Bit(cpu.b, 1); break;
+        case 0x49: bit.Bit(cpu.c, 1); break;
+        case 0x4A: bit.Bit(cpu.d, 1); break;
+        case 0x4B: bit.Bit(cpu.e, 1); break;
+        case 0x4C: bit.Bit(cpu.h, 1); break;
+        case 0x4D: bit.Bit(cpu.l, 1); break;
+        case 0x4E: bit.Bit(cpu.hl, 1); break;
+        case 0x4F: bit.Bit(cpu.a, 1); break;
+        case 0x50: bit.Bit(cpu.b, 2); break;
+        case 0x51: bit.Bit(cpu.c, 2); break;
+        case 0x52: bit.Bit(cpu.d, 2); break;
+        case 0x53: bit.Bit(cpu.e, 2); break;
+        case 0x54: bit.Bit(cpu.h, 2); break;
+        case 0x55: bit.Bit(cpu.l, 2); break;
+        case 0x56: bit.Bit(cpu.hl, 2); break;
+        case 0x57: bit.Bit(cpu.a, 2); break;
+        case 0x58: bit.Bit(cpu.b, 3); break;
+        case 0x59: bit.Bit(cpu.c, 3); break;
+        case 0x5A: bit.Bit(cpu.d, 3); break;
+        case 0x5B: bit.Bit(cpu.e, 3); break;
+        case 0x5C: bit.Bit(cpu.h, 3); break;
+        case 0x5D: bit.Bit(cpu.l, 3); break;
+        case 0x5E: bit.Bit(cpu.hl, 3); break;
+        case 0x5F: bit.Bit(cpu.a, 3); break;
+        case 0x60: bit.Bit(cpu.b, 4); break;
+        case 0x61: bit.Bit(cpu.c, 4); break;
+        case 0x62: bit.Bit(cpu.d, 4); break;
+        case 0x63: bit.Bit(cpu.e, 4); break;
+        case 0x64: bit.Bit(cpu.h, 4); break;
+        case 0x65: bit.Bit(cpu.l, 4); break;
+        case 0x66: bit.Bit(cpu.hl, 4); break;
+        case 0x67: bit.Bit(cpu.a, 4); break;
+        case 0x68: bit.Bit(cpu.b, 5); break;
+        case 0x69: bit.Bit(cpu.c, 5); break;
+        case 0x6A: bit.Bit(cpu.d, 5); break;
+        case 0x6B: bit.Bit(cpu.e, 5); break;
+        case 0x6C: bit.Bit(cpu.h, 5); break;
+        case 0x6D: bit.Bit(cpu.l, 5); break;
+        case 0x6E: bit.Bit(cpu.hl, 5); break;
+        case 0x6F: bit.Bit(cpu.a, 5); break;
+        case 0x70: bit.Bit(cpu.b, 6); break;
+        case 0x71: bit.Bit(cpu.c, 6); break;
+        case 0x72: bit.Bit(cpu.d, 6); break;
+        case 0x73: bit.Bit(cpu.e, 6); break;
+        case 0x74: bit.Bit(cpu.h, 6); break;
+        case 0x75: bit.Bit(cpu.l, 6); break;
+        case 0x76: bit.Bit(cpu.hl, 6); break;
+        case 0x77: bit.Bit(cpu.a, 6); break;
+        case 0x78: bit.Bit(cpu.b, 7); break;
+        case 0x79: bit.Bit(cpu.c, 7); break;
+        case 0x7A: bit.Bit(cpu.d, 7); break;
+        case 0x7B: bit.Bit(cpu.e, 7); break;
+        case 0x7C: bit.Bit(cpu.h, 7); break;
+        case 0x7D: bit.Bit(cpu.l, 7); break;
+        case 0x7E: bit.Bit(cpu.hl, 7); break;
+        case 0x7F: bit.Bit(cpu.a, 7); break;
+        case 0x80: bit.Res(cpu.b, 0); break;
+        case 0x81: bit.Res(cpu.c, 0); break;
+        case 0x82: bit.Res(cpu.d, 0); break;
+        case 0x83: bit.Res(cpu.e, 0); break;
+        case 0x84: bit.Res(cpu.h, 0); break;
+        case 0x85: bit.Res(cpu.l, 0); break;
+        case 0x86: bit.Res(cpu.hl, 0); break;
+        case 0x87: bit.Res(cpu.a, 0); break;
+        case 0x88: bit.Res(cpu.b, 1); break;
+        case 0x89: bit.Res(cpu.c, 1); break;
+        case 0x8A: bit.Res(cpu.d, 1); break;
+        case 0x8B: bit.Res(cpu.e, 1); break;
+        case 0x8C: bit.Res(cpu.h, 1); break;
+        case 0x8D: bit.Res(cpu.l, 1); break;
+        case 0x8E: bit.Res(cpu.hl, 1); break;
+        case 0x8F: bit.Res(cpu.a, 1); break;
+        case 0x90: bit.Res(cpu.b, 2); break;
+        case 0x91: bit.Res(cpu.c, 2); break;
+        case 0x92: bit.Res(cpu.d, 2); break;
+        case 0x93: bit.Res(cpu.e, 2); break;
+        case 0x94: bit.Res(cpu.h, 2); break;
+        case 0x95: bit.Res(cpu.l, 2); break;
+        case 0x96: bit.Res(cpu.hl, 2); break;
+        case 0x97: bit.Res(cpu.a, 2); break;
+        case 0x98: bit.Res(cpu.b, 3); break;
+        case 0x99: bit.Res(cpu.c, 3); break;
+        case 0x9A: bit.Res(cpu.d, 3); break;
+        case 0x9B: bit.Res(cpu.e, 3); break;
+        case 0x9C: bit.Res(cpu.h, 3); break;
+        case 0x9D: bit.Res(cpu.l, 3); break;
+        case 0x9E: bit.Res(cpu.hl, 3); break;
+        case 0x9F: bit.Res(cpu.a, 3); break;
+        case 0xA0: bit.Res(cpu.b, 4); break;
+        case 0xA1: bit.Res(cpu.c, 4); break;
+        case 0xA2: bit.Res(cpu.d, 4); break;
+        case 0xA3: bit.Res(cpu.e, 4); break;
+        case 0xA4: bit.Res(cpu.h, 4); break;
+        case 0xA5: bit.Res(cpu.l, 4); break;
+        case 0xA6: bit.Res(cpu.hl, 4); break;
+        case 0xA7: bit.Res(cpu.a, 4); break;
+        case 0xA8: bit.Res(cpu.b, 5); break;
+        case 0xA9: bit.Res(cpu.c, 5); break;
+        case 0xAA: bit.Res(cpu.d, 5); break;
+        case 0xAB: bit.Res(cpu.e, 5); break;
+        case 0xAC: bit.Res(cpu.h, 5); break;
+        case 0xAD: bit.Res(cpu.l, 5); break;
+        case 0xAE: bit.Res(cpu.hl, 5); break;
+        case 0xAF: bit.Res(cpu.a, 5); break;
+        case 0xB0: bit.Res(cpu.b, 6); break;
+        case 0xB1: bit.Res(cpu.c, 6); break;
+        case 0xB2: bit.Res(cpu.d, 6); break;
+        case 0xB3: bit.Res(cpu.e, 6); break;
+        case 0xB4: bit.Res(cpu.h, 6); break;
+        case 0xB5: bit.Res(cpu.l, 6); break;
+        case 0xB6: bit.Res(cpu.hl, 6); break;
+        case 0xB7: bit.Res(cpu.a, 6); break;
+        case 0xB8: bit.Res(cpu.b, 7); break;
+        case 0xB9: bit.Res(cpu.c, 7); break;
+        case 0xBA: bit.Res(cpu.d, 7); break;
+        case 0xBB: bit.Res(cpu.e, 7); break;
+        case 0xBC: bit.Res(cpu.h, 7); break;
+        case 0xBD: bit.Res(cpu.l, 7); break;
+        case 0xBE: bit.Res(cpu.hl, 7); break;
+        case 0xBF: bit.Res(cpu.a, 7); break;
+        case 0xC0: bit.Set(cpu.b, 0); break;
+        case 0xC1: bit.Set(cpu.c, 0); break;
+        case 0xC2: bit.Set(cpu.d, 0); break;
+        case 0xC3: bit.Set(cpu.e, 0); break;
+        case 0xC4: bit.Set(cpu.h, 0); break;
+        case 0xC5: bit.Set(cpu.l, 0); break;
+        case 0xC6: bit.Set(cpu.hl, 0); break;
+        case 0xC7: bit.Set(cpu.a, 0); break;
+        case 0xC8: bit.Set(cpu.b, 1); break;
+        case 0xC9: bit.Set(cpu.c, 1); break;
+        case 0xCA: bit.Set(cpu.d, 1); break;
+        case 0xCB: bit.Set(cpu.e, 1); break;
+        case 0xCC: bit.Set(cpu.h, 1); break;
+        case 0xCD: bit.Set(cpu.l, 1); break;
+        case 0xCE: bit.Set(cpu.hl, 1); break;
+        case 0xCF: bit.Set(cpu.a, 1); break;
+        case 0xD0: bit.Set(cpu.b, 2); break;
+        case 0xD1: bit.Set(cpu.c, 2); break;
+        case 0xD2: bit.Set(cpu.d, 2); break;
+        case 0xD3: bit.Set(cpu.e, 2); break;
+        case 0xD4: bit.Set(cpu.h, 2); break;
+        case 0xD5: bit.Set(cpu.l, 2); break;
+        case 0xD6: bit.Set(cpu.hl, 2); break;
+        case 0xD7: bit.Set(cpu.a, 2); break;
+        case 0xD8: bit.Set(cpu.b, 3); break;
+        case 0xD9: bit.Set(cpu.c, 3); break;
+        case 0xDA: bit.Set(cpu.d, 3); break;
+        case 0xDB: bit.Set(cpu.e, 3); break;
+        case 0xDC: bit.Set(cpu.h, 3); break;
+        case 0xDD: bit.Set(cpu.l, 3); break;
+        case 0xDE: bit.Set(cpu.hl, 3); break;
+        case 0xDF: bit.Set(cpu.a, 3); break;
+        case 0xE0: bit.Set(cpu.b, 4); break;
+        case 0xE1: bit.Set(cpu.c, 4); break;
+        case 0xE2: bit.Set(cpu.d, 4); break;
+        case 0xE3: bit.Set(cpu.e, 4); break;
+        case 0xE4: bit.Set(cpu.h, 4); break;
+        case 0xE5: bit.Set(cpu.l, 4); break;
+        case 0xE6: bit.Set(cpu.hl, 4); break;
+        case 0xE7: bit.Set(cpu.a, 4); break;
+        case 0xE8: bit.Set(cpu.b, 5); break;
+        case 0xE9: bit.Set(cpu.c, 5); break;
+        case 0xEA: bit.Set(cpu.d, 5); break;
+        case 0xEB: bit.Set(cpu.e, 5); break;
+        case 0xEC: bit.Set(cpu.h, 5); break;
+        case 0xED: bit.Set(cpu.l, 5); break;
+        case 0xEE: bit.Set(cpu.hl, 5); break;
+        case 0xEF: bit.Set(cpu.a, 5); break;
+        case 0xF0: bit.Set(cpu.b, 6); break;
+        case 0xF1: bit.Set(cpu.c, 6); break;
+        case 0xF2: bit.Set(cpu.d, 6); break;
+        case 0xF3: bit.Set(cpu.e, 6); break;
+        case 0xF4: bit.Set(cpu.h, 6); break;
+        case 0xF5: bit.Set(cpu.l, 6); break;
+        case 0xF6: bit.Set(cpu.hl, 6); break;
+        case 0xF7: bit.Set(cpu.a, 6); break;
+        case 0xF8: bit.Set(cpu.b, 7); break;
+        case 0xF9: bit.Set(cpu.c, 7); break;
+        case 0xFA: bit.Set(cpu.d, 7); break;
+        case 0xFB: bit.Set(cpu.e, 7); break;
+        case 0xFC: bit.Set(cpu.h, 7); break;
+        case 0xFD: bit.Set(cpu.l, 7); break;
+        case 0xFE: bit.Set(cpu.hl, 7); break;
+        case 0xFF: bit.Set(cpu.a, 7); break;
+        default: break;
+    }
+}
 
 }

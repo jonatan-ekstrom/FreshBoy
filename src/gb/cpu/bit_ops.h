@@ -1,70 +1,87 @@
 #pragma once
+#include "registers.h"
+#include "types.h"
 
-/* Rotate left (no carry). */
+namespace gb {
 
-void Rl(u8& imm);      // Helper
-void Rl(ByteReg& reg); // reg := RL(reg)
-void Rl(RegPair rp);   // [rp] := RL([rp])
-void Rla();            // a := RL(a)
+class Cpu_;
 
-/* Rotate left through carry. */
+/* Class containing the implementation of all bit operations. */
+class BitOps {
+public:
+    explicit BitOps(Cpu_& cpu);
 
-void Rlc(u8& imm);      // Helper
-void Rlc(ByteReg& reg); // reg := RLC(reg)
-void Rlc(RegPair rp);   // [rp] := RLC([rp])
-void Rlca();            // a := RLC(a)
+    /* Rotate left (no carry). */
 
-/* Rotate right (no carry) */
+    void Rl(u8& imm);      // Helper
+    void Rl(ByteReg& reg); // reg := RL(reg)
+    void Rl(RegPair rp);   // [rp] := RL([rp])
+    void Rla();            // a := RL(a)
 
-void Rr(u8& imm);      // Helper
-void Rr(ByteReg& reg); // reg := RR(reg)
-void Rr(RegPair rp);   // [rp] := RR([rp])
-void Rra();            // a := RR(a)
+    /* Rotate left through carry. */
 
-/* Rotate right through carry. */
+    void Rlc(u8& imm);      // Helper
+    void Rlc(ByteReg& reg); // reg := RLC(reg)
+    void Rlc(RegPair rp);   // [rp] := RLC([rp])
+    void Rlca();            // a := RLC(a)
 
-void Rrc(u8& imm);      // Helper
-void Rrc(ByteReg& reg); // reg := RRC(reg)
-void Rrc(RegPair rp);   // [rp] := RRC([rp])
-void Rrca();            // a := RRC(a)
+    /* Rotate right (no carry) */
 
-/* Left shift. */
+    void Rr(u8& imm);      // Helper
+    void Rr(ByteReg& reg); // reg := RR(reg)
+    void Rr(RegPair rp);   // [rp] := RR([rp])
+    void Rra();            // a := RR(a)
 
-void Sla(u8& imm);      // Helper
-void Sla(ByteReg& reg); // reg := SLA(reg)
-void Sla(RegPair rp);   // [rp] := SLA([rp])
+    /* Rotate right through carry. */
 
-/* Arithmetic right shift. */
+    void Rrc(u8& imm);      // Helper
+    void Rrc(ByteReg& reg); // reg := RRC(reg)
+    void Rrc(RegPair rp);   // [rp] := RRC([rp])
+    void Rrca();            // a := RRC(a)
 
-void Sra(u8& imm);      // Helper
-void Sra(ByteReg& reg); // reg := SRA(reg)
-void Sra(RegPair rp);   // [rp] := SRA([rp])
+    /* Left shift. */
 
-/* Logical right shift. */
+    void Sla(u8& imm);      // Helper
+    void Sla(ByteReg& reg); // reg := SLA(reg)
+    void Sla(RegPair rp);   // [rp] := SLA([rp])
 
-void Srl(u8& imm);      // Helper
-void Srl(ByteReg& reg); // reg := SRL(reg)
-void Srl(RegPair rp);   // [rp] := SRL([rp])
+    /* Arithmetic right shift. */
 
-/* Swap high / low nibble (4-bits). */
+    void Sra(u8& imm);      // Helper
+    void Sra(ByteReg& reg); // reg := SRA(reg)
+    void Sra(RegPair rp);   // [rp] := SRA([rp])
 
-void Swap(u8& imm);      // Helper
-void Swap(ByteReg& reg); // reg := SWAP(reg)
-void Swap(RegPair rp);   // [rp] := SWAP([rp])
+    /* Logical right shift. */
 
-/* Bit test. */
+    void Srl(u8& imm);      // Helper
+    void Srl(ByteReg& reg); // reg := SRL(reg)
+    void Srl(RegPair rp);   // [rp] := SRL([rp])
 
-void Bit(u8 imm, uint bit);      // Helper
-void Bit(ByteReg reg, uint bit); // Z := reg(bit) == 0
-void Bit(RegPair rp, uint bit);  // Z := [rp](bit) == 0
+    /* Swap high / low nibble (4-bits). */
 
-/* Bit set */
-void Set(u8& imm, uint bit);      // Helper
-void Set(ByteReg& reg, uint bit); // reg(bit) := 1
-void Set(RegPair rp, uint bit);   // [rp](bit) := 1
+    void Swap(u8& imm);      // Helper
+    void Swap(ByteReg& reg); // reg := SWAP(reg)
+    void Swap(RegPair rp);   // [rp] := SWAP([rp])
 
-/* Bit reset */
+    /* Bit test. */
 
-void Res(u8& imm, uint bit);      // Helper
-void Res(ByteReg& reg, uint bit); // reg(bit) := 0
-void Res(RegPair rp, uint bit);   // [rp](bit) := 0
+    void Bit(u8 imm, uint bit);      // Helper
+    void Bit(ByteReg reg, uint bit); // Z := reg(bit) == 0
+    void Bit(RegPair rp, uint bit);  // Z := [rp](bit) == 0
+
+    /* Bit set */
+
+    static void Set(u8& imm, uint bit);      // Helper
+    static void Set(ByteReg& reg, uint bit); // reg(bit) := 1
+    void Set(RegPair rp, uint bit);          // [rp](bit) := 1
+
+    /* Bit reset */
+
+    static void Res(u8& imm, uint bit);      // Helper
+    static void Res(ByteReg& reg, uint bit); // reg(bit) := 0
+    void Res(RegPair rp, uint bit);          // [rp](bit) := 0
+private:
+    Cpu_& cpu;
+};
+
+}

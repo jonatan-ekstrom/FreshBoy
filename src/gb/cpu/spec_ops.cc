@@ -1,17 +1,20 @@
-#include "cpu.h"
+#include "spec_ops.h"
 #include "bits.h"
+#include "cpu.h"
 
 namespace gb {
 
-void Cpu_::Nop() { /* Do nothing */ }
-void Cpu_::Halt() { this->halted = true; }
-void Cpu_::Stop() { this->halted = true; }
+SpecOps::SpecOps(Cpu_& cpu) : cpu{cpu} {}
 
-void Cpu_::Daa() {
-    auto& reg{this->a.v};
-    const auto nSet{this->flags.N()};
-    const auto hSet{this->flags.H()};
-    const auto cSet{this->flags.C()};
+void SpecOps::Nop() { /* Do nothing */ }
+void SpecOps::Halt() { this->cpu.halted = true; }
+void SpecOps::Stop() { this->cpu.halted = true; }
+
+void SpecOps::Daa() {
+    auto& reg{this->cpu.a.v};
+    const auto nSet{this->cpu.flags.N()};
+    const auto hSet{this->cpu.flags.H()};
+    const auto cSet{this->cpu.flags.C()};
     auto correction{0};
     auto setCarry{false};
 
@@ -25,30 +28,30 @@ void Cpu_::Daa() {
     }
 
     reg = static_cast<u8>(reg + (nSet ? -correction : correction));
-    this->flags.UpdateZ(reg == 0);
-    this->flags.UpdateH(false);
-    this->flags.UpdateC(setCarry);
+    this->cpu.flags.UpdateZ(reg == 0);
+    this->cpu.flags.UpdateH(false);
+    this->cpu.flags.UpdateC(setCarry);
 }
 
-void Cpu_::Cpl() {
-    this->a.v = static_cast<u8>(~a.v);
-    this->flags.UpdateN(true);
-    this->flags.UpdateH(true);
+void SpecOps::Cpl() {
+    this->cpu.a.v = static_cast<u8>(~this->cpu.a.v);
+    this->cpu.flags.UpdateN(true);
+    this->cpu.flags.UpdateH(true);
 }
 
-void Cpu_::Scf() {
-    this->flags.UpdateC(true);
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(false);
+void SpecOps::Scf() {
+    this->cpu.flags.UpdateC(true);
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(false);
 }
 
-void Cpu_::Ccf() {
-    this->flags.UpdateC(!this->flags.C());
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(false);
+void SpecOps::Ccf() {
+    this->cpu.flags.UpdateC(!this->cpu.flags.C());
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(false);
 }
 
-void Cpu_::Di() { this->interrupts->DisableInterrupts(); }
-void Cpu_::Ei() { this->interrupts->EnableInterrupts(); }
+void SpecOps::Di() { this->cpu.interrupts->DisableInterrupts(); }
+void SpecOps::Ei() { this->cpu.interrupts->EnableInterrupts(); }
 
 }

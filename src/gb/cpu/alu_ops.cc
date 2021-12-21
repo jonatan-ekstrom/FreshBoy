@@ -1,267 +1,270 @@
-#include "cpu.h"
+#include "alu_ops.h"
 #include "bits.h"
+#include "cpu.h"
 
 namespace gb {
 
-void Cpu_::Add(const u8 val) {
-    const auto lhs{this->a.v};
+AluOps::AluOps(Cpu_& cpu) : cpu{cpu} {}
+
+void AluOps::Add(const u8 val) {
+    const auto lhs{this->cpu.a.v};
     const auto rhs{val};
-    this->a.v = static_cast<u8>(lhs + rhs);
-    this->flags.UpdateZ(this->a.v == 0);
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry<3>(lhs, rhs));
-    this->flags.UpdateC(bit::Carry<7>(lhs, rhs));
+    this->cpu.a.v = static_cast<u8>(lhs + rhs);
+    this->cpu.flags.UpdateZ(this->cpu.a.v == 0);
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(bit::Carry<3>(lhs, rhs));
+    this->cpu.flags.UpdateC(bit::Carry<7>(lhs, rhs));
 }
 
-void Cpu_::Add(const Imm8 imm) {
+void AluOps::Add(const Imm8 imm) {
     Add(imm.v);
 }
 
-void Cpu_::Add(const ByteReg reg) {
+void AluOps::Add(const ByteReg reg) {
     Add(reg.v);
 }
 
-void Cpu_::Add(const RegPair rp) {
-    Add(this->mmu->Read(rp.Ptr()));
+void AluOps::Add(const RegPair rp) {
+    Add(this->cpu.mmu->Read(rp.Ptr()));
 }
 
-void Cpu_::AddWithCarry(const u8 val) {
-    const auto lhs{this->a.v};
+void AluOps::AddWithCarry(const u8 val) {
+    const auto lhs{this->cpu.a.v};
     const auto rhs{val};
-    const auto carry{static_cast<u8>(this->flags.C() ? 1 : 0)};
-    this->a.v = static_cast<u8>(lhs + rhs + carry);
-    this->flags.UpdateZ(this->a.v == 0);
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry<3>(lhs, rhs, carry));
-    this->flags.UpdateC(bit::Carry<7>(lhs, rhs, carry));
+    const auto carry{static_cast<u8>(this->cpu.flags.C() ? 1 : 0)};
+    this->cpu.a.v = static_cast<u8>(lhs + rhs + carry);
+    this->cpu.flags.UpdateZ(this->cpu.a.v == 0);
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(bit::Carry<3>(lhs, rhs, carry));
+    this->cpu.flags.UpdateC(bit::Carry<7>(lhs, rhs, carry));
 }
 
-void Cpu_::AddWithCarry(const Imm8 imm) {
+void AluOps::AddWithCarry(const Imm8 imm) {
     AddWithCarry(imm.v);
 }
 
-void Cpu_::AddWithCarry(const ByteReg reg) {
+void AluOps::AddWithCarry(const ByteReg reg) {
     AddWithCarry(reg.v);
 }
 
-void Cpu_::AddWithCarry(const RegPair rp) {
-    AddWithCarry(this->mmu->Read(rp.Ptr()));
+void AluOps::AddWithCarry(const RegPair rp) {
+    AddWithCarry(this->cpu.mmu->Read(rp.Ptr()));
 }
 
-void Cpu_::Sub(const u8 val) {
-    const auto lhs{this->a.v};
+void AluOps::Sub(const u8 val) {
+    const auto lhs{this->cpu.a.v};
     const auto rhs{val};
-    this->a.v = static_cast<u8>(lhs - rhs);
-    this->flags.UpdateZ(this->a.v == 0);
-    this->flags.UpdateN(true);
-    this->flags.UpdateH(bit::Borrow<4>(lhs, rhs));
-    this->flags.UpdateC(bit::Borrow<8>(lhs, rhs));
+    this->cpu.a.v = static_cast<u8>(lhs - rhs);
+    this->cpu.flags.UpdateZ(this->cpu.a.v == 0);
+    this->cpu.flags.UpdateN(true);
+    this->cpu.flags.UpdateH(bit::Borrow<4>(lhs, rhs));
+    this->cpu.flags.UpdateC(bit::Borrow<8>(lhs, rhs));
 }
 
-void Cpu_::Sub(const Imm8 imm) {
+void AluOps::Sub(const Imm8 imm) {
     Sub(imm.v);
 }
 
-void Cpu_::Sub(const ByteReg reg) {
+void AluOps::Sub(const ByteReg reg) {
     Sub(reg.v);
 }
 
-void Cpu_::Sub(const RegPair rp) {
-    Sub(this->mmu->Read(rp.Ptr()));
+void AluOps::Sub(const RegPair rp) {
+    Sub(this->cpu.mmu->Read(rp.Ptr()));
 }
 
-void Cpu_::SubWithBorrow(const u8 val) {
-    const auto lhs{this->a.v};
+void AluOps::SubWithBorrow(const u8 val) {
+    const auto lhs{this->cpu.a.v};
     const auto rhs{val};
-    const auto borrow{static_cast<u8>(this->flags.C() ? 1 : 0)};
-    this->a.v = static_cast<u8>(lhs - rhs - borrow);
-    this->flags.UpdateZ(this->a.v == 0);
-    this->flags.UpdateN(true);
-    this->flags.UpdateH(bit::Borrow<4>(lhs, rhs, borrow));
-    this->flags.UpdateC(bit::Borrow<8>(lhs, rhs, borrow));
+    const auto borrow{static_cast<u8>(this->cpu.flags.C() ? 1 : 0)};
+    this->cpu.a.v = static_cast<u8>(lhs - rhs - borrow);
+    this->cpu.flags.UpdateZ(this->cpu.a.v == 0);
+    this->cpu.flags.UpdateN(true);
+    this->cpu.flags.UpdateH(bit::Borrow<4>(lhs, rhs, borrow));
+    this->cpu.flags.UpdateC(bit::Borrow<8>(lhs, rhs, borrow));
 }
 
-void Cpu_::SubWithBorrow(const Imm8 imm) {
+void AluOps::SubWithBorrow(const Imm8 imm) {
     SubWithBorrow(imm.v);
 }
 
-void Cpu_::SubWithBorrow(const ByteReg reg) {
+void AluOps::SubWithBorrow(const ByteReg reg) {
     SubWithBorrow(reg.v);
 }
 
-void Cpu_::SubWithBorrow(const RegPair rp) {
-    SubWithBorrow(this->mmu->Read(rp.Ptr()));
+void AluOps::SubWithBorrow(const RegPair rp) {
+    SubWithBorrow(this->cpu.mmu->Read(rp.Ptr()));
 }
 
-void Cpu_::And(const u8 val) {
-    this->a.v &= val;
-    this->flags.UpdateZ(this->a.v == 0);
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(true);
-    this->flags.UpdateC(false);
+void AluOps::And(const u8 val) {
+    this->cpu.a.v &= val;
+    this->cpu.flags.UpdateZ(this->cpu.a.v == 0);
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(true);
+    this->cpu.flags.UpdateC(false);
 }
 
-void Cpu_::And(const Imm8 imm) {
+void AluOps::And(const Imm8 imm) {
     And(imm.v);
 }
 
-void Cpu_::And(const ByteReg reg) {
+void AluOps::And(const ByteReg reg) {
     And(reg.v);
 }
 
-void Cpu_::And(const RegPair rp) {
-    And(this->mmu->Read(rp.Ptr()));
+void AluOps::And(const RegPair rp) {
+    And(this->cpu.mmu->Read(rp.Ptr()));
 }
 
-void Cpu_::Or(const u8 val) {
-    this->a.v |= val;
-    this->flags.UpdateZ(this->a.v == 0);
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(false);
-    this->flags.UpdateC(false);
+void AluOps::Or(const u8 val) {
+    this->cpu.a.v |= val;
+    this->cpu.flags.UpdateZ(this->cpu.a.v == 0);
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(false);
+    this->cpu.flags.UpdateC(false);
 }
 
-void Cpu_::Or(const Imm8 imm) {
+void AluOps::Or(const Imm8 imm) {
     Or(imm.v);
 }
 
-void Cpu_::Or(const ByteReg reg) {
+void AluOps::Or(const ByteReg reg) {
     Or(reg.v);
 }
 
-void Cpu_::Or(const RegPair rp) {
-    Or(this->mmu->Read(rp.Ptr()));
+void AluOps::Or(const RegPair rp) {
+    Or(this->cpu.mmu->Read(rp.Ptr()));
 }
 
-void Cpu_::Xor(const u8 val) {
-    this->a.v ^= val;
-    this->flags.UpdateZ(this->a.v == 0);
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(false);
-    this->flags.UpdateC(false);
+void AluOps::Xor(const u8 val) {
+    this->cpu.a.v ^= val;
+    this->cpu.flags.UpdateZ(this->cpu.a.v == 0);
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(false);
+    this->cpu.flags.UpdateC(false);
 }
 
-void Cpu_::Xor(const Imm8 imm) {
+void AluOps::Xor(const Imm8 imm) {
     Xor(imm.v);
 }
 
-void Cpu_::Xor(const ByteReg reg) {
+void AluOps::Xor(const ByteReg reg) {
     Xor(reg.v);
 }
 
-void Cpu_::Xor(const RegPair rp) {
-    Xor(this->mmu->Read(rp.Ptr()));
+void AluOps::Xor(const RegPair rp) {
+    Xor(this->cpu.mmu->Read(rp.Ptr()));
 }
 
-void Cpu_::Cmp(const u8 val) {
-    const auto lhs{this->a.v};
+void AluOps::Cmp(const u8 val) {
+    const auto lhs{this->cpu.a.v};
     const auto rhs{val};
-    this->flags.UpdateZ((lhs - rhs) == 0);
-    this->flags.UpdateN(true);
-    this->flags.UpdateH(bit::Borrow<4>(lhs, rhs));
-    this->flags.UpdateC(bit::Borrow<8>(lhs, rhs));
+    this->cpu.flags.UpdateZ((lhs - rhs) == 0);
+    this->cpu.flags.UpdateN(true);
+    this->cpu.flags.UpdateH(bit::Borrow<4>(lhs, rhs));
+    this->cpu.flags.UpdateC(bit::Borrow<8>(lhs, rhs));
 }
 
-void Cpu_::Cmp(const Imm8 imm) {
+void AluOps::Cmp(const Imm8 imm) {
     Cmp(imm.v);
 }
 
-void Cpu_::Cmp(const ByteReg reg) {
+void AluOps::Cmp(const ByteReg reg) {
     Cmp(reg.v);
 }
 
-void Cpu_::Cmp(const RegPair rp) {
-    Cmp(this->mmu->Read(rp.Ptr()));
+void AluOps::Cmp(const RegPair rp) {
+    Cmp(this->cpu.mmu->Read(rp.Ptr()));
 }
 
-void Cpu_::Inc(u8& val) {
+void AluOps::Inc(u8& val) {
     const auto lhs{val};
     const u8 rhs{1};
     ++val;
-    this->flags.UpdateZ(val == 0);
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry<3>(lhs, rhs));
+    this->cpu.flags.UpdateZ(val == 0);
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(bit::Carry<3>(lhs, rhs));
 }
 
-void Cpu_::Inc(ByteReg& reg) {
+void AluOps::Inc(ByteReg& reg) {
     Inc(reg.v);
 }
 
-void Cpu_::IncRef(const RegPair rp) {
+void AluOps::IncRef(const RegPair rp) {
     const auto ptr{rp.Ptr()};
-    auto val{this->mmu->Read(ptr)};
+    auto val{this->cpu.mmu->Read(ptr)};
     Inc(val);
-    this->mmu->Write(ptr, val);
+    this->cpu.mmu->Write(ptr, val);
 }
 
-void Cpu_::Dec(u8& val) {
+void AluOps::Dec(u8& val) {
     const auto lhs{val};
     const u8 rhs{1};
     --val;
-    this->flags.UpdateZ(val == 0);
-    this->flags.UpdateN(true);
-    this->flags.UpdateH(bit::Borrow<4>(lhs, rhs));
+    this->cpu.flags.UpdateZ(val == 0);
+    this->cpu.flags.UpdateN(true);
+    this->cpu.flags.UpdateH(bit::Borrow<4>(lhs, rhs));
 }
 
-void Cpu_::Dec(ByteReg& reg) {
+void AluOps::Dec(ByteReg& reg) {
     Dec(reg.v);
 }
 
-void Cpu_::DecRef(const RegPair rp) {
+void AluOps::DecRef(const RegPair rp) {
     const auto ptr{rp.Ptr()};
-    auto val{this->mmu->Read(ptr)};
+    auto val{this->cpu.mmu->Read(ptr)};
     Dec(val);
-    this->mmu->Write(ptr, val);
+    this->cpu.mmu->Write(ptr, val);
 }
 
-void Cpu_::Add(const RegPair rp, const u16 val) {
+void AluOps::Add(const RegPair rp, const u16 val) {
     const auto lhs{rp.Ptr()};
     const auto rhs{val};
     const auto sum{static_cast<u16>(lhs + rhs)};
     rp.h = bit::High(sum);
     rp.l = bit::Low(sum);
 
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry<11>(lhs, rhs));
-    this->flags.UpdateC(bit::Carry<15>(lhs, rhs));
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(bit::Carry<11>(lhs, rhs));
+    this->cpu.flags.UpdateC(bit::Carry<15>(lhs, rhs));
 }
 
-void Cpu_::Add(const RegPair dst, const RegPair src) {
+void AluOps::Add(const RegPair dst, const RegPair src) {
     Add(dst, src.Ptr());
 }
 
-void Cpu_::Add(const RegPair rp, const WordReg reg) {
+void AluOps::Add(const RegPair rp, const WordReg reg) {
     Add(rp, reg.v);
 }
 
-void Cpu_::Add(const RegPair rp, const Imm16 imm) {
+void AluOps::Add(const RegPair rp, const Imm16 imm) {
     Add(rp, imm.v);
 }
 
-void Cpu_::Add(WordReg& reg, const Simm8 imm) {
+void AluOps::Add(WordReg& reg, const Simm8 imm) {
     const auto lhs{static_cast<int>(reg.v)};
     const auto rhs{static_cast<int>(imm.v)};
     const auto sum{static_cast<u16>(lhs + rhs)};
     reg.v = sum;
-    this->flags.UpdateZ(false);
-    this->flags.UpdateN(false);
-    this->flags.UpdateH(bit::Carry<3>(lhs, rhs));
-    this->flags.UpdateC(bit::Carry<7>(lhs, rhs));
+    this->cpu.flags.UpdateZ(false);
+    this->cpu.flags.UpdateN(false);
+    this->cpu.flags.UpdateH(bit::Carry<3>(lhs, rhs));
+    this->cpu.flags.UpdateC(bit::Carry<7>(lhs, rhs));
 }
 
-void Cpu_::Inc(const RegPair rp) {
+void AluOps::Inc(const RegPair rp) {
     rp.Inc();
 }
 
-void Cpu_::Inc(WordReg& reg) {
+void AluOps::Inc(WordReg& reg) {
     ++reg.v;
 }
 
-void Cpu_::Dec(const RegPair rp) {
+void AluOps::Dec(const RegPair rp) {
     rp.Dec();
 }
 
-void Cpu_::Dec(WordReg& reg) {
+void AluOps::Dec(WordReg& reg) {
     --reg.v;
 }
 

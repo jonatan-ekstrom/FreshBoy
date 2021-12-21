@@ -8,8 +8,7 @@ set(cpuSources
     ops.cc
     mem_ops.cc
     registers.cc
-    spec_ops.cc
-    switches.cc)
+    spec_ops.cc)
 
 # Add CPU sources to 'gb' target.
 target_sources(gb PRIVATE ${cpuSources})

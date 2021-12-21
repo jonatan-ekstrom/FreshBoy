@@ -25,6 +25,7 @@ namespace gb {
 Cpu_::Cpu_(InterruptManager&& interrupts, Memory&& mmu)
     : interrupts{std::move(interrupts)},
       mmu{std::move(mmu)},
+      ops{*this},
       flags{this->f},
       af{this->a, this->f},
       bc{this->b, this->c},
@@ -57,11 +58,11 @@ uint Cpu_::Tick() {
     // Execute operation.
     uint mCycles;
     if (ex) {
-        ExecuteEx(opcode);
+        this->ops.ExecuteEx(opcode);
         mCycles = cyclesEx[opcode];
     } else {
         this->branched = false;
-        Execute(opcode);
+        this->ops.Execute(opcode);
         mCycles = this->branched ? cyclesBranched[opcode] : cycles[opcode];
     }
     return mCycles * cycleMultiplier;
@@ -86,7 +87,8 @@ bool Cpu_::HandleInterrupts() {
 
     // Call interrupt vector.
     const auto vector{Vector(requested)};
-    Call(vector);
+    PushPc();
+    this->pc.v = vector;
 
     return true;
 }

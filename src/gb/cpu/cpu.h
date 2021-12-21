@@ -4,6 +4,7 @@
 #include <vector>
 #include "interrupt.h"
 #include "memory.h"
+#include "ops.h"
 #include "registers.h"
 #include "types.h"
 
@@ -22,8 +23,17 @@ public:
     uint Tick();
 private:
     Cpu_(InterruptManager&& interrupts, Memory&& mmu);
+    bool HandleInterrupts();
+    std::tuple<u8, bool> GetOpcode();
+    Imm8 GetByte();
+    Simm8 GetSignedByte();
+    Imm16 GetWord();
+    void PushPc();
+    void PopPc();
+
     InterruptManager interrupts;
     Memory mmu;
+    Ops ops;
     ByteReg a, b, c, d, e, h, l, f;
     WordReg pc, sp;
     Flags flags;
@@ -34,21 +44,13 @@ private:
     std::vector<uint> cyclesBranched;
     std::vector<uint> cyclesEx;
 
-    bool HandleInterrupts();
-    std::tuple<u8, bool> GetOpcode();
-    Imm8 GetByte();
-    Simm8 GetSignedByte();
-    Imm16 GetWord();
-    void PushPc();
-    void PopPc();
-    void Execute(u8 opcode);
-    void ExecuteEx(u8 opcode);
-    #include "ops.h"
-    #include "alu_ops.h"
-    #include "bit_ops.h"
-    #include "flow_ops.h"
-    #include "mem_ops.h"
-    #include "spec_ops.h"
+    /* Allow implementation classes access to internals. */
+    friend class Ops;
+    friend class AluOps;
+    friend class BitOps;
+    friend class FlowOps;
+    friend class MemOps;
+    friend class SpecOps;
 };
 
 }
