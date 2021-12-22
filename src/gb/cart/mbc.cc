@@ -35,8 +35,7 @@ void MBC::LoadRam(const Path& ramPath) {
     // Load cartridge RAM banks from previously saved data.
     InputFile file{ramPath};
     std::streampos offset{0};
-    for (auto i{0u}; i < this->ramBanks.size(); ++i) {
-        auto& bank{this->ramBanks[i]};
+    for (auto& bank : this->ramBanks) {
         const auto size{static_cast<std::streamsize>(bank.size())};
         bank = file.ReadBytes(offset, size);
         offset += size;
@@ -49,8 +48,7 @@ void MBC::SaveRam(const Path& ramPath) {
     // Save cartridge RAM banks to file.
     OutputFile file{ramPath};
     std::streampos offset{0};
-    for (auto i{0u}; i < this->ramBanks.size(); ++i) {
-        const auto& bank{this->ramBanks[i]};
+    for (const auto& bank : this->ramBanks) {
         const auto size{static_cast<std::streamsize>(bank.size())};
         file.WriteBytes(offset, bank);
         offset += size;
