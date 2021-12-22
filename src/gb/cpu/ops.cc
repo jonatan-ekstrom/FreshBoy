@@ -1,3 +1,4 @@
+#include "ops.h"
 #include "cpu.h"
 #include "registers.h"
 

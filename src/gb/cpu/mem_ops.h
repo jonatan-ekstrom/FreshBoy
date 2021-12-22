@@ -1,6 +1,5 @@
 #pragma once
 #include "registers.h"
-#include "types.h"
 
 namespace gb {
 

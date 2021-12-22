@@ -1,6 +1,7 @@
 #include "mem_ops.h"
 #include "bits.h"
 #include "cpu.h"
+#include "types.h"
 
 namespace gb {
 
