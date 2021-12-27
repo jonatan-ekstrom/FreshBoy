@@ -69,6 +69,10 @@ void Gameboy_::ButtonReleased(const Button button) {
     this->input->ReleaseButton(button);
 }
 
+void Gameboy_::NextColorMap() {
+    this->ppu->NextColorMap();
+}
+
 void Gameboy_::Tick() {
     // Run the next instruction.
     const auto cycles{this->cpu->Tick()};

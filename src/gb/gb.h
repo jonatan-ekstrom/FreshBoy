@@ -49,6 +49,9 @@ public:
 
     /* Set the state of the button to released. */
     void ButtonReleased(Button button);
+
+    /* Switches to the next available color map for rendering. */
+    void NextColorMap();
 private:
     Gameboy_(const Path& romPath, const Path& ramPath,
              FrameCallback&& render, QueueCallback&& queue,

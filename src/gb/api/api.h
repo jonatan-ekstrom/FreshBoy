@@ -66,6 +66,9 @@ public:
 
     /* Triggers a button release in the emulator. */
     void ButtonReleased(Button button);
+
+    /* Switches to the next available color map for rendering. */
+    void NextColorMap();
 private:
     Handle gb;
 };

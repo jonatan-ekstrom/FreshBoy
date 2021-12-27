@@ -191,6 +191,10 @@ void Lcd_::Tick(const uint cycles) {
     }
 }
 
+void Lcd_::NextColorMap() {
+    this->colorMaps->Next();
+}
+
 bool Lcd_::Enabled() const {
     return this->lcdc.LcdEnabled();
 }

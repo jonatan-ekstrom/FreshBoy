@@ -36,6 +36,9 @@ public:
 
     /* Step the PPU the provided number of CPU cycles. */
     void Tick(uint cycles);
+
+    /* Switches to the next available color map for rendering. */
+    void NextColorMap();
 private:
     using Wly = Window::Wly;
     Lcd_(InterruptManager&& interrupts, FrameHandler&& frameHandler);

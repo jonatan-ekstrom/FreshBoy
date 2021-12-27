@@ -66,4 +66,8 @@ void Gameboy::ButtonReleased(const Button button) {
     this->gb->ButtonReleased(Map(button));
 }
 
+void Gameboy::NextColorMap() {
+    this->gb->NextColorMap();
+}
+
 }
