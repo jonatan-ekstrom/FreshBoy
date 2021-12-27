@@ -1,4 +1,4 @@
-#include "color.h"
+#include "dot.h"
 #include <stdexcept>
 
 namespace gb {

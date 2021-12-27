@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "color.h"
+#include "dot.h"
 #include "types.h"
 
 namespace gb {

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "color.h"
+#include "dot.h"
 #include "palettes.h"
 #include "sprite_table.h"
 #include "tile_banks.h"

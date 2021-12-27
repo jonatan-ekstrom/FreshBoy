@@ -1,7 +1,7 @@
 #pragma once
 #include <optional>
 #include "bg_base.h"
-#include "color.h"
+#include "dot.h"
 #include "palettes.h"
 #include "tile_banks.h"
 #include "tile_maps.h"

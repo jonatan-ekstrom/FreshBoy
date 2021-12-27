@@ -2,7 +2,7 @@
 #include <array>
 #include <memory>
 #include <vector>
-#include "color.h"
+#include "dot.h"
 #include "types.h"
 
 namespace gb {

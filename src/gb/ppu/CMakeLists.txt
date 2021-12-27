@@ -2,7 +2,7 @@
 set(ppuSources
     background.cc
     bg_base.cc
-    color.cc
+    dot.cc
     framebuffer.cc
     lcd.cc
     lcd_regs.cc
