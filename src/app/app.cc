@@ -24,8 +24,9 @@ constexpr Button CodeToButton(const enum Key::Code code) {
         case Key::Code::X: return Button::A;
         case Key::Code::Backspace: return Button::Select;
         case Key::Code::Return: return Button::Start;
+        case Key::Code::C:
         case Key::Code::Unknown:
-        default: throw std::runtime_error{"APP - Unknown keycode."};
+        default: throw std::runtime_error{"APP - Unsupported keycode."};
     }
 }
 
@@ -139,13 +140,18 @@ void Emulator_::Queue(const Samples& left, const Samples& right) {
 }
 
 void Emulator_::KeyUp(const Key& key) {
-    if (key.Code == sdl::Key::Code::Unknown) return;
-    const auto button{CodeToButton(key.Code)};
+    const auto c{key.Code};
+    if (c == Key::Code::Unknown || c == Key::Code::C) return;
+    const auto button{CodeToButton(c)};
     this->gb->ButtonReleased(button);
 }
 
 void Emulator_::KeyDown(const Key& key) {
     if (key.Code == sdl::Key::Code::Unknown) return;
+    if (key.Code == sdl::Key::Code::C) {
+        this->gb->NextColorMap();
+        return;
+    }
     const auto button{CodeToButton(key.Code)};
     this->gb->ButtonPressed(button);
 }

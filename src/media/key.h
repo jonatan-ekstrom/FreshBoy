@@ -18,6 +18,7 @@ public:
         Right,
         Z,
         X,
+        C,
         Backspace,
         Return
     } Code;
