@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "color.h"
 #include "dot.h"
 #include "types.h"
 
@@ -12,7 +13,7 @@ public:
     using Pixels = std::vector<u32>;
 
     /* Creates a new instance of the frame buffer. */
-    FrameBuffer();
+    explicit FrameBuffer(ColorMaps maps);
 
     /* Lock the current frame for rendering and retrieve a reference to the pixel data. */
     const Pixels& LockFrame();
@@ -23,6 +24,9 @@ public:
     /* Resets the frame buffer to its initial state. */
     void Reset();
 private:
+    u32 DotToPixel(const Dot& dot) const;
+    u32 ScreenPixel() const;
+    ColorMaps maps;
     std::vector<Dot> dots;
     Pixels pixels;
 };

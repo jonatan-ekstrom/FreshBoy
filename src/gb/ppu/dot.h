@@ -32,14 +32,4 @@ struct Dot {
     Shade Tone;
 };
 
-/* 32-bit RGBA color data. */
-struct Color {
-    Color();
-    explicit Color(Shade shade);
-    u8 R;
-    u8 G;
-    u8 B;
-    u8 A;
-};
-
 }

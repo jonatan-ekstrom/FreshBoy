@@ -12,23 +12,24 @@ Lcd Lcd_::Create(InterruptManager interrupts, FrameHandler frameHandler) {
 
 Lcd_::Lcd_(InterruptManager&& interrupts, FrameHandler&& frameHandler)
     : frameHandler{std::move(frameHandler)},
-      banks{TileBanks_::Create()},
-      maps{TileMaps_::Create()},
+      tileBanks{TileBanks_::Create()},
+      tileMaps{TileMaps_::Create()},
       table{SpriteTable_::Create()},
       palettes{},
-      bg{this->banks,
-         this->maps,
+      bg{this->tileBanks,
+         this->tileMaps,
          this->palettes.Background()},
-      window{this->banks,
-             this->maps,
+      window{this->tileBanks,
+             this->tileMaps,
              this->palettes.Background()},
-      sprites{this->banks,
+      sprites{this->tileBanks,
               this->table,
               this->palettes.Object0(),
               this->palettes.Object1()},
       stat{std::move(interrupts)},
       lcdc{},
-      frame{},
+      colorMaps{ColorMaps_::Create()},
+      frame{this->colorMaps},
       wly{},
       cycleCount{0},
       firstFrame{false} {}
@@ -40,12 +41,12 @@ u8 Lcd_::Read(const u16 address) const {
 
     // Tile banks
     if (address >= 0x8000 && address <= 0x97FF) {
-        return this->banks->Read(address);
+        return this->tileBanks->Read(address);
     }
 
     // Tile maps
     if (address >= 0x9800 && address <= 0x9FFF) {
-        return this->maps->Read(address);
+        return this->tileMaps->Read(address);
     }
 
     // OAM
@@ -94,13 +95,13 @@ void Lcd_::Write(const u16 address, const u8 byte) {
 
     // Tile banks
     if (address >= 0x8000 && address <= 0x97FF) {
-        this->banks->Write(address, byte);
+        this->tileBanks->Write(address, byte);
         return;
     }
 
     // Tile maps
     if (address >= 0x9800 && address <= 0x9FFF) {
-        this->maps->Write(address, byte);
+        this->tileMaps->Write(address, byte);
         return;
     }
 

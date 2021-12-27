@@ -2,6 +2,7 @@
 #include <functional>
 #include <memory>
 #include "background.h"
+#include "color.h"
 #include "framebuffer.h"
 #include "interrupt.h"
 #include "lcd_regs.h"
@@ -53,8 +54,8 @@ private:
     void RenderWindow(uint ly, Dot* line);
     void RenderSprites(uint ly, Dot* line);
     FrameHandler frameHandler;
-    TileBanks banks;
-    TileMaps maps;
+    TileBanks tileBanks;
+    TileMaps tileMaps;
     SpriteTable table;
     Palettes palettes;
     Background bg;
@@ -62,6 +63,7 @@ private:
     SpriteRenderer sprites;
     LcdStat stat;
     LcdControl lcdc;
+    ColorMaps colorMaps;
     FrameBuffer frame;
     Wly wly;
     uint cycleCount;

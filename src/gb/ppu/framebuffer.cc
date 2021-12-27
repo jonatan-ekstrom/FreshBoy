@@ -1,20 +1,10 @@
 #include "framebuffer.h"
 #include <algorithm>
 #include <stdexcept>
+#include <utility>
 #include "display.h"
 
 namespace {
-
-/* Maps a shade to its corresponding RGBA pixel data. */
-gb::u32 ShadeToPixel(const gb::Shade shade) {
-    const auto [r, g, b, a] = gb::Color{shade};
-    return static_cast<gb::u32>(r << 24 | g << 16 | b << 8 | a);
-}
-
-/* Converts a dot to its corresponding RGBA pixel data. */
-gb::u32 DotToPixel(const gb::Dot& dot) {
-    return ShadeToPixel(dot.Tone);
-}
 
 /* Total number of pixels in the display. */
 constexpr auto Size{gb::lcd::DisplayWidth * gb::lcd::DisplayHeight};
@@ -23,13 +13,13 @@ constexpr auto Size{gb::lcd::DisplayWidth * gb::lcd::DisplayHeight};
 
 namespace gb {
 
-FrameBuffer::FrameBuffer()
-    : dots(Size), pixels(Size, ShadeToPixel(Shade::Screen)) {}
+FrameBuffer::FrameBuffer(ColorMaps maps)
+    : maps{std::move(maps)}, dots(Size), pixels(Size, ScreenPixel()) {}
 
 const FrameBuffer::Pixels& FrameBuffer::LockFrame() {
     // Transform all dots to their corresponding pixel representation.
-    std::transform(this->dots.cbegin(), this->dots.cend(),
-                   this->pixels.begin(), DotToPixel);
+    std::transform(this->dots.cbegin(), this->dots.cend(), this->pixels.begin(),
+                   [this] (const auto& dot) { return DotToPixel(dot); });
     return this->pixels;
 }
 
@@ -44,7 +34,19 @@ Dot* FrameBuffer::ScanlinePtr(const uint rowIndex) {
 void FrameBuffer::Reset() {
     // Fill the buffer with default dots / pixels.
     std::fill(this->dots.begin(), this->dots.end(), Dot{});
-    std::fill(this->pixels.begin(), this->pixels.end(), ShadeToPixel(Shade::Screen));
+    std::fill(this->pixels.begin(), this->pixels.end(), ScreenPixel());
+}
+
+u32 FrameBuffer::DotToPixel(const Dot& dot) const {
+    const auto& map{this->maps->Current()};
+    const auto color{map.Get(dot.Tone)};
+    return color.Pixel();
+}
+
+u32 FrameBuffer::ScreenPixel() const {
+    const auto& map{this->maps->Current()};
+    const auto color{map.Get(Shade::Screen)};
+    return color.Pixel();
 }
 
 }
