@@ -1,21 +1,30 @@
 #include "color.h"
 #include <stdexcept>
 
+namespace {
+
+/* Full opacity. */
+constexpr auto Alpha{255};
+
+}
+
 namespace gb {
 
-Color::Color() : r{0}, g{0}, b{0} {}
+Color::Color() : pixel{Alpha} {} // Black (0, 0, 0, 255).
 
 Color::Color(const std::initializer_list<u8> lst) {
     if (lst.size() != 3) throw std::logic_error{"Color - invalid initializer."};
     auto ptr{lst.begin()};
-    this->r = *(ptr++);
-    this->g = *(ptr++);
-    this->b = *ptr;
+    const auto r{*(ptr++)};
+    const auto g{*(ptr++)};
+    const auto b{*ptr};
+
+    // Pixel data is stored as 32-bit values (RGBA).
+    this->pixel = static_cast<u32>(r << 24 | g << 16 | b << 8 | Alpha);
 }
 
 u32 Color::Pixel() const {
-    constexpr auto a{255};
-    return static_cast<gb::u32>(this->r << 24 | this->g << 16 | this->b << 8 | a);
+    return this->pixel;
 }
 
 ColorMap::ColorMap(const std::initializer_list<Color> lst) {

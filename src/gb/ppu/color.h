@@ -19,9 +19,7 @@ public:
     /* Get the pixel representation in RGBA format. */
     u32 Pixel() const;
 private:
-    u8 r;
-    u8 g;
-    u8 b;
+    u32 pixel;
 };
 
 /* Color map (palette) data. */
