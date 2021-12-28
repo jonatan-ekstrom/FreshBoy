@@ -19,6 +19,7 @@ systems programming with a splash of 90s nostalgia.
 - Full audio / video emulation with good performance.
 - Supports ROM, MBC1 and MBC3 + RTC cartridges.
 - RAM persistence (save data).
+- Multiple color palettes.
 - Original DMG boot ROM.
 - Freestanding core emulator library with its own API.
   - No dependencies on other libraries, only standard C++.
@@ -48,6 +49,10 @@ $ ./install
 |    Down     |     Down     |
 |    Left     |     Left     |
 |    Right    |    Right     |
+
+#### Color palettes
+
+Press C to cycle between the available color palettes.
 
 ### Screenshots
 
