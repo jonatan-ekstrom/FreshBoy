@@ -3,6 +3,7 @@
 #include <utility>
 #include "log.h"
 #include "mbc1.h"
+#include "mbc2.h"
 #include "mbc3.h"
 #include "rom.h"
 
@@ -24,10 +25,12 @@ Cartridge Cartridge_::Create(const Path& romPath, const uint refreshRate) {
         case CartridgeType::MBC1:
             res = std::make_shared<MBC1>(romPath, std::move(header));
             break;
+        case CartridgeType::MBC2:
+            res = std::make_shared<MBC2>(romPath, std::move(header));
+            break;
         case CartridgeType::MBC3:
             res = std::make_shared<MBC3>(romPath, std::move(header), refreshRate);
             break;
-        case CartridgeType::MBC2:
         case CartridgeType::MBC5:
         case CartridgeType::MBC6:
         case CartridgeType::MBC7:
