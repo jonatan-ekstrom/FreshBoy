@@ -17,7 +17,7 @@ systems programming with a splash of 90s nostalgia.
 ### Features
 
 - Full audio / video emulation with good performance.
-- Supports ROM, MBC1 and MBC3 + RTC cartridges.
+- Supports ROM, MBC1, MBC2 and MBC3 + RTC cartridges.
 - RAM persistence (save data).
 - Multiple color palettes.
 - Original DMG boot ROM.
