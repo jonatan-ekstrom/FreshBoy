@@ -13,10 +13,8 @@ public:
     /* Creates a new MBC2 handler from the provided file. */
     MBC2(const Path& romPath, Header&& header);
 
-    /* Read data from the provided address. */
     u8 Read(u16 address) const override;
 
-    /* Write data to the provided address. */
     void Write(u16 address, u8 byte) override;
 private:
     uint BankNumber() const;
