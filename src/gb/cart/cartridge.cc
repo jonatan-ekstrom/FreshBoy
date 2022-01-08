@@ -5,6 +5,7 @@
 #include "mbc1.h"
 #include "mbc2.h"
 #include "mbc3.h"
+#include "mbc5.h"
 #include "rom.h"
 
 namespace gb {
@@ -32,6 +33,8 @@ Cartridge Cartridge_::Create(const Path& romPath, const uint refreshRate) {
             res = std::make_shared<MBC3>(romPath, std::move(header), refreshRate);
             break;
         case CartridgeType::MBC5:
+            res = std::make_shared<MBC5>(romPath, std::move(header));
+            break;
         case CartridgeType::MBC6:
         case CartridgeType::MBC7:
         case CartridgeType::Unknown:
