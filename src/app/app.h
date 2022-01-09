@@ -23,7 +23,7 @@ public:
     static Emulator Create();
 
     /* Run the emulation. */
-    void Run(const api::Path& romPath, const api::Path& ramPath);
+    void Run(const api::Path& romPath, const api::Path& ramPath, bool log);
 private:
     Emulator_();
     using Clock = std::chrono::steady_clock;

@@ -36,7 +36,7 @@ namespace app {
 
 Emulator Emulator_::Create() { return Emulator{new Emulator_}; }
 
-void Emulator_::Run(const Path& romPath, const Path& ramPath) {
+void Emulator_::Run(const Path& romPath, const Path& ramPath, const bool log) {
     // Setup callbacks.
     const auto renderCb{[this] (const auto& p) { Render(p); }};
     const auto queueCb{[this] (const auto& left, const auto& right) { Queue(left, right); }};
@@ -44,7 +44,7 @@ void Emulator_::Run(const Path& romPath, const Path& ramPath) {
 
     // Create the API wrapper.
     this->gb = std::make_unique<Gameboy>(romPath, ramPath, renderCb, queueCb,
-                                         this->refreshRate, Audio::SampleRate);
+                                         this->refreshRate, Audio::SampleRate, log);
 
     // Print header information to stdout.
     std::cout << gb->Header() << std::endl;

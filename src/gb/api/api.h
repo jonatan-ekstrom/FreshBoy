@@ -53,7 +53,7 @@ public:
     /* Constructs a new instance of the Game Boy emulator. */
     Gameboy(const Path& romPath, const Path& ramPath,
             RenderCallback render, QueueCallback queue,
-            unsigned int refreshRate, unsigned int sampleRate, bool log = false);
+            unsigned int refreshRate, unsigned int sampleRate, bool log);
 
     /* Returns a dump of the ROM header as a string. */
     std::string Header() const;

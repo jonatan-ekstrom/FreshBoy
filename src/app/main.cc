@@ -2,26 +2,21 @@
 #include <exception>
 #include <iostream>
 #include "app.h"
+#include "parser.h"
 
-namespace {
-
-void PrintUsage() {
-    constexpr auto usage{"Usage: FreshBoy [ROM path] [RAM path (optional)]"};
-    std::cerr << usage << std::endl;
-}
-
-}
+using namespace app;
 
 int main(const int argc, const char* argv[]) {
     int exitCode{EXIT_FAILURE};
-    if (argc < 2 || argc > 3) {
-        PrintUsage();
-        return exitCode;
-    }
     try {
-        auto emulator{app::Emulator_::Create()};
-        emulator->Run(argv[1], argc == 3 ? argv[2] : "");
+        const Parser parser{argc, argv};
+        const auto [rom, ram, log] = parser.Arguments();
+        auto emulator{Emulator_::Create()};
+        emulator->Run(rom, ram, log);
         exitCode = EXIT_SUCCESS;
+    } catch (const ParseError& e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << Parser::Usage() << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     } catch (...) {
