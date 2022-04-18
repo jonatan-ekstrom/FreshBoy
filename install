@@ -42,14 +42,6 @@ else
     mode='Debug'
 fi
 
-if ! [[ "$_tests" =~ [Nn] ]]; then
-    tests='Yes'
-    tests_cm='ON'
-else
-    tests='No'
-    tests_cm='OFF'
-fi
-
 if ! [[ "$_gnu" =~ [Nn] ]]; then
     gnu='Yes'
     gnu_cm='ON'
