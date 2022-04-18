@@ -6,7 +6,6 @@ set(warningList
     -Wall
     -Wextra
     -Werror
-    -Wabi
     -Waligned-new=all
     -Walloc-zero
     -Walloca
@@ -93,7 +92,6 @@ set(warningList
     -Wunused-const-variable=2
     -Wunused-macros
     -Wuseless-cast
-    -Wvector-operation-performance
     -Wvirtual-inheritance
     -Wvirtual-move-assign
     -Wvolatile
