@@ -52,8 +52,6 @@ set(warningList
     -Wmissing-include-dirs
     -Wmultichar
     -Wmultiple-inheritance
-    -Wnoexcept
-    -Wnoexcept-type
     -Wnon-template-friend
     -Wnon-virtual-dtor
     -Wnormalized=nfkc
