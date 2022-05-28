@@ -31,7 +31,7 @@ systems programming with a splash of 90s nostalgia.
 
 ### Build instructions
 
-#### Ubuntu 21.04
+#### Ubuntu 22.04
 ``` shell
 $ sudo apt install build-essential cmake libsdl2-dev
 $ ./install
