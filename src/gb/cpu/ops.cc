@@ -1,6 +1,16 @@
 #include "ops.h"
 #include "cpu.h"
+#include "log.h"
 #include "registers.h"
+
+namespace {
+
+void LogInvalid(const gb::u8 opcode) {
+    using namespace gb::log;
+    Warning("Invalid opcode: " + Hex(opcode));
+}
+
+}
 
 namespace gb {
 
@@ -212,7 +222,7 @@ void Ops::Execute(const u8 opcode) {
         case 0xC8: flow.Ret(Condition::Z); break;
         case 0xC9: flow.Ret(); break;
         case 0xCA: flow.Jump(Condition::Z, cpu.GetWord()); break;
-        case 0xCB: break; /* Invalid */
+        case 0xCB: LogInvalid(opcode); break;
         case 0xCC: flow.Call(Condition::Z, cpu.GetWord()); break;
         case 0xCD: flow.Call(cpu.GetWord()); break;
         case 0xCE: alu.AddWithCarry(cpu.GetByte()); break;
@@ -220,7 +230,7 @@ void Ops::Execute(const u8 opcode) {
         case 0xD0: flow.Ret(Condition::NC); break;
         case 0xD1: mem.Pop(cpu.de); break;
         case 0xD2: flow.Jump(Condition::NC, cpu.GetWord()); break;
-        case 0xD3: break; /* Invalid */
+        case 0xD3: LogInvalid(opcode); break;
         case 0xD4: flow.Call(Condition::NC, cpu.GetWord()); break;
         case 0xD5: mem.Push(cpu.de); break;
         case 0xD6: alu.Sub(cpu.GetByte()); break;
@@ -228,32 +238,32 @@ void Ops::Execute(const u8 opcode) {
         case 0xD8: flow.Ret(Condition::C); break;
         case 0xD9: flow.Reti(); break;
         case 0xDA: flow.Jump(Condition::C, cpu.GetWord()); break;
-        case 0xDB: break; /* Invalid */
+        case 0xDB: LogInvalid(opcode); break;
         case 0xDC: flow.Call(Condition::C, cpu.GetWord()); break;
-        case 0xDD: break; /* Invalid */
+        case 0xDD: LogInvalid(opcode); break;
         case 0xDE: alu.SubWithBorrow(cpu.GetByte()); break;
         case 0xDF: flow.Rst(3); break;
         case 0xE0: mem.Load(cpu.GetByte().IO(), cpu.a); break;
         case 0xE1: mem.Pop(cpu.hl); break;
         case 0xE2: mem.Load(cpu.c.IO(), cpu.a); break;
-        case 0xE3: break; /* Invalid */
-        case 0xE4: break; /* Invalid */
+        case 0xE3: LogInvalid(opcode); break;
+        case 0xE4: LogInvalid(opcode); break;
         case 0xE5: mem.Push(cpu.hl); break;
         case 0xE6: alu.And(cpu.GetByte()); break;
         case 0xE7: flow.Rst(4); break;
         case 0xE8: alu.Add(cpu.sp, cpu.GetSignedByte()); break;
         case 0xE9: flow.Jump(cpu.hl); break;
         case 0xEA: mem.Load(cpu.GetWord(), cpu.a); break;
-        case 0xEB: break; /* Invalid */
-        case 0xEC: break; /* Invalid */
-        case 0xED: break; /* Invalid */
+        case 0xEB: LogInvalid(opcode); break;
+        case 0xEC: LogInvalid(opcode); break;
+        case 0xED: LogInvalid(opcode); break;
         case 0xEE: alu.Xor(cpu.GetByte()); break;
         case 0xEF: flow.Rst(5); break;
         case 0xF0: mem.Load(cpu.a, cpu.GetByte().IO()); break;
         case 0xF1: mem.PopAf(); break;
         case 0xF2: mem.Load(cpu.a, cpu.c.IO()); break;
         case 0xF3: spec.Di(); break;
-        case 0xF4: break; /* Invalid */
+        case 0xF4: LogInvalid(opcode); break;
         case 0xF5: mem.Push(cpu.af); break;
         case 0xF6: alu.Or(cpu.GetByte()); break;
         case 0xF7: flow.Rst(6); break;
@@ -261,8 +271,8 @@ void Ops::Execute(const u8 opcode) {
         case 0xF9: mem.Load(cpu.sp, cpu.hl); break;
         case 0xFA: mem.Load(cpu.a, cpu.GetWord()); break;
         case 0xFB: spec.Ei(); break;
-        case 0xFC: break; /* Invalid */
-        case 0xFD: break; /* Invalid */
+        case 0xFC: LogInvalid(opcode); break;
+        case 0xFD: LogInvalid(opcode); break;
         case 0xFE: alu.Cmp(cpu.GetByte()); break;
         case 0xFF: flow.Rst(7); break;
         default: break;
