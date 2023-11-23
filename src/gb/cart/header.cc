@@ -29,7 +29,7 @@ constexpr const char* MemSizeToStr(const gb::MemSize sz) {
     }
 }
 
-constexpr uint MemSizeToRomBanks(const gb::MemSize sz) {
+constexpr gb::uint MemSizeToRomBanks(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
         case MemSize::KB32: return 2;
@@ -49,7 +49,7 @@ constexpr uint MemSizeToRomBanks(const gb::MemSize sz) {
     }
 }
 
-constexpr uint MemSizeToRamBanks(const gb::MemSize sz) {
+constexpr gb::uint MemSizeToRamBanks(const gb::MemSize sz) {
     using gb::MemSize;
     switch (sz) {
         case MemSize::Zero: return 0;

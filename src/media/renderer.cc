@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include <stdexcept>
 #include <utility>
 #include <SDL_error.h>
 #include <SDL_render.h>

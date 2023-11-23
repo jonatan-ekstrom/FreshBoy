@@ -114,7 +114,7 @@ void Emulator_::Sync() const {
 }
 
 void Emulator_::Render(const Pixels& pixels) {
-    const auto txSize{static_cast<uint>(this->texture.Width() * this->texture.Height())};
+    const auto txSize{static_cast<unsigned int>(this->texture.Width() * this->texture.Height())};
     if (pixels.size() != txSize) {
         throw std::runtime_error{"Emulator - framebuffer/texture size mismatch."};
     }

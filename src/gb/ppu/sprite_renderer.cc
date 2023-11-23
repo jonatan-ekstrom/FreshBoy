@@ -8,7 +8,7 @@ namespace {
 constexpr auto Size{8};
 
 /* Returns true if the sprite overlaps the display X-coordinate. */
-bool OverlapX(const gb::Sprite& sprite, const uint displayX) {
+bool OverlapX(const gb::Sprite& sprite, const gb::uint displayX) {
     const auto x{static_cast<int>(displayX)};
     const auto low{sprite.X()};
     const auto high{low + Size};
@@ -16,7 +16,7 @@ bool OverlapX(const gb::Sprite& sprite, const uint displayX) {
 }
 
 /* Returns true if the sprite overlaps the display Y-coordinate. */
-bool OverlapY(const gb::Sprite& sprite, const uint displayY, const bool small) {
+bool OverlapY(const gb::Sprite& sprite, const gb::uint displayY, const bool small) {
     const auto y{static_cast<int>(displayY)};
     const auto height{small ? Size : 2 * Size};
     const auto low{sprite.Y()};
