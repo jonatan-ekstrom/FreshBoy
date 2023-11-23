@@ -258,8 +258,8 @@ std::string Header::PrettyPrint() const {
 }
 
 std::string Header::Stringify(const u16 begin, const u16 end) const {
-    const auto start{this->bytes.cbegin() + begin - HeaderOffset};
-    const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};
+    const auto start{this->bytes.cbegin() + (begin - HeaderOffset)};
+    const auto stop{this->bytes.cbegin() + (end - HeaderOffset + 1)};
     std::vector<char> characters{start, stop};
     characters.push_back('\0');
     return { characters.data() };
@@ -268,8 +268,8 @@ std::string Header::Stringify(const u16 begin, const u16 end) const {
 std::string Header::Hexdump(const u16 begin, const u16 end) const {
     constexpr char characters[]{"0123456789ABCDEF"};
     constexpr auto width{16};
-    const auto start{this->bytes.cbegin() + begin - HeaderOffset};
-    const auto stop{this->bytes.cbegin() + end - HeaderOffset + 1};
+    const auto start{this->bytes.cbegin() + (begin - HeaderOffset)};
+    const auto stop{this->bytes.cbegin() + (end - HeaderOffset + 1)};
     std::string result;
     auto count{0};
     for (auto p{start}; p != stop; ++p) {
@@ -288,8 +288,8 @@ std::string Header::Hexdump(const u16 begin, const u16 end) const {
 
 u8 Header::ComputedChecksum() const {
     u8 checksum{0};
-    const auto begin{this->bytes.cbegin() + 0x134 - HeaderOffset};
-    const auto end{this->bytes.cbegin() + 0x14C - HeaderOffset + 1};
+    const auto begin{this->bytes.cbegin() + (0x134 - HeaderOffset)};
+    const auto end{this->bytes.cbegin() + (0x14C - HeaderOffset + 1)};
     for (auto p{begin}; p != end; ++p) {
         checksum = static_cast<u8>(checksum - *p - 1);
     }
