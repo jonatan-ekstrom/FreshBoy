@@ -16,8 +16,8 @@ class OutputFile;
 class Rtc {
 public:
     using State = std::array<u8, 9>;
-    /* Initialize a new real-time clock for the provided screen refresh rate. */
-    explicit Rtc(uint refreshRate);
+    /* Initialize a new real-time clock */
+    Rtc();
 
     /* Read data from the provided address. */
     u8 Read(u8 address) const;
@@ -46,7 +46,6 @@ private:
     };
     bool Active() const;
     void Tick();
-    uint cyclesPerSecond;
     uint cycleCount;
     Regs curr;
     Regs latched;
@@ -56,7 +55,7 @@ private:
 class MBC3 final : public MBC {
 public:
     /* Creates a new MBC3 handler for the provided file. */
-    MBC3(const Path& romPath, Header&& header, uint refreshRate);
+    MBC3(const Path& romPath, Header&& header);
 
     u8 Read(u16 address) const override;
 

@@ -17,9 +17,9 @@ namespace gb {
 
 Gameboy_::Gameboy_(const Path& romPath, const Path& ramPath,
                    FrameCallback&& render, QueueCallback&& queue,
-                   const uint refreshRate, const uint sampleRate, const bool log)
-    : cart{Cartridge_::Create(romPath, refreshRate)},
-      apu{Apu_::Create(std::move(queue), refreshRate, sampleRate)},
+                   const uint sampleRate, const bool log)
+    : cart{Cartridge_::Create(romPath)},
+      apu{Apu_::Create(std::move(queue), sampleRate)},
       interrupts{InterruptManager_::Create()},
       input{Input_::Create(this->interrupts)},
       serial{Serial_::Create(this->interrupts)},
@@ -41,11 +41,11 @@ Gameboy_::Gameboy_(const Path& romPath, const Path& ramPath,
 
 Gameboy Gameboy_::Create(const Path& romPath, const Path& ramPath,
                          FrameCallback render, QueueCallback queue,
-                         const uint refreshRate, const uint sampleRate,
+                         const uint sampleRate,
                          const bool log) {
     return Gameboy{new Gameboy_{romPath, ramPath,
                                 std::move(render), std::move(queue),
-                                refreshRate, sampleRate, log}};
+                                sampleRate, log}};
 }
 
 std::string Gameboy_::Header() const {

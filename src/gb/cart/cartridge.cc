@@ -12,7 +12,7 @@ namespace gb {
 
 Cartridge_::Cartridge_(Header&& header) : header{std::move(header)} {}
 
-Cartridge Cartridge_::Create(const Path& romPath, const uint refreshRate) {
+Cartridge Cartridge_::Create(const Path& romPath) {
     // Parse the header and compute the cartridge checksum.
     Header header{romPath};
     const auto checksum{header.CartridgeChecksum()};
@@ -30,7 +30,7 @@ Cartridge Cartridge_::Create(const Path& romPath, const uint refreshRate) {
             res = std::make_shared<MBC2>(romPath, std::move(header));
             break;
         case CartridgeType::MBC3:
-            res = std::make_shared<MBC3>(romPath, std::move(header), refreshRate);
+            res = std::make_shared<MBC3>(romPath, std::move(header));
             break;
         case CartridgeType::MBC5:
             res = std::make_shared<MBC5>(romPath, std::move(header));

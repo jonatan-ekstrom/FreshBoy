@@ -44,11 +44,11 @@ void Handle::GameboyDeleter::operator()(Gameboy_ *const p) { delete p; }
 
 Gameboy::Gameboy(const Path& romPath, const Path& ramPath,
                  RenderCallback render, QueueCallback queue,
-                 const unsigned int refreshRate, const unsigned int sampleRate,
+                 const unsigned int sampleRate,
                  const bool log)
     : gb{Gameboy_::Create(romPath, ramPath,
                           std::move(render), std::move(queue),
-                          refreshRate, sampleRate, log).release()} {}
+                          sampleRate, log).release()} {}
 
 std::string Gameboy::Header() const {
     return this->gb->Header();

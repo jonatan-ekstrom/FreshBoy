@@ -18,9 +18,6 @@ public:
     /* Static constructor, acquires an Instance. */
     static Instance Create();
 
-    /* Returns the screen refresh rate in Hz. */
-    unsigned int RefreshRate() const;
-
     ~Instance_();
     Instance_(const Instance_&) = delete;
     Instance_(Instance_&& other) noexcept;

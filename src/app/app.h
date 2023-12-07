@@ -43,7 +43,6 @@ private:
     sdl::Texture texture;
     sdl::EventManager eventManager;
     sdl::Audio audio;
-    unsigned int refreshRate;
     unsigned int frameCount;
     bool running;
     TimePoint startTime;

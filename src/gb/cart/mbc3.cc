@@ -23,9 +23,8 @@ gb::u32 GetCurrentTime() {
 
 namespace gb {
 
-Rtc::Rtc(const uint refreshRate)
-    : cyclesPerSecond{lcd::CyclesPerFrame * refreshRate},
-      cycleCount{0},
+Rtc::Rtc()
+    : cycleCount{0},
       curr{},
       latched{} {}
 
@@ -54,10 +53,12 @@ void Rtc::Write(const u8 address, const u8 byte) {
 void Rtc::Tick(const uint cycles) {
     if (!Active()) return;
 
+    constexpr uint cyclesPerSecond{gb::lcd::ClockFreq};
+
     // Advance clock each second if active.
     this->cycleCount += cycles;
-    if (this->cycleCount >= this->cyclesPerSecond) {
-        this->cycleCount -= this->cyclesPerSecond;
+    if (this->cycleCount >= cyclesPerSecond) {
+        this->cycleCount -= cyclesPerSecond;
         Tick();
     }
 }
@@ -156,9 +157,8 @@ void Rtc::Tick() {
     }
 }
 
-MBC3::MBC3(const Path& romPath, Header&& header, const uint refreshRate)
+MBC3::MBC3(const Path& romPath, Header&& header)
     : MBC{romPath, std::move(header)},
-      rtc{refreshRate},
       enabled{false},
       latchPending{false},
       romBank{1},

@@ -15,7 +15,7 @@ using Cartridge = std::shared_ptr<Cartridge_>;
 class Cartridge_ {
 public:
     /* Static factory method, creates a new cartridge from the provided ROM. */
-    static Cartridge Create(const Path& romPath, uint refreshRate);
+    static Cartridge Create(const Path& romPath);
 
     virtual ~Cartridge_() = default;
 

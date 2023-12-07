@@ -36,6 +36,9 @@ enum class Button { Right, Left, Up, Down, A, B, Select, Start };
 inline constexpr unsigned int DisplayWidth{160};
 inline constexpr unsigned int DisplayHeight{144};
 
+/* Refresh rate in frames per second. */
+inline constexpr double RefreshRate{4194304.0 / 70224.0};
+
 /* Opaque pointer handle. */
 class Handle {
 public:
@@ -53,7 +56,7 @@ public:
     /* Constructs a new instance of the Game Boy emulator. */
     Gameboy(const Path& romPath, const Path& ramPath,
             RenderCallback render, QueueCallback queue,
-            unsigned int refreshRate, unsigned int sampleRate, bool log);
+            unsigned int sampleRate, bool log);
 
     /* Returns a dump of the ROM header as a string. */
     std::string Header() const;

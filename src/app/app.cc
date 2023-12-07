@@ -44,7 +44,7 @@ void Emulator_::Run(const Path& romPath, const Path& ramPath, const bool log) {
 
     // Create the API wrapper.
     this->gb = std::make_unique<Gameboy>(romPath, ramPath, renderCb, queueCb,
-                                         this->refreshRate, Audio::SampleRate, log);
+                                         Audio::SampleRate, log);
 
     // Print header information to stdout.
     std::cout << gb->Header() << std::endl;
@@ -64,7 +64,6 @@ Emulator_::Emulator_()
       texture{this->instance, this->renderer, DisplayWidth, DisplayHeight},
       eventManager{this->instance},
       audio{this->instance},
-      refreshRate{this->instance->RefreshRate()},
       frameCount{0},
       running{false},
       startTime{} {
@@ -99,7 +98,7 @@ void Emulator_::Sync() const {
 
     // Compute elapsed (emulated) time in seconds.
     const auto frames{static_cast<double>(this->frameCount)};
-    const Seconds elapsed{frames / this->refreshRate};
+    const Seconds elapsed{frames / api::RefreshRate};
 
     // Compute the emulator's current (absolute) time.
     const auto emulated{this->startTime + elapsed};

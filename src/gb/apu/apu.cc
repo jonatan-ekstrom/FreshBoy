@@ -11,9 +11,9 @@ namespace {
 constexpr auto BufferSize{1024};
 
 /* Calculates the number of cycles between each audio sample. */
-constexpr double CyclesPerSample(const gb::uint refreshRate, const gb::uint sampleRate) {
+constexpr double CyclesPerSample(const gb::uint sampleRate) {
     const auto samplesPerSecond{static_cast<double>(sampleRate)};
-    const auto cyclesPerSecond{gb::lcd::CyclesPerFrame * refreshRate};
+    const auto cyclesPerSecond{static_cast<double>(gb::lcd::ClockFreq)};
     const auto cyclesPerSample{cyclesPerSecond / samplesPerSecond};
     return cyclesPerSample;
 }
@@ -22,9 +22,9 @@ constexpr double CyclesPerSample(const gb::uint refreshRate, const gb::uint samp
 
 namespace gb {
 
-Apu_::Apu_(QueueHandler&& queue, const uint refreshRate, const uint sampleRate)
+Apu_::Apu_(QueueHandler&& queue, const uint sampleRate)
     : queue{std::move(queue)},
-      cyclesPerSample{CyclesPerSample(refreshRate, sampleRate)},
+      cyclesPerSample{CyclesPerSample(sampleRate)},
       cycles{0},
       enabled{false},
       seq{[this](auto step){SeqTick(step);}} {
@@ -32,8 +32,8 @@ Apu_::Apu_(QueueHandler&& queue, const uint refreshRate, const uint sampleRate)
     bufferRight.reserve(BufferSize);
 }
 
-Apu Apu_::Create(QueueHandler queue, const uint refreshRate, const uint sampleRate) {
-    return Apu{new Apu_{std::move(queue), refreshRate, sampleRate}};
+Apu Apu_::Create(QueueHandler queue, const uint sampleRate) {
+    return Apu{new Apu_{std::move(queue), sampleRate}};
 }
 
 u8 Apu_::Read(const u16 address) const {

@@ -31,12 +31,12 @@ public:
     /*
      * Static constructor, creates a new Game Boy instance.
      * Loads the provided rom / ram files.
-     * Sets up rendering and sound using the provided callbacks,
-     * screen refresh rate and sound sample rate.
+     * Sets up rendering and sound using the provided callbacks
+     * and sound sample rate.
      */
     static Gameboy Create(const Path& romPath, const Path& ramPath,
                           FrameCallback render, QueueCallback queue,
-                          uint refreshRate, uint sampleRate, bool log = false);
+                          uint sampleRate, bool log = false);
 
     /* Returns a string representation of the ROM header. */
     std::string Header() const;
@@ -55,7 +55,7 @@ public:
 private:
     Gameboy_(const Path& romPath, const Path& ramPath,
              FrameCallback&& render, QueueCallback&& queue,
-             uint refreshRate, uint sampleRate, bool log);
+             uint sampleRate, bool log);
     void Tick();
     Cartridge cart;
     Apu apu;
