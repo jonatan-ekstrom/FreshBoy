@@ -4,17 +4,17 @@ set -e # Exit on all errors.
 
 printf 'Welcome to the FreshBoy installation script...\n\n'
 
-numCores="$(grep 'cpu cores' /proc/cpuinfo | awk -F: '{sum+=$2}END{print sum}')"
-
 read -p 'Build directory (~/build): ' _build
 
 read -p 'Install directory (~/install): ' _install
 
 read -p 'Build in release mode (Y): ' _release
 
-read -p 'Remove build directory after installing (Y): ' _clean
+if ! [[ "$_release" =~ [Nn] ]]; then
+    read -p 'Enable link time optimization: (Y): ' _lto
+fi
 
-read -p 'Number of parallel make jobs ('"$numCores"'): ' _para
+read -p 'Remove build directory after installing (Y): ' _clean
 
 build="${_build:-~/build}"
 build="${build/#\~/$HOME}"
@@ -33,11 +33,16 @@ if [[ -d "$install" ]]; then
 fi
 
 if ! [[ "$_release" =~ [Nn] ]]; then
-    release='Yes'
-    mode='Release'
+    config='Release'
 else
-    release='No'
-    mode='Debug'
+    config='Debug'
+fi
+
+lto_status='Disabled'
+lto_state='OFF'
+if ! [[ "$_lto" =~ [Nn] ]]; then
+    lto_status='Enabled'
+    lto_state='ON'
 fi
 
 if ! [[ "$_clean" =~ [Nn] ]]; then
@@ -46,15 +51,15 @@ else
     clean='No'
 fi
 
-para="${_para:-$numCores}"
-
 printf '\nYou have entered the following configuration...\n'
 echo '-------------------------------------------------'
 echo 'Build directory: '"$build"
 echo 'Install directory: '"$install"
-echo 'Release build: '"$release"
+echo 'Configuration: '"$config"
+if [[ "$config" = 'Release' ]]; then
+    echo 'Link time optimization: '"$lto_status"
+fi
 echo 'Remove build directory: '"$clean"
-echo 'Parallel jobs: '"$para"
 echo '-------------------------------------------------'
 printf '\n'
 
@@ -65,7 +70,7 @@ if [[ "$correct" =~ [Nn] ]]; then
     exit 1
 fi
 
-sourceDir="$PWD"
+source="$PWD"
 
 logFile="$build"/build.log
 
@@ -75,20 +80,17 @@ echo '1: Creating directories...'
 mkdir "$build"
 mkdir "$install"
 
-echo '2: Changing to build directory...'
-cd "$build"
+echo '2: Running cmake...'
+cmake -G Ninja -S "$source" -B "$build" -DCMAKE_BUILD_TYPE="$config" -DCMAKE_INSTALL_PREFIX="$install" -DUSE_LTO="$lto_state" >> "$logFile"
 
-echo '3: Running cmake...'
-cmake -DCMAKE_BUILD_TYPE="$mode" -DCMAKE_INSTALL_PREFIX="$install" "$sourceDir" >> "$logFile"
+echo '3: Compiling...'
+cmake --build "$build" >> "$logFile"
 
-echo '4: Compiling...'
-make -j "$para" >> "$logFile"
-
-echo '5: Installing...'
-make install >> "$logFile"
+echo '4: Installing...'
+cmake --install "$build" >> "$logFile"
 
 if [[ "$clean" = 'Yes' ]]; then
-    echo '6: Cleaning up...'
+    echo '5: Cleaning up...'
     rm -rf "$build"
 fi
 
