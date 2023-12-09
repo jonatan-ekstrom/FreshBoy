@@ -33,7 +33,7 @@ systems programming with a splash of 90s nostalgia.
 
 #### Ubuntu 22.04
 ```
-$ sudo apt install build-essential cmake libsdl2-dev
+$ sudo apt install build-essential cmake ninja-build libsdl2-dev
 $ ./install.sh
 ```
 
