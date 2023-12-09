@@ -12,8 +12,6 @@ read -p 'Install directory (~/install): ' _install
 
 read -p 'Build in release mode (Y): ' _release
 
-read -p 'Use GNU specific compiler flags (Y): ' _gnu
-
 read -p 'Remove build directory after installing (Y): ' _clean
 
 read -p 'Number of parallel make jobs ('"$numCores"'): ' _para
@@ -42,14 +40,6 @@ else
     mode='Debug'
 fi
 
-if ! [[ "$_gnu" =~ [Nn] ]]; then
-    gnu='Yes'
-    gnu_cm='ON'
-else
-   gnu='No'
-   gnu_cm='OFF'
-fi
-
 if ! [[ "$_clean" =~ [Nn] ]]; then
     clean='Yes'
 else
@@ -63,7 +53,6 @@ echo '-------------------------------------------------'
 echo 'Build directory: '"$build"
 echo 'Install directory: '"$install"
 echo 'Release build: '"$release"
-echo 'Use GNU flags: '"$gnu"
 echo 'Remove build directory: '"$clean"
 echo 'Parallel jobs: '"$para"
 echo '-------------------------------------------------'
@@ -90,7 +79,7 @@ echo '2: Changing to build directory...'
 cd "$build"
 
 echo '3: Running cmake...'
-cmake -DCMAKE_BUILD_TYPE="$mode" -DCMAKE_INSTALL_PREFIX="$install" -DUSE_GNU_FLAGS="$gnu_cm" "$sourceDir" >> "$logFile"
+cmake -DCMAKE_BUILD_TYPE="$mode" -DCMAKE_INSTALL_PREFIX="$install" "$sourceDir" >> "$logFile"
 
 echo '4: Compiling...'
 make -j "$para" >> "$logFile"
