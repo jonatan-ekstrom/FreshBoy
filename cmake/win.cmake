@@ -13,7 +13,7 @@ set(debugList
     /EHsc
     /Od
     /RTC1
-    /Zi)
+    /Z7)
 
 set(releaseList
     /arch:AVX2
