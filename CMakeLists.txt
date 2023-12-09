@@ -36,23 +36,15 @@ if (NOT haveBuildType)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
 endif ()
 
-# Make it possible to opt out from GNU specific flags (if unsupported by compiler).
-option(USE_GNU_FLAGS "" ON)
-
-# Make it possible to opt out from MSVC specific flags (if unsupported by compiler).
-option(USE_MSVC_FLAGS "" ON)
-
-if (USE_GNU_FLAGS AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # Add GNU specific compiler flags
     include(gnu)
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(SDL2_DIR "C:/work/dev/SDL2-2.28.5/cmake" CACHE PATH "Path to SDL2 development libraries.")
-    if (USE_MSVC_FLAGS)
-        # Add MSVC specific compiler flags
-        include (win)
-    endif ()
+    # Add MSVC specific compiler flags
+    include (win)
 endif ()
 
 # Look for the SDL2 libraries, abort if not found.
