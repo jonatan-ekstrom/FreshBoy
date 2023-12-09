@@ -19,7 +19,6 @@ set(releaseList
     /arch:AVX2
     /favor:INTEL64
     /EHsc
-    /GL
     /O2
     /Qpar)
 
