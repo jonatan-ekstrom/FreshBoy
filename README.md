@@ -32,9 +32,21 @@ systems programming with a splash of 90s nostalgia.
 ### Build instructions
 
 #### Ubuntu 22.04
-``` shell
+```
 $ sudo apt install build-essential cmake libsdl2-dev
-$ ./install
+$ ./install.sh
+```
+
+#### Visual Studio 2022 (17.8.3)
+I've tested the build using version 17.8.3 of Visual Studio 2022 (MVSC 19.38.33133 for x64).
+Make sure to enable the C++ CMake tools for Windows in the Visual Studio installer.
+
+1. Download the latest [SDL2](https://github.com/libsdl-org/SDL/releases) development libraries for MSVC.
+2. Unpack the archive and add it to the system PATH.
+3. Open the Developer PowerShell for VS 2022.
+
+```
+> .\install.ps1
 ```
 
 ### Keymap
