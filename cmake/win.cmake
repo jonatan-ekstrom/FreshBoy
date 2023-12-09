@@ -22,6 +22,11 @@ set(releaseList
     /O2
     /Qpar)
 
+# Add link-time optimization flag to release options if enabled.
+if (USE_LTO)
+    list(APPEND releaseList /GL)
+endif ()
+
 # Setup build flags.
 if (NOT haveFlags)
     list(JOIN warningList " " warningFlags)

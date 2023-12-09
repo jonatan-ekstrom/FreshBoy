@@ -36,6 +36,9 @@ if (NOT haveBuildType)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
 endif ()
 
+# Make bulding with link-time optimization opt-in.
+option(USE_LTO "Enable link time optimization.")
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # Add GNU specific compiler flags
     include(gnu)

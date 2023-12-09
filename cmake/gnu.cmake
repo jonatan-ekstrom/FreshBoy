@@ -18,10 +18,14 @@ set(debugList
 
 set(releaseList
     -O3
-    -flto
     -s
     -march=native
     -mtune=native)
+
+# Add link-time optimization flag to release options if enabled.
+if (USE_LTO)
+    list(APPEND releaseList -flto)
+endif ()
 
 # Setup build flags.
 if (NOT haveFlags)
