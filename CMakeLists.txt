@@ -42,7 +42,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set(SDL2_DIR "C:/work/dev/SDL2-2.28.5/cmake" CACHE PATH "Path to SDL2 development libraries.")
     # Add MSVC specific compiler flags
     include (win)
 endif ()
