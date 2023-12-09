@@ -13,6 +13,7 @@ target_link_libraries(app PRIVATE media)
 
 # Tag app for installation.
 install(TARGETS app DESTINATION bin)
+install(FILES $<TARGET_RUNTIME_DLLS:app> DESTINATION bin)
 
 # Output binary to build directory.
 set_target_properties(app PROPERTIES
